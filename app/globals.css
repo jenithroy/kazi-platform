@@ -1,29 +1,238 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @font-face {
-  font-family: 'Dogma';
-  src: url('/fonts/DOGMA.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'Instrument Serif';
+  src: url('/fonts/InstrumentSerif-Regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/fonts/InstrumentSerif-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Europa Grotesk';
+  src: url('/fonts/EuropaGroteskSH-Med.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Europa Grotesk';
+  src: url('/fonts/EuropaGroteskSH-Med.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Europa Grotesk';
+  src: url('/fonts/EuropaGroteskSH-DemBol.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Europa Grotesk';
+  src: url('/fonts/EuropaGroteskSH-BolIta.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Variables ── */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
+  --kazi-green: #166951;
+  --kazi-green-dark: #0f4a39;
+  --kazi-cream: #f2f8f6;
+  --kazi-charcoal: #0b2a22;
+  --kazi-gold: #C9A96E;
+  --kazi-slate: #1b4d3c;
+  --luxury-ease: cubic-bezier(.16, 1, .3, 1);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: 'Europa Grotesk', system-ui, sans-serif;
+  color: var(--kazi-charcoal);
+  background: var(--kazi-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background-color: var(--kazi-green);
+  color: white;
+}
+
+/* ── Scroll Animations ── */
+.scroll-fade-up {
+  opacity: 0;
+  transform: translateY(2.5rem);
+  transition: opacity 1s var(--luxury-ease), transform 1s var(--luxury-ease);
+}
+
+.scroll-fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-fade-in {
+  opacity: 0;
+  transition: opacity 1.2s var(--luxury-ease);
+}
+
+.scroll-fade-in.is-visible {
+  opacity: 1;
+}
+
+.scroll-slide-right {
+  opacity: 0;
+  transform: translateX(-2rem);
+  transition: opacity 1s var(--luxury-ease), transform 1s var(--luxury-ease);
+}
+
+.scroll-slide-right.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-scale-in {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 1s var(--luxury-ease), transform 1s var(--luxury-ease);
+}
+
+.scroll-scale-in.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Staggered delays */
+.delay-100 { transition-delay: 0.1s !important; }
+.delay-200 { transition-delay: 0.2s !important; }
+.delay-300 { transition-delay: 0.3s !important; }
+.delay-400 { transition-delay: 0.4s !important; }
+.delay-500 { transition-delay: 0.5s !important; }
+.delay-600 { transition-delay: 0.6s !important; }
+
+/* ── Hero Clip-Path Reveal ── */
+.hero-image-reveal {
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  transition: clip-path 1.4s var(--luxury-ease);
+}
+
+.hero-image-reveal.is-revealed {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* ── Image Hover Effects ── */
+.image-zoom {
+  overflow: hidden;
+}
+
+.image-zoom img {
+  transition: transform 0.8s var(--luxury-ease);
+}
+
+.image-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* ── Button Styles ── */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-8 py-4 bg-kazi-green text-white font-sans text-sm font-semibold uppercase tracking-[0.15em] rounded-none;
+  transition: all 0.5s var(--luxury-ease);
+}
+
+.btn-primary:hover {
+  @apply bg-kazi-green-dark;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center px-8 py-4 border border-kazi-charcoal text-kazi-charcoal font-sans text-sm font-semibold uppercase tracking-[0.15em] rounded-none;
+  transition: all 0.5s var(--luxury-ease);
+}
+
+.btn-outline:hover {
+  @apply bg-kazi-charcoal text-white;
+  transform: translateY(-2px);
+}
+
+.btn-outline-light {
+  @apply inline-flex items-center justify-center px-8 py-4 border border-white/40 text-white font-sans text-sm font-semibold uppercase tracking-[0.15em] rounded-none;
+  transition: all 0.5s var(--luxury-ease);
+}
+
+.btn-outline-light:hover {
+  @apply bg-white text-kazi-charcoal;
+  transform: translateY(-2px);
+}
+
+/* ── Progress Line Animation ── */
+.progress-line {
+  position: relative;
+}
+
+.progress-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--kazi-green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--luxury-ease);
+}
+
+.progress-line.is-active::after {
+  transform: scaleX(1);
+}
+
+/* ── Label Style ── */
+.section-label {
+  @apply font-sans text-xs font-semibold uppercase tracking-[0.2em] text-kazi-slate mb-6;
+}
+
+/* ── Smooth Scroll ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--kazi-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--kazi-green);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--kazi-green);
+}
+
+/* ── Parallax Helper ── */
+.parallax-slow {
+  will-change: transform;
 }
 
 @layer utilities {

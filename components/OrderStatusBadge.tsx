@@ -3,24 +3,23 @@ interface OrderStatusBadgeProps {
 }
 
 const statusConfig: Record<string, { label: string; className: string }> = {
-  ordered: { label: 'Ordered', className: 'bg-blue-100 text-blue-800' },
-  cutting: { label: 'Cutting', className: 'bg-yellow-100 text-yellow-800' },
-  sewing: { label: 'Sewing', className: 'bg-red-100 text-red-800' },
-  printing: { label: 'Printing', className: 'bg-purple-100 text-purple-800' },
-  qc: { label: 'Quality Check', className: 'bg-pink-100 text-pink-800' },
-  shipping: { label: 'Shipping', className: 'bg-indigo-100 text-indigo-800' },
-  delivered: { label: 'Delivered', className: 'bg-green-100 text-green-800' },
-  pending: { label: 'Pending', className: 'bg-gray-100 text-gray-800' },
-  quoted: { label: 'Quoted', className: 'bg-blue-100 text-blue-800' },
-  accepted: { label: 'Accepted', className: 'bg-green-100 text-green-800' },
-  rejected: { label: 'Rejected', className: 'bg-red-100 text-red-800' },
+  ordered:   { label: 'Ordered',       className: 'bg-kazi-charcoal/10 text-kazi-charcoal' },
+  cutting:   { label: 'Cutting',       className: 'bg-kazi-slate/10 text-kazi-charcoal' },
+  sewing:    { label: 'Sewing',        className: 'bg-kazi-slate/15 text-kazi-charcoal' },
+  printing:  { label: 'Printing',      className: 'bg-kazi-green/10 text-kazi-green-dark' },
+  qc:        { label: 'Quality Check', className: 'bg-kazi-slate/12 text-kazi-charcoal' },
+  shipping:  { label: 'Shipping',      className: 'bg-kazi-green/15 text-kazi-green-dark' },
+  delivered: { label: 'Delivered',     className: 'bg-kazi-green/20 text-kazi-green-dark font-semibold' },
+  pending:   { label: 'Pending',       className: 'bg-kazi-sand/60 text-kazi-slate' },
+  quoted:    { label: 'Quoted',        className: 'bg-kazi-slate/10 text-kazi-charcoal' },
+  accepted:  { label: 'Accepted',      className: 'bg-kazi-green/20 text-kazi-green-dark' },
+  rejected:  { label: 'Rejected',      className: 'bg-kazi-charcoal/10 text-kazi-slate' },
 };
 
 export default function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
-  const config = statusConfig[status] || { label: status, className: 'bg-gray-100 text-gray-800' };
-  
+  const config = statusConfig[status] || { label: status, className: 'bg-kazi-sand/40 text-kazi-slate' };
   return (
-    <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${config.className}`}>
+    <span className={`inline-flex px-3 py-1 rounded-sm text-xs font-sans font-medium uppercase tracking-wide ${config.className}`}>
       {config.label}
     </span>
   );

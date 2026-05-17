@@ -2,32 +2,32 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Check, FolderOpen, FileText } from 'lucide-react';
+import { Check, FolderOpen, FileText, X } from 'lucide-react';
 
 const TSHIRT_TIERS = [
-  { minQty: 50, maxQty: 99, price: 8.50 },
-  { minQty: 100, maxQty: 249, price: 6.50 },
-  { minQty: 250, maxQty: 499, price: 5.00 },
-  { minQty: 500, maxQty: 999, price: 4.00 },
+  { minQty: 50,   maxQty: 99,   price: 8.50 },
+  { minQty: 100,  maxQty: 249,  price: 6.50 },
+  { minQty: 250,  maxQty: 499,  price: 5.00 },
+  { minQty: 500,  maxQty: 999,  price: 4.00 },
   { minQty: 1000, maxQty: null, price: 3.20 },
 ];
 const HOODIE_TIERS = [
-  { minQty: 50, maxQty: 99, price: 18.00 },
-  { minQty: 100, maxQty: 249, price: 14.50 },
-  { minQty: 250, maxQty: 499, price: 12.00 },
-  { minQty: 500, maxQty: 999, price: 10.00 },
+  { minQty: 50,   maxQty: 99,   price: 18.00 },
+  { minQty: 100,  maxQty: 249,  price: 14.50 },
+  { minQty: 250,  maxQty: 499,  price: 12.00 },
+  { minQty: 500,  maxQty: 999,  price: 10.00 },
   { minQty: 1000, maxQty: null, price: 8.50 },
 ];
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
 const COLORS = [
-  { name: 'Black', hex: '#000000' },
-  { name: 'White', hex: '#FFFFFF' },
-  { name: 'Navy', hex: '#1a365d' },
+  { name: 'Black',        hex: '#000000' },
+  { name: 'White',        hex: '#FFFFFF' },
+  { name: 'Navy',         hex: '#1a365d' },
   { name: 'Heather Grey', hex: '#9ca3af' },
-  { name: 'Red', hex: '#dc2626' },
-  { name: 'Royal Blue', hex: '#2563eb' },
+  { name: 'Red',          hex: '#dc2626' },
+  { name: 'Royal Blue',   hex: '#2563eb' },
   { name: 'Forest Green', hex: '#166534' },
-  { name: 'Custom', hex: null },
+  { name: 'Custom',       hex: null },
 ];
 
 type ProductType = 'tshirt' | 'hoodie';
@@ -36,19 +36,17 @@ function getPricePerUnit(tiers: typeof TSHIRT_TIERS, qty: number) {
   return tiers.find(t => qty >= t.minQty && (t.maxQty === null || qty <= t.maxQty))?.price ?? tiers[0].price;
 }
 
+const inputClass = 'w-full px-3 py-2.5 bg-kazi-cream border border-kazi-sand text-kazi-charcoal font-sans text-sm rounded-sm focus:outline-none focus:border-kazi-green transition-colors duration-300 placeholder-kazi-slate/40';
+const labelClass = 'block font-sans text-xs font-semibold uppercase tracking-[0.12em] text-kazi-slate mb-1.5';
+
 export default function PricingQuoteSection() {
-  // Shared calculator state
   const [productType, setProductType] = useState<ProductType>('tshirt');
   const [quantity, setQuantity] = useState(100);
   const [addOns, setAddOns] = useState({
-    embroidery: false,
-    embroiderySize: 'small',
-    screenPrint: false,
-    screenPrintColors: 1,
+    embroidery: false, embroiderySize: 'small',
+    screenPrint: false, screenPrintColors: 1,
     dtgPrint: false,
   });
-
-  // Quote form state
   const [formData, setFormData] = useState({
     name: '', email: '', company: '', phone: '',
     sizes: {} as Record<string, number>,
@@ -62,7 +60,6 @@ export default function PricingQuoteSection() {
 
   const supabase = createClient();
 
-  // Pricing calculations
   const tiers = productType === 'tshirt' ? TSHIRT_TIERS : HOODIE_TIERS;
   const basePrice = getPricePerUnit(tiers, quantity);
   const addOnPrice = useMemo(() => {
@@ -95,7 +92,6 @@ export default function PricingQuoteSection() {
     e.preventDefault();
     setSubmitting(true);
     setError('');
-
     try {
       const totalFromSizes = Object.values(formData.sizes).reduce((a, b) => a + b, 0);
       const finalQty = totalFromSizes > 0 ? totalFromSizes : quantity;
@@ -116,19 +112,15 @@ export default function PricingQuoteSection() {
       const { data: quote, error: quoteError } = await supabase
         .from('quotes')
         .insert({
-          customer_id: customerId,
-          product_type: productType,
-          quantity: finalQty,
-          size_breakdown: formData.sizes,
-          colors: formData.colors,
+          customer_id: customerId, product_type: productType, quantity: finalQty,
+          size_breakdown: formData.sizes, colors: formData.colors,
           details: [
             addOns.embroidery ? `Embroidery (${addOns.embroiderySize})` : null,
             addOns.screenPrint ? `Screen print (${addOns.screenPrintColors} colour${addOns.screenPrintColors > 1 ? 's' : ''})` : null,
             addOns.dtgPrint ? 'DTG print' : null,
             formData.details,
           ].filter(Boolean).join(' · '),
-          quoted_price: unitPrice,
-          status: 'pending',
+          quoted_price: unitPrice, status: 'pending',
         })
         .select('id').single();
       if (quoteError) throw quoteError;
@@ -138,7 +130,6 @@ export default function PricingQuoteSection() {
         const path = `${quote.id}/${Date.now()}-${Math.random().toString(36).slice(7)}.${ext}`;
         await supabase.storage.from('design-files').upload(path, file);
       }
-
       setSuccess(true);
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
@@ -149,27 +140,32 @@ export default function PricingQuoteSection() {
 
   if (success) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-12 text-center">
-        <Check className="w-14 h-14 text-green-500 mx-auto mb-4" strokeWidth={2.5} />
-        <h3 className="text-2xl font-bold mb-2">Quote submitted!</h3>
-        <p className="text-gray-600">We'll review your details and respond within 24 hours.</p>
+      <div className="border border-kazi-sand bg-kazi-green-light rounded-sm p-12 text-center">
+        <div className="w-12 h-12 rounded-full bg-kazi-green flex items-center justify-center mx-auto mb-6">
+          <Check className="w-6 h-6 text-white" strokeWidth={2.5} />
+        </div>
+        <h3 className="font-serif text-2xl text-kazi-charcoal mb-2">Quote submitted</h3>
+        <p className="font-sans text-sm text-kazi-slate">We'll review your details and respond within 24 hours.</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border rounded-xl overflow-hidden shadow-sm">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-kazi-sand rounded-sm overflow-hidden">
 
       {/* LEFT — Calculator */}
-      <div className="bg-white border-r border-gray-100">
+      <div className="bg-white border-r border-kazi-sand">
+
         {/* Product type */}
-        <div className="p-6 border-b border-gray-100">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Product</label>
+        <div className="p-6 border-b border-kazi-sand">
+          <label className={labelClass}>Product</label>
           <div className="grid grid-cols-2 gap-2">
             {(['tshirt', 'hoodie'] as ProductType[]).map(type => (
               <button key={type} onClick={() => setProductType(type)}
-                className={`py-3 px-4 rounded-lg border-2 font-medium transition-colors text-sm ${
-                  productType === type ? 'border-red-600 bg-red-50 text-red-700' : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                className={`py-3 px-4 rounded-sm border font-sans text-sm font-semibold transition-all duration-300 ${
+                  productType === type
+                    ? 'border-kazi-green bg-kazi-green-light text-kazi-green'
+                    : 'border-kazi-sand bg-kazi-cream text-kazi-slate hover:border-kazi-green/50'
                 }`}>
                 {type === 'tshirt' ? 'T-Shirts' : 'Hoodies'}
               </button>
@@ -178,148 +174,127 @@ export default function PricingQuoteSection() {
         </div>
 
         {/* Quantity */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-b border-kazi-sand">
           <div className="flex justify-between items-baseline mb-4">
-            <label className="text-xs font-semibold uppercase tracking-wider text-gray-500">Quantity</label>
-            <span className="text-2xl font-bold text-gray-900">{quantity.toLocaleString()} units</span>
+            <label className={labelClass}>Quantity</label>
+            <span className="font-sans text-2xl font-semibold text-kazi-charcoal">{quantity.toLocaleString()} units</span>
           </div>
           <input type="range" min="50" max="2000" step="10" value={quantity}
             onChange={e => setQuantity(parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-600" />
-          <div className="flex justify-between text-xs text-gray-400 mt-2">
+            className="w-full h-1.5 bg-kazi-sand rounded-sm appearance-none cursor-pointer accent-[#166951]" />
+          <div className="flex justify-between font-sans text-xs text-kazi-slate/50 mt-2">
             <span>50</span><span>500</span><span>1000</span><span>2000</span>
           </div>
-          {/* Tier indicator */}
           <div className="flex mt-3 gap-1">
             {tiers.map((tier, idx) => (
-              <div key={idx} className={`flex-1 h-1.5 rounded-full transition-colors ${
-                quantity >= tier.minQty && (tier.maxQty === null || quantity <= tier.maxQty) ? 'bg-red-600' : 'bg-gray-200'
+              <div key={idx} className={`flex-1 h-1 rounded-sm transition-colors duration-300 ${
+                quantity >= tier.minQty && (tier.maxQty === null || quantity <= tier.maxQty)
+                  ? 'bg-kazi-green' : 'bg-kazi-sand'
               }`} />
             ))}
           </div>
         </div>
 
         {/* Add-ons */}
-        <div className="p-6 border-b border-gray-100">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Add-ons</label>
+        <div className="p-6 border-b border-kazi-sand">
+          <label className={labelClass}>Add-ons</label>
           <div className="space-y-2">
-            <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input type="checkbox" checked={addOns.embroidery}
-                onChange={e => setAddOns({ ...addOns, embroidery: e.target.checked })}
-                className="w-4 h-4 accent-red-600" />
-              <div className="flex-1 text-sm">
-                <div className="font-medium">Embroidery</div>
-                <div className="text-gray-400">+£{addOns.embroiderySize === 'small' ? '2.50' : '4.00'}/unit</div>
-              </div>
-              {addOns.embroidery && (
-                <select value={addOns.embroiderySize}
-                  onChange={e => setAddOns({ ...addOns, embroiderySize: e.target.value })}
-                  className="text-sm border rounded px-2 py-1">
-                  <option value="small">Small</option>
-                  <option value="large">Large</option>
-                </select>
-              )}
-            </label>
-
-            <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input type="checkbox" checked={addOns.screenPrint}
-                onChange={e => setAddOns({ ...addOns, screenPrint: e.target.checked })}
-                className="w-4 h-4 accent-red-600" />
-              <div className="flex-1 text-sm">
-                <div className="font-medium">Screen Print</div>
-                <div className="text-gray-400">+£1.50/colour/unit</div>
-              </div>
-              {addOns.screenPrint && (
-                <input type="number" min="1" max="6" value={addOns.screenPrintColors}
-                  onChange={e => setAddOns({ ...addOns, screenPrintColors: parseInt(e.target.value) || 1 })}
-                  className="w-14 text-sm border rounded px-2 py-1" />
-              )}
-            </label>
-
-            <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input type="checkbox" checked={addOns.dtgPrint}
-                onChange={e => setAddOns({ ...addOns, dtgPrint: e.target.checked })}
-                className="w-4 h-4 accent-red-600" />
-              <div className="flex-1 text-sm">
-                <div className="font-medium">DTG Print</div>
-                <div className="text-gray-400">+£3.50/unit</div>
-              </div>
-            </label>
+            {[
+              { key: 'embroidery', label: 'Embroidery', price: `+£${addOns.embroiderySize === 'small' ? '2.50' : '4.00'}/unit` },
+              { key: 'screenPrint', label: 'Screen Print', price: '+£1.50/colour/unit' },
+              { key: 'dtgPrint', label: 'DTG Print', price: '+£3.50/unit' },
+            ].map(({ key, label, price }) => (
+              <label key={key} className="flex items-center gap-3 p-3 border border-kazi-sand rounded-sm hover:border-kazi-green/40 hover:bg-kazi-green-light/30 cursor-pointer transition-all duration-300">
+                <input type="checkbox"
+                  checked={addOns[key as keyof typeof addOns] as boolean}
+                  onChange={e => setAddOns({ ...addOns, [key]: e.target.checked })}
+                  className="w-4 h-4 accent-[#166951]" />
+                <div className="flex-1 font-sans text-sm">
+                  <div className="font-semibold text-kazi-charcoal">{label}</div>
+                  <div className="text-kazi-slate/60 text-xs">{price}</div>
+                </div>
+                {key === 'embroidery' && addOns.embroidery && (
+                  <select value={addOns.embroiderySize}
+                    onChange={e => setAddOns({ ...addOns, embroiderySize: e.target.value })}
+                    className="font-sans text-xs border border-kazi-sand rounded-sm px-2 py-1 bg-kazi-cream text-kazi-charcoal focus:outline-none focus:border-kazi-green">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
+                  </select>
+                )}
+                {key === 'screenPrint' && addOns.screenPrint && (
+                  <input type="number" min="1" max="6" value={addOns.screenPrintColors}
+                    onChange={e => setAddOns({ ...addOns, screenPrintColors: parseInt(e.target.value) || 1 })}
+                    className="w-14 font-sans text-xs border border-kazi-sand rounded-sm px-2 py-1 bg-kazi-cream text-kazi-charcoal focus:outline-none focus:border-kazi-green" />
+                )}
+              </label>
+            ))}
           </div>
         </div>
 
         {/* Price summary */}
-        <div className="p-6 bg-gray-50">
+        <div className="p-6 bg-kazi-charcoal">
           <div className="flex justify-between items-baseline mb-1">
-            <span className="text-sm text-gray-500">Per unit</span>
-            <span className="text-xl font-bold text-gray-900">£{unitPrice.toFixed(2)}</span>
+            <span className="font-sans text-xs uppercase tracking-[0.15em] text-white/50">Per unit</span>
+            <span className="font-sans text-xl font-semibold text-white">£{unitPrice.toFixed(2)}</span>
           </div>
           {savings > 0 && (
-            <div className="text-xs text-green-600 mb-3">
+            <div className="font-sans text-xs text-kazi-green-light mb-3">
               You save £{savings.toFixed(2)} vs minimum order pricing
             </div>
           )}
-          <div className="flex justify-between items-baseline pt-3 border-t border-gray-200">
-            <span className="font-medium text-gray-700">Total estimate</span>
-            <span className="text-3xl font-bold text-red-600">
+          <div className="flex justify-between items-baseline pt-4 border-t border-white/10 mt-3">
+            <span className="font-sans text-sm text-white/60">Total estimate</span>
+            <span className="font-sans text-3xl font-semibold text-white">
               £{totalPrice.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
-          <p className="text-xs text-gray-400 mt-2">Excludes shipping, customs, and packaging</p>
+          <p className="font-sans text-xs text-white/30 mt-2">Excludes shipping, customs, and packaging</p>
         </div>
       </div>
 
       {/* RIGHT — Quote form */}
-      <div className="bg-white">
-        <div className="p-6 border-b border-gray-100 bg-gray-50">
-          <h3 className="font-bold text-gray-900">Request this quote</h3>
-          <p className="text-sm text-gray-500 mt-0.5">
-            {quantity.toLocaleString()} × {productType === 'tshirt' ? 'T-Shirts' : 'Hoodies'} · £{unitPrice.toFixed(2)}/unit · <span className="font-semibold text-red-600">£{totalPrice.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} est.</span>
+      <div className="bg-white flex flex-col">
+        <div className="p-6 border-b border-kazi-sand bg-kazi-cream">
+          <h3 className="font-sans font-semibold text-kazi-charcoal">Request this quote</h3>
+          <p className="font-sans text-xs text-kazi-slate mt-1">
+            {quantity.toLocaleString()} × {productType === 'tshirt' ? 'T-Shirts' : 'Hoodies'} · £{unitPrice.toFixed(2)}/unit ·{' '}
+            <span className="font-semibold text-kazi-green">£{totalPrice.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} est.</span>
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 flex-1">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>
+            <div className="bg-kazi-green/10 border border-kazi-green/30 text-kazi-green px-4 py-3 rounded-sm font-sans text-sm">{error}</div>
           )}
 
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-              <input type="text" required value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Email *</label>
-              <input type="email" required value={formData.email}
-                onChange={e => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Company</label>
-              <input type="text" value={formData.company}
-                onChange={e => setFormData({ ...formData, company: e.target.value })}
-                className="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Phone</label>
-              <input type="tel" value={formData.phone}
-                onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-            </div>
+            {[
+              { label: 'Name *',  type: 'text',  key: 'name',    required: true },
+              { label: 'Email *', type: 'email', key: 'email',   required: true },
+              { label: 'Company', type: 'text',  key: 'company', required: false },
+              { label: 'Phone',   type: 'tel',   key: 'phone',   required: false },
+            ].map(({ label, type, key, required }) => (
+              <div key={key}>
+                <label className={labelClass}>{label}</label>
+                <input type={type} required={required}
+                  value={formData[key as keyof typeof formData] as string}
+                  onChange={e => setFormData({ ...formData, [key]: e.target.value })}
+                  className={inputClass} />
+              </div>
+            ))}
           </div>
 
           {/* Size breakdown */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-2">Size breakdown <span className="text-gray-400 font-normal">(optional)</span></label>
+            <label className={labelClass}>Size breakdown <span className="normal-case font-normal text-kazi-slate/50">(optional)</span></label>
             <div className="grid grid-cols-7 gap-1.5">
               {SIZES.map(size => (
                 <div key={size} className="text-center">
-                  <label className="text-[10px] text-gray-500 block mb-1">{size}</label>
+                  <label className="font-sans text-[10px] text-kazi-slate/50 block mb-1">{size}</label>
                   <input type="number" min="0" value={formData.sizes[size] || ''}
                     onChange={e => setFormData(prev => ({ ...prev, sizes: { ...prev.sizes, [size]: parseInt(e.target.value) || 0 } }))}
-                    className="w-full px-1 py-1.5 border rounded text-center text-xs" placeholder="0" />
+                    className="w-full px-1 py-1.5 bg-kazi-cream border border-kazi-sand rounded-sm text-center font-sans text-xs text-kazi-charcoal focus:outline-none focus:border-kazi-green transition-colors"
+                    placeholder="0" />
                 </div>
               ))}
             </div>
@@ -327,14 +302,16 @@ export default function PricingQuoteSection() {
 
           {/* Garment colours */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-2">Garment colours</label>
+            <label className={labelClass}>Garment colours</label>
             <div className="flex flex-wrap gap-1.5">
               {COLORS.map(color => (
                 <button key={color.name} type="button" onClick={() => toggleColor(color.name)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border text-xs transition-all ${
-                    formData.colors.includes(color.name) ? 'border-red-500 bg-red-50 ring-1 ring-red-300' : 'border-gray-200 hover:border-gray-300'
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border font-sans text-xs transition-all duration-200 ${
+                    formData.colors.includes(color.name)
+                      ? 'border-kazi-green bg-kazi-green-light text-kazi-green ring-1 ring-kazi-green/30'
+                      : 'border-kazi-sand bg-kazi-cream text-kazi-slate hover:border-kazi-green/50'
                   }`}>
-                  {color.hex && <span className="w-3 h-3 rounded-full border border-gray-200 shrink-0" style={{ backgroundColor: color.hex }} />}
+                  {color.hex && <span className="w-3 h-3 rounded-full border border-kazi-sand/60 shrink-0" style={{ backgroundColor: color.hex }} />}
                   {color.name}
                 </button>
               ))}
@@ -343,12 +320,14 @@ export default function PricingQuoteSection() {
 
           {/* File upload */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-2">Design files <span className="text-gray-400 font-normal">(PNG, JPG, PDF, AI, PSD)</span></label>
+            <label className={labelClass}>
+              Design files <span className="normal-case font-normal text-kazi-slate/50">(PNG, JPG, PDF, AI, PSD)</span>
+            </label>
             <div onDragOver={e => e.preventDefault()} onDrop={handleFileDrop}
-              className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center hover:border-red-400 transition-colors cursor-pointer">
-              <FolderOpen className="w-6 h-6 text-gray-400 mx-auto mb-1.5" />
-              <p className="text-xs text-gray-500 mb-2">Drag & drop or</p>
-              <label className="inline-block bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:bg-gray-200 transition-colors text-xs font-medium">
+              className="border-2 border-dashed border-kazi-sand rounded-sm p-4 text-center hover:border-kazi-green transition-colors duration-300 cursor-pointer bg-kazi-cream">
+              <FolderOpen className="w-6 h-6 text-kazi-slate/40 mx-auto mb-1.5" />
+              <p className="font-sans text-xs text-kazi-slate/50 mb-2">Drag & drop or</p>
+              <label className="inline-block bg-kazi-green text-white px-3 py-1.5 rounded-sm cursor-pointer hover:bg-kazi-green-dark transition-colors font-sans text-xs font-semibold">
                 Browse
                 <input type="file" multiple accept=".png,.jpg,.jpeg,.pdf,.ai,.psd" onChange={handleFileSelect} className="hidden" />
               </label>
@@ -356,14 +335,16 @@ export default function PricingQuoteSection() {
             {files.length > 0 && (
               <div className="mt-2 space-y-1.5">
                 {files.map((file, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-md text-xs">
+                  <div key={idx} className="flex items-center justify-between bg-kazi-cream border border-kazi-sand px-3 py-2 rounded-sm font-sans text-xs">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5 text-gray-400" />
-                      <span className="truncate max-w-[160px]">{file.name}</span>
-                      <span className="text-gray-400">{(file.size / 1024 / 1024).toFixed(1)}MB</span>
+                      <FileText className="w-3.5 h-3.5 text-kazi-slate/50" />
+                      <span className="truncate max-w-[160px] text-kazi-charcoal">{file.name}</span>
+                      <span className="text-kazi-slate/40">{(file.size / 1024 / 1024).toFixed(1)}MB</span>
                     </div>
                     <button type="button" onClick={() => setFiles(prev => prev.filter((_, i) => i !== idx))}
-                      className="text-red-500 hover:text-red-700 font-medium">×</button>
+                      className="text-kazi-slate/40 hover:text-kazi-charcoal transition-colors">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -372,16 +353,16 @@ export default function PricingQuoteSection() {
 
           {/* Details */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Additional details</label>
+            <label className={labelClass}>Additional details</label>
             <textarea rows={3} value={formData.details}
               onChange={e => setFormData({ ...formData, details: e.target.value })}
               placeholder="Deadline, fabric preferences, special instructions..."
-              className="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none" />
+              className={`${inputClass} resize-none`} />
           </div>
 
           <button type="submit" disabled={submitting}
-            className="w-full bg-red-600 text-white py-3.5 rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors shadow-md shadow-red-600/20">
-            {submitting ? 'Submitting...' : `Submit Quote — £${totalPrice.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            className="w-full bg-kazi-green hover:bg-kazi-green-dark text-white py-4 rounded-sm font-sans font-semibold text-sm uppercase tracking-[0.12em] disabled:opacity-50 transition-colors duration-500">
+            {submitting ? 'Submitting…' : `Submit Quote — £${totalPrice.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           </button>
         </form>
       </div>

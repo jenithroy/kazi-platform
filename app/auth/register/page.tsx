@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
-import { Mail } from 'lucide-react';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  
+
   const supabase = createClient();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -24,13 +24,7 @@ export default function RegisterPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-          company_name: company,
-          role: 'customer',
-        },
-      },
+      options: { data: { full_name: fullName, company_name: company, role: 'customer' } },
     });
 
     if (error) {
@@ -43,23 +37,27 @@ export default function RegisterPage() {
       }).catch(() => {});
       setSuccess(true);
     }
-    
     setLoading(false);
   };
 
   if (success) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <main className="min-h-screen bg-kazi-charcoal flex items-center justify-center px-4">
         <div className="w-full max-w-md text-center">
-          <div className="mb-6 flex justify-center">
-            <Mail className="w-16 h-16 text-red-600" />
+          <div className="flex justify-center mb-8">
+            <Link href="/">
+              <div className="relative w-48 h-16">
+                <Image src="/images/kazi-logo-white.svg" alt="Kazi Manufacturing" fill className="object-contain" priority />
+              </div>
+            </Link>
           </div>
-          <h1 className="text-2xl font-bold mb-4">Check your email!</h1>
-          <p className="text-gray-600 mb-6">
-            We've sent you a confirmation email. Click the link to verify your account.
+          <div className="w-12 h-px bg-kazi-green mx-auto mb-8" />
+          <h1 className="font-sans text-2xl font-normal text-white mb-4">Check your email</h1>
+          <p className="font-sans text-sm text-white/50 mb-8 leading-relaxed">
+            We&apos;ve sent you a confirmation email. Click the link to verify your account.
           </p>
-          <Link href="/auth/login" className="text-primary-600 font-medium hover:underline">
-            Go to login
+          <Link href="/auth/login" className="font-sans text-sm text-white/60 hover:text-white transition-colors">
+            Go to login →
           </Link>
         </div>
       </main>
@@ -67,63 +65,50 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-kazi-charcoal flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold text-gray-900">
-            KAZI
+        {/* Logo */}
+        <div className="flex justify-center mb-10">
+          <Link href="/">
+            <div className="relative w-48 h-16">
+              <Image src="/images/kazi-logo-white.svg" alt="Kazi Manufacturing" fill className="object-contain" priority />
+            </div>
           </Link>
-          <h1 className="mt-6 text-2xl font-bold text-gray-900">Create your account</h1>
         </div>
 
-        <div className="bg-white p-8 rounded-xl shadow-sm border">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-sm p-8 rounded-sm">
+          <h1 className="font-sans text-2xl font-normal text-white mb-2">Create account</h1>
+          <p className="font-sans text-sm text-white/50 mb-8">Start your manufacturing journey with Kazi</p>
+
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="bg-kazi-green/10 border border-kazi-green/30 text-kazi-green px-4 py-3 rounded-sm mb-6 text-sm font-sans">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-              </label>
-              <input
-                type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
+          <form onSubmit={handleRegister} className="space-y-5">
+            {[
+              { label: 'Full Name', type: 'text', value: fullName, onChange: setFullName, required: true, placeholder: 'Jane Smith' },
+              { label: 'Email', type: 'email', value: email, onChange: setEmail, required: true, placeholder: 'you@brand.com' },
+              { label: 'Company (optional)', type: 'text', value: company, onChange: setCompany, required: false, placeholder: 'Your Brand Ltd' },
+            ].map(({ label, type, value, onChange, required, placeholder }) => (
+              <div key={label}>
+                <label className="block font-sans text-xs font-semibold uppercase tracking-[0.15em] text-white/60 mb-2">
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  required={required}
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder={placeholder}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/15 text-white placeholder-white/30 font-sans text-sm rounded-sm focus:outline-none focus:border-kazi-green transition-colors duration-300"
+                />
+              </div>
+            ))}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Company (optional)
-              </label>
-              <input
-                type="text"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block font-sans text-xs font-semibold uppercase tracking-[0.15em] text-white/60 mb-2">
                 Password
               </label>
               <input
@@ -132,26 +117,26 @@ export default function RegisterPage() {
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Min. 6 characters"
+                className="w-full px-4 py-3 bg-white/5 border border-white/15 text-white placeholder-white/30 font-sans text-sm rounded-sm focus:outline-none focus:border-kazi-green transition-colors duration-300"
               />
-              <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-kazi-green hover:bg-kazi-green-dark text-white py-3.5 font-sans text-sm font-semibold uppercase tracking-[0.15em] rounded-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-500 mt-2"
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? 'Creating account…' : 'Create Account'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm">
-            <span className="text-gray-600">Already have an account? </span>
-            <Link href="/auth/login" className="text-primary-600 font-medium hover:text-primary-700">
+          <p className="mt-8 text-center font-sans text-sm text-white/40">
+            Already have an account?{' '}
+            <Link href="/auth/login" className="text-white/60 hover:text-white transition-colors font-semibold">
               Sign in
             </Link>
-          </div>
+          </p>
         </div>
       </div>
     </main>
