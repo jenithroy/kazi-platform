@@ -48,16 +48,19 @@ export default function Navigation() {
   const isActive = (href: string) =>
     href !== "#" && pathname?.startsWith(href);
 
+  const isHomepage = !pathname || pathname === "/";
+  const showSolidNav = isScrolled || !isHomepage;
+
   return (
     <nav
       className="fixed left-0 right-0 transition-all duration-500"
       style={{
-        top: "32px",
+        top: isHomepage ? "32px" : "0px",
         zIndex: 90,
-        backgroundColor: isScrolled ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0)",
-        backdropFilter: isScrolled ? "blur(16px)" : "none",
-        WebkitBackdropFilter: isScrolled ? "blur(16px)" : "none",
-        borderBottom: isScrolled ? "1px solid rgba(0,0,0,0.07)" : "1px solid transparent",
+        backgroundColor: showSolidNav ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0)",
+        backdropFilter: showSolidNav ? "blur(16px)" : "none",
+        WebkitBackdropFilter: showSolidNav ? "blur(16px)" : "none",
+        borderBottom: showSolidNav ? "1px solid rgba(0,0,0,0.07)" : "1px solid transparent",
         height: "80px",
       }}
     >
@@ -78,7 +81,7 @@ export default function Navigation() {
                 fontWeight: isActive(link.href) ? 500 : 400,
                 letterSpacing: "0.06em",
                 lineHeight: 1.0,
-                color: isScrolled
+                color: showSolidNav
                   ? (isActive(link.href) ? "#3A7D44" : "#1A1A1A")
                   : "rgba(255,255,255,0.92)",
                 textDecoration: "none",
@@ -98,9 +101,9 @@ export default function Navigation() {
           aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? (
-            <X size={22} strokeWidth={1.5} color={isScrolled ? "#1A1A1A" : "#ffffff"} />
+            <X size={22} strokeWidth={1.5} color={showSolidNav ? "#1A1A1A" : "#ffffff"} />
           ) : (
-            <Menu size={22} strokeWidth={1.5} color={isScrolled ? "#1A1A1A" : "#ffffff"} />
+            <Menu size={22} strokeWidth={1.5} color={showSolidNav ? "#1A1A1A" : "#ffffff"} />
           )}
         </button>
 
@@ -128,7 +131,7 @@ export default function Navigation() {
               flexShrink: 0,
               marginTop: "-53px",
               marginLeft: "-17px",
-              filter: isScrolled ? "brightness(0)" : "brightness(0) invert(1)",
+              filter: showSolidNav ? "brightness(0)" : "brightness(0) invert(1)",
               transition: "filter 0.4s ease",
               userSelect: "none",
               pointerEvents: "none",
@@ -148,7 +151,7 @@ export default function Navigation() {
               fontSize: "12px",
               fontWeight: 400,
               letterSpacing: "0.06em",
-              color: isScrolled ? "#1A1A1A" : "rgba(255,255,255,0.92)",
+              color: showSolidNav ? "#1A1A1A" : "rgba(255,255,255,0.92)",
               textDecoration: "none",
               transition: "color 0.3s ease",
               paddingBottom: "2px",
@@ -162,15 +165,15 @@ export default function Navigation() {
             aria-label="Account"
             className="transition-opacity duration-200 hover:opacity-60"
           >
-            <User size={20} strokeWidth={1.5} color={isScrolled ? "#1A1A1A" : "#ffffff"} />
+            <User size={20} strokeWidth={1.5} color={showSolidNav ? "#1A1A1A" : "#ffffff"} />
           </Link>
 
           <button aria-label="Search" className="transition-opacity duration-200 hover:opacity-60">
-            <Search size={20} strokeWidth={1.5} color={isScrolled ? "#1A1A1A" : "#ffffff"} />
+            <Search size={20} strokeWidth={1.5} color={showSolidNav ? "#1A1A1A" : "#ffffff"} />
           </button>
 
           <button aria-label="Cart" className="relative transition-opacity duration-200 hover:opacity-60">
-            <ShoppingBag size={20} strokeWidth={1.5} color={isScrolled ? "#1A1A1A" : "#ffffff"} />
+            <ShoppingBag size={20} strokeWidth={1.5} color={showSolidNav ? "#1A1A1A" : "#ffffff"} />
           </button>
         </div>
       </div>

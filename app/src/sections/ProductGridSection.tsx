@@ -13,6 +13,7 @@ const products = [
     name: "KAZI ORGANIC TEE",
     price: "From US$ 8.50 / piece",
     image: "/images/product-wrap.jpg",
+    garment: "t-shirt",
     colors: [
       { name: "Forest Green", hex: "#1B3D2A" },
       { name: "Sage", hex: "#8FA89B" },
@@ -25,6 +26,7 @@ const products = [
     name: "HERITAGE POLO",
     price: "From US$ 12.00 / piece",
     image: "/images/product-kebaya-black.jpg",
+    garment: "t-shirt",
     colors: [
       { name: "Deep Green", hex: "#1B3D2A" },
       { name: "Olive", hex: "#6B6B4E" },
@@ -37,6 +39,7 @@ const products = [
     name: "PREMIUM HOODIE",
     price: "From US$ 18.00 / piece",
     image: "/images/product-kebaya-cream.jpg",
+    garment: "hoodie",
     colors: undefined,
     badge: "BESTSELLER",
   },
@@ -44,6 +47,7 @@ const products = [
     name: "ORGANIC OVERSHIRT",
     price: "From US$ 22.00 / piece",
     image: "/images/product-weekend.jpg",
+    garment: "t-shirt",
     colors: undefined,
     badge: "GENDER NEUTRAL",
   },
@@ -143,6 +147,7 @@ export default function ProductGridSection() {
               colors={product.colors}
               badge={product.badge}
               index={index}
+              href={`/configure?garment=${product.garment}`}
             />
           ))}
         </div>

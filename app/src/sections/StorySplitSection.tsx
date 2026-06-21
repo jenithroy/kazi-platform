@@ -89,7 +89,7 @@ export default function StorySplitSection() {
         >
           <Image
             src="/images/story-farmer.jpg"
-            alt="A woman farmer in a rice paddy wearing a traditional conical hat, holding a basket"
+            alt="A Nepalese woman standing in a golden terrace field holding a basket of raw cotton, with a pagoda temple and snow-capped mountains in the background"
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 360px"

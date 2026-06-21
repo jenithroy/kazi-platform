@@ -1,6 +1,17 @@
 import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 
+const PRODUCTS = [
+  { name: 'Artisan Crew Tee',     price: 85,  garment: 't-shirt' },
+  { name: 'Relaxed Hoodie',       price: 100, garment: 'hoodie'  },
+  { name: 'Cropped Pocket Tee',   price: 115, garment: 't-shirt' },
+  { name: 'Oversized Pullover',   price: 130, garment: 'hoodie'  },
+  { name: 'Fitted V-Neck',        price: 145, garment: 't-shirt' },
+  { name: 'Boxy Zip Hoodie',      price: 160, garment: 'hoodie'  },
+  { name: 'Longline Tee',         price: 175, garment: 't-shirt' },
+  { name: 'Heavyweight Fleece',   price: 190, garment: 'hoodie'  },
+];
+
 export default function WomenCollectionsPage() {
   return (
     <main className="min-h-screen bg-cream">
@@ -16,22 +27,27 @@ export default function WomenCollectionsPage() {
         </div>
       </section>
 
-      {/* Placeholder grid */}
       <section className="py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-rule">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-cream aspect-[3/4] flex flex-col items-center justify-end p-4 group cursor-pointer">
+            {PRODUCTS.map((product) => (
+              <Link
+                key={product.name}
+                href={`/configure?garment=${product.garment}`}
+                className="bg-cream aspect-[3/4] flex flex-col items-center justify-end p-4 group cursor-pointer hover:bg-white/60 transition-colors duration-200"
+              >
                 <div className="w-full aspect-[3/4] bg-white/60 mb-3 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-cinzel text-xs text-text-light tracking-widest uppercase">Coming Soon</span>
+                    <span className="font-cinzel text-xs text-text-light tracking-widest uppercase group-hover:text-accent-warm transition-colors duration-200">
+                      Configure →
+                    </span>
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="font-inter text-xs text-text-primary tracking-wide">Artisan Essential</p>
-                  <p className="font-inter text-xs text-text-muted mt-0.5">from £{(85 + i * 15).toFixed(0)}</p>
+                  <p className="font-inter text-xs text-text-primary tracking-wide">{product.name}</p>
+                  <p className="font-inter text-xs text-text-muted mt-0.5">from £{product.price}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

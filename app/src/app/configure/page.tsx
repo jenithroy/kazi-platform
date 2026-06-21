@@ -3,7 +3,8 @@
 import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Upload, Check, ArrowRight, ArrowLeft } from 'lucide-react';
 
 const MODELS_READY = true;
@@ -60,7 +61,8 @@ function pricePerUnit(qty: number): number {
   return 10.20;
 }
 
-export default function ConfigurePage() {
+function ConfigurePageInner() {
+  const searchParams = useSearchParams();
   const [step, setStep]           = useState(1);
   const [inputMode, setInputMode] = useState<'upload' | 'standard'>('upload');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -72,6 +74,15 @@ export default function ConfigurePage() {
   const [logoFile, setLogoFile]   = useState<File | null>(null);
   const [logoUrl, setLogoUrl]     = useState<string | undefined>(undefined);
   const [qty, setQty]             = useState<number>(100);
+
+  // Pre-fill garment from query param (e.g. /configure?garment=hoodie)
+  useEffect(() => {
+    const g = searchParams.get('garment');
+    if (g && GARMENT_TYPES.some(gt => gt.id === g)) {
+      setGarment(g);
+      setInputMode('standard');
+    }
+  }, [searchParams]);
 
   function handleFileDrop(e: React.DragEvent) {
     e.preventDefault(); setDragOver(false);
@@ -534,7 +545,19 @@ export default function ConfigurePage() {
             </div>
 
             {/* CTA */}
-            <Link href="/quote"
+            <Link
+              href={(() => {
+                const selGarment = GARMENT_TYPES.find(g => g.id === garment);
+                const selFabric  = FABRICS.find(f => f.id === fabric);
+                const selColour  = COLOURS.find(c => c.hex === colour);
+                const selPlace   = PLACEMENTS.find(p => p.id === placement);
+                const productType = garment === 'hoodie' ? 'Hoodies' : 'T-Shirts';
+                const qtyMap: Record<string, string> = { '50': '50–99', '100': '100–249', '200': '250–499', '500': '500–999', '1000': '1,000+' };
+                const qtyRange = qty >= 1000 ? '1,000+' : qty >= 500 ? '500–999' : qty >= 250 ? '250–499' : qty >= 100 ? '100–249' : '50–99';
+                const details = `Custom configuration: ${selGarment?.label ?? garment}, Fabric: ${selFabric?.label ?? fabric} (${selFabric?.spec ?? ''}), Colour: ${selColour?.label ?? colour}, Logo: ${selPlace?.label ?? placement}, Qty: ${qty} units, Est. total: £${(pricePerUnit(qty) * qty).toFixed(2)}`;
+                const params = new URLSearchParams({ productType, qtyRange, details });
+                return `/quote?${params.toString()}`;
+              })()}
               className="mt-4 flex items-center justify-center gap-2 bg-espresso text-cream font-inter text-xs tracking-button uppercase py-4 hover:bg-accent-warm transition-colors duration-200">
               Request a Quote <ArrowRight size={13} strokeWidth={1.5} />
             </Link>
@@ -546,5 +569,13 @@ export default function ConfigurePage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ConfigurePage() {
+  return (
+    <Suspense>
+      <ConfigurePageInner />
+    </Suspense>
   );
 }

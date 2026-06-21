@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Check, Upload, ArrowRight } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 const PRODUCT_TYPES = ['T-Shirts', 'Hoodies', 'Polo Shirts', 'Sweatshirts', 'Jackets', 'Other'];
 const QTY_RANGES    = ['50–99', '100–249', '250–499', '500–999', '1,000+'];
 
-export default function QuotePage() {
+function QuotePageInner() {
+  const searchParams = useSearchParams();
   const [form, setForm] = useState({
     name: '', email: '', company: '', phone: '',
     productType: '', qtyRange: '', deadline: '',
@@ -21,6 +23,21 @@ export default function QuotePage() {
   const [success,    setSuccess]    = useState(false);
   const [error,      setError]      = useState('');
   const supabase = createClient();
+
+  // Pre-fill form from configurator query params
+  useEffect(() => {
+    const productType = searchParams.get('productType');
+    const qtyRange    = searchParams.get('qtyRange');
+    const details     = searchParams.get('details');
+    if (productType || qtyRange || details) {
+      setForm(prev => ({
+        ...prev,
+        ...(productType && PRODUCT_TYPES.includes(productType) ? { productType } : {}),
+        ...(qtyRange && QTY_RANGES.includes(qtyRange) ? { qtyRange } : {}),
+        ...(details ? { details } : {}),
+      }));
+    }
+  }, [searchParams]);
 
   const set = (key: string, val: string) =>
     setForm(prev => ({ ...prev, [key]: val }));
@@ -327,5 +344,13 @@ export default function QuotePage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function QuotePage() {
+  return (
+    <Suspense>
+      <QuotePageInner />
+    </Suspense>
   );
 }

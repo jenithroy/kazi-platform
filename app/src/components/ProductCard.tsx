@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import ColorSwatch from "./ColorSwatch";
 
 interface ProductCardProps {
@@ -11,15 +12,20 @@ interface ProductCardProps {
   colors?: { name: string; hex: string }[];
   badge?: string;
   index: number;
+  href?: string;
 }
 
-export default function ProductCard({ name, price, image, colors, badge, index }: ProductCardProps) {
+export default function ProductCard({ name, price, image, colors, badge, index, href }: ProductCardProps) {
   const [selectedColor, setSelectedColor] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const Wrapper = href ? Link : 'div' as any;
+  const wrapperProps = href ? { href } : {};
+
   return (
-    <div
-      className="group cursor-pointer"
+    <Wrapper
+      {...wrapperProps}
+      className="group cursor-pointer block"
       data-product-card
       data-index={index}
     >
@@ -134,6 +140,6 @@ export default function ProductCard({ name, price, image, colors, badge, index }
           </div>
         )}
       </div>
-    </div>
+    </Wrapper>
   );
 }
