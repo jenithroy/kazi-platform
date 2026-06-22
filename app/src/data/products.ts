@@ -119,37 +119,38 @@ export const products: Product[] = [
     ]
   },
   {
-    id: "organic-overshirt",
-    slug: "organic-overshirt",
-    name: "ORGANIC OVERSHIRT",
-    price: "From US$ 22.00 / piece",
-    image: "/images/product-weekend.jpg",
+    id: "design-your-own",
+    slug: "design-your-own",
+    name: "DESIGN YOUR OWN",
+    price: "Bespoke Production",
+    image: "/images/custom-tailoring.png",
     garment: "t-shirt",
-    badge: "GENDER NEUTRAL",
+    badge: "CUSTOM TAILORING",
     colors: [
-      { name: "Forest", hex: "#2C4A3E" },
-      { name: "Sage", hex: "#556B2F" },
-      { name: "Rust", hex: "#8B4513" },
+      { name: "White", hex: "#FFFFFF" },
+      { name: "Cream", hex: "#F5F3EE" },
+      { name: "Oat", hex: "#E8E0D0" },
+      { name: "Black", hex: "#1A1A1A" },
     ],
-    description: "A structured button-down overshirt made from durable organic cotton twill. Works perfectly as a layering piece or a standalone jacket.",
+    description: "Create a garment that is uniquely yours. Work with our master artisans in Kathmandu to bring your exact fit, pattern, and design specifications to life.",
     collection: "featured",
     details: [
-      "Unstructured collar",
-      "Sustainable coconut-shell buttons",
-      "Dual chest patch pockets",
-      "Clean double-stitch construction"
+      "Completely bespoke pattern matching",
+      "Choose your own sleeve and neck styles",
+      "Premium finished seams of your choice",
+      "Custom embroidery, tags, and prints"
     ],
     sustainability: [
-      "100% organic cotton drill twill",
-      "280 gsm durable mid-weight fabric",
-      "No synthetic blends",
-      "Dyed with plant-based botanical pigments"
+      "Choose from our certified organic fabrics",
+      "100% transparent supply chain tracking",
+      "Nepali artisan handcrafting",
+      "Ethical, zero-waste cutting methods"
     ],
     sizeFit: [
-      "Regular fit designed for layering",
-      "Straight hemline cut",
-      "Roomy through the chest and arms",
-      "Model is 6'0\" wearing size L"
+      "Tailored to your exact measurements",
+      "Submit your tech pack or size guide",
+      "Digital patterns created in 3D for approval",
+      "Sample fitting provided prior to run"
     ]
   },
 

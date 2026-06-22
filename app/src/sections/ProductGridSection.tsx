@@ -47,13 +47,18 @@ const products = [
     badge: "BESTSELLER",
   },
   {
-    name: "ORGANIC OVERSHIRT",
-    slug: "organic-overshirt",
-    price: "From US$ 22.00 / piece",
-    image: "/images/product-weekend.jpg",
+    name: "DESIGN YOUR OWN",
+    slug: "design-your-own",
+    price: "Bespoke Production",
+    image: "/images/custom-tailoring.png",
     garment: "t-shirt",
-    colors: undefined,
-    badge: "GENDER NEUTRAL",
+    colors: [
+      { name: "White", hex: "#FFFFFF" },
+      { name: "Cream", hex: "#F5F3EE" },
+      { name: "Oat", hex: "#E8E0D0" },
+      { name: "Black", hex: "#1A1A1A" },
+    ],
+    badge: "CUSTOM TAILORING",
   },
 ];
 
