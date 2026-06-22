@@ -41,8 +41,10 @@ export default function Navigation() {
                              "/auth/login";
 
   const leftNavLinks = [
-    { label: "Atelier",      href: "/configure" },
-    { label: "Our Heritage", href: "/services" },
+    { label: "Men's Collection",   href: "/collections/men" },
+    { label: "Women's Collection", href: "/collections/women" },
+    { label: "Atelier",            href: "/configure" },
+    { label: "Our Heritage",       href: "/services" },
   ];
 
   const isActive = (href: string) =>

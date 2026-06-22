@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 const products = [
   {
     name: "KAZI ORGANIC TEE",
+    slug: "kazi-organic-tee",
     price: "From US$ 8.50 / piece",
     image: "/images/product-wrap.jpg",
     garment: "t-shirt",
@@ -23,7 +24,8 @@ const products = [
     badge: undefined,
   },
   {
-    name: "HERITAGE POLO",
+    name: "DROPSHOULDER TEE",
+    slug: "dropshoulder-tee",
     price: "From US$ 12.00 / piece",
     image: "/images/product-kebaya-black.jpg",
     garment: "t-shirt",
@@ -37,6 +39,7 @@ const products = [
   },
   {
     name: "PREMIUM HOODIE",
+    slug: "premium-hoodie",
     price: "From US$ 18.00 / piece",
     image: "/images/product-kebaya-cream.jpg",
     garment: "hoodie",
@@ -45,6 +48,7 @@ const products = [
   },
   {
     name: "ORGANIC OVERSHIRT",
+    slug: "organic-overshirt",
     price: "From US$ 22.00 / piece",
     image: "/images/product-weekend.jpg",
     garment: "t-shirt",
@@ -147,7 +151,7 @@ export default function ProductGridSection() {
               colors={product.colors}
               badge={product.badge}
               index={index}
-              href={`/configure?garment=${product.garment}`}
+              href={`/products/${product.slug}`}
             />
           ))}
         </div>

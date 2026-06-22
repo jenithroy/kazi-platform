@@ -2,14 +2,14 @@ import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 
 const PRODUCTS = [
-  { name: 'Organic Crew Tee',      price: 75,  garment: 't-shirt' },
-  { name: 'Essential Hoodie',      price: 87,  garment: 'hoodie'  },
-  { name: 'Heritage Pocket Tee',   price: 99,  garment: 't-shirt' },
-  { name: 'Heavyweight Pullover',  price: 111, garment: 'hoodie'  },
-  { name: 'Classic V-Neck',        price: 123, garment: 't-shirt' },
-  { name: 'Zip-Up Hoodie',         price: 135, garment: 'hoodie'  },
-  { name: 'Oversized Tee',         price: 147, garment: 't-shirt' },
-  { name: 'Quarter-Zip Fleece',    price: 159, garment: 'hoodie'  },
+  { name: 'Organic Crew Tee',      slug: 'organic-crew-tee',      price: 75,  garment: 't-shirt' },
+  { name: 'Essential Hoodie',      slug: 'essential-hoodie',      price: 87,  garment: 'hoodie'  },
+  { name: 'Dropshoulder Pocket Tee', slug: 'dropshoulder-pocket-tee', price: 99,  garment: 't-shirt' },
+  { name: 'Heavyweight Pullover',  slug: 'heavyweight-pullover',  price: 111, garment: 'hoodie'  },
+  { name: 'Classic V-Neck',        slug: 'classic-v-neck',        price: 123, garment: 't-shirt' },
+  { name: 'Zip-Up Hoodie',         slug: 'zip-up-hoodie',         price: 135, garment: 'hoodie'  },
+  { name: 'Oversized Tee',         slug: 'oversized-tee',         price: 147, garment: 't-shirt' },
+  { name: 'Quarter-Zip Fleece',    slug: 'quarter-zip-fleece',    price: 159, garment: 'hoodie'  },
 ];
 
 export default function MenCollectionsPage() {
@@ -33,7 +33,7 @@ export default function MenCollectionsPage() {
             {PRODUCTS.map((product) => (
               <Link
                 key={product.name}
-                href={`/configure?garment=${product.garment}`}
+                href={`/products/${product.slug}`}
                 className="bg-cream aspect-[3/4] flex flex-col items-center justify-end p-4 group cursor-pointer hover:bg-white/60 transition-colors duration-200"
               >
                 <div className="w-full aspect-[3/4] bg-white/60 mb-3 relative overflow-hidden">

@@ -75,12 +75,16 @@ function ConfigurePageInner() {
   const [logoUrl, setLogoUrl]     = useState<string | undefined>(undefined);
   const [qty, setQty]             = useState<number>(100);
 
-  // Pre-fill garment from query param (e.g. /configure?garment=hoodie)
+  // Pre-fill garment and colour from query params (e.g. /configure?garment=hoodie&colour=%231B3D2A)
   useEffect(() => {
     const g = searchParams.get('garment');
     if (g && GARMENT_TYPES.some(gt => gt.id === g)) {
       setGarment(g);
       setInputMode('standard');
+    }
+    const c = searchParams.get('colour');
+    if (c && COLOURS.some(col => col.hex.toLowerCase() === c.toLowerCase())) {
+      setColour(c);
     }
   }, [searchParams]);
 
