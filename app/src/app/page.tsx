@@ -35,8 +35,8 @@ export default function Home() {
           <StorySplitSection />
           <ProductGridSection />
           <ImpactStatsSection />
-          <PressStripSection />
           <B2BWorkflowSection />
+          <PressStripSection />
           <StudioCTASection />
         </main>
 

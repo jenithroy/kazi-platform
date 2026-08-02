@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CometCard } from "@/components/ui/comet-card";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -57,16 +58,17 @@ export default function B2BWorkflowSection() {
       if (cards) {
         gsap.fromTo(
           cards,
-          { opacity: 0, y: 40 },
+          { opacity: 0, y: 60, scale: 0.94 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power2.out",
+            scale: 1,
+            duration: 1,
+            stagger: 0.15,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: gridRef.current,
-              start: "top 75%",
+              start: "top 80%",
               toggleActions: "play none none none",
             },
           }
@@ -80,6 +82,7 @@ export default function B2BWorkflowSection() {
   return (
     <section
       ref={sectionRef}
+      className="relative flex min-h-screen flex-col justify-center"
       style={{
         backgroundColor: "#FFFFFF",
         paddingTop: "96px",
@@ -88,8 +91,8 @@ export default function B2BWorkflowSection() {
         borderBottom: "1px solid #D6E6D8",
       }}
     >
-      <div className="container-pad" style={{ maxWidth: 1200, margin: "0 auto" }}>
-        
+      <div className="container-pad w-full" style={{ maxWidth: 1200, margin: "0 auto" }}>
+
         {/* Section Header */}
         <div ref={headerRef} className="text-center mb-16" style={{ opacity: 0 }}>
           <p
@@ -130,72 +133,46 @@ export default function B2BWorkflowSection() {
         {/* Steps Grid */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8"
         >
-          {steps.map((step, index) => (
-            <div
-              key={step.num}
-              data-step-card
-              className="flex flex-col border border-rule-light bg-cream/20 p-6 relative overflow-hidden transition-all duration-300 hover:border-text-light/50"
-              style={{ opacity: 0, minHeight: "420px" }}
-            >
-              {/* Corner accents */}
-              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-text-light/30" />
-              <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-text-light/30" />
-
-              {/* Number Overlay */}
-              <span
-                style={{
-                  fontFamily: "'Cinzel', serif",
-                  fontSize: "48px",
-                  fontWeight: 300,
-                  color: "rgba(77, 107, 85, 0.15)",
-                  lineHeight: 1.0,
-                  marginBottom: "8px",
-                }}
-              >
-                {step.num}
-              </span>
-
-              {/* Step Image */}
+          {steps.map((step) => (
+            <CometCard key={step.num} className="w-full">
               <div
-                className="relative overflow-hidden mb-6"
-                style={{ width: "100%", aspectRatio: "16/10", backgroundColor: "#D6E6D8" }}
+                data-step-card
+                className="flex w-full flex-col items-stretch rounded-[16px] border-0 bg-[#1F2121] p-3 saturate-0 md:p-4"
+                style={{ opacity: 0 }}
               >
-                <Image
-                  src={step.image}
-                  alt={step.title}
-                  fill
-                  className="object-cover transition-transform duration-500 hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 30vw"
-                />
-              </div>
+                {/* Step Image */}
+                <div className="mx-1 flex-1">
+                  <div className="relative mt-1 aspect-[3/4] w-full">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      className="rounded-[16px] bg-black object-cover contrast-75"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <span className="font-cinzel absolute left-4 top-4 text-5xl font-light leading-none text-white/30">
+                      {step.num}
+                    </span>
+                  </div>
+                </div>
 
-              {/* Title & Description */}
-              <h3
-                style={{
-                  fontFamily: "'Cinzel', serif",
-                  fontSize: "16px",
-                  fontWeight: 500,
-                  color: "#1A1A1A",
-                  marginBottom: "12px",
-                  letterSpacing: "0.04em",
-                }}
-              >
-                {step.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "12.5px",
-                  fontWeight: 300,
-                  lineHeight: 1.7,
-                  color: "#4D6B55",
-                }}
-              >
-                {step.desc}
-              </p>
-            </div>
+                {/* Title & Number */}
+                <div className="mt-2 flex flex-shrink-0 items-center justify-between px-1 py-4 font-mono text-white">
+                  <div className="text-xs uppercase tracking-wide">{step.title}</div>
+                  <div className="text-xs text-gray-300 opacity-50">#{step.num}</div>
+                </div>
+
+                {/* Description */}
+                <p
+                  className="font-inter px-1 pb-1 text-white/50"
+                  style={{ fontSize: "12.5px", fontWeight: 300, lineHeight: 1.7 }}
+                >
+                  {step.desc}
+                </p>
+              </div>
+            </CometCard>
           ))}
         </div>
 
