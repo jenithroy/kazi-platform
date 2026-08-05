@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+@import './styles/fonts.css';
+
+:root {
+  color-scheme: light;
+}
+
+/* Offsets anchor-link scroll targets so the fixed nav doesn't cover them. */
+[id] {
+  scroll-margin-top: var(--nav-height);
+}
+
+/* Tailwind's utilities live in `@layer utilities`, so these resets need to sit in
+   `@layer base` too — otherwise, as unlayered CSS, they'd always beat layered utility
+   classes (e.g. text-[9px] on a <button>) regardless of specificity. */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-pine);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  a {
+    color: inherit;
+  }
+}

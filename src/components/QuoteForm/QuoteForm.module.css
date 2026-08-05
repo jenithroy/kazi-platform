@@ -1,0 +1,238 @@
+.quote {
+  background: var(--color-paper);
+  padding: 112px 0;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.intro {
+  position: sticky;
+  top: calc(var(--nav-height) + 32px);
+  max-width: 30rem;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-moss);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.6vw + 1.3rem, 2.75rem);
+  line-height: 1.2;
+  color: var(--color-pine);
+}
+
+.paragraph {
+  margin: 20px 0 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-pine-soft);
+  max-width: 34ch;
+}
+
+.formCard {
+  background: var(--color-paper-raised);
+  border: 1px solid rgba(28, 43, 74, 0.08);
+  border-radius: 2px;
+  padding: 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-pine-soft);
+}
+
+.optional {
+  text-transform: none;
+  font-weight: 400;
+  letter-spacing: normal;
+  opacity: 0.7;
+}
+
+.input,
+.select,
+.textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-pine);
+  background: var(--color-bone);
+  border: 1px solid rgba(28, 43, 74, 0.16);
+  border-radius: 2px;
+  padding: 12px 14px;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-moss);
+}
+
+.select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-pine-soft) 50%),
+    linear-gradient(135deg, var(--color-pine-soft) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) center,
+    calc(100% - 14px) center;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 96px;
+  font-family: inherit;
+}
+
+.error {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: #a63a2f;
+}
+
+.submitBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 28px;
+  background: var(--color-moss);
+  color: var(--color-pine);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--color-moss-deep);
+}
+
+.submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.microcopy {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-pine-soft);
+  opacity: 0.8;
+}
+
+.success {
+  padding: 24px 0;
+}
+
+.successHeading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: var(--color-pine);
+}
+
+.successBody {
+  margin: 12px 0 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-pine-soft);
+}
+
+@media (max-width: 1099px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .intro {
+    position: static;
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .quote {
+    padding: 80px 0;
+  }
+
+  .formCard {
+    padding: 28px 20px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .submitBlock {
+    align-items: stretch;
+  }
+
+  .submit {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .select,
+  .textarea,
+  .submit {
+    transition: none;
+  }
+}

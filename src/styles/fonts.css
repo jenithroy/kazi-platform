@@ -1,0 +1,161 @@
+/* Reckless Neue — licensed family, self-hosted from /font. See DESIGN_PLAN.md §3. */
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Thin.woff2') format('woff2'),
+    url('/font/RecklessNeue-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-ThinItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-ThinItalic.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Light.woff2') format('woff2'),
+    url('/font/RecklessNeue-Light.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-LightItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-LightItalic.woff') format('woff');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Book.woff2') format('woff2'),
+    url('/font/RecklessNeue-Book.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-BookItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-BookItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Regular.woff2') format('woff2'),
+    url('/font/RecklessNeue-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-RegularItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-RegularItalic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Medium.woff2') format('woff2'),
+    url('/font/RecklessNeue-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-MediumItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-MediumItalic.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-SemiBold.woff2') format('woff2'),
+    url('/font/RecklessNeue-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-SemiBoldItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-SemiBoldItalic.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Bold.woff2') format('woff2'),
+    url('/font/RecklessNeue-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-BoldItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-BoldItalic.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-Heavy.woff2') format('woff2'),
+    url('/font/RecklessNeue-Heavy.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Reckless Neue';
+  src:
+    url('/font/RecklessNeue-HeavyItalic.woff2') format('woff2'),
+    url('/font/RecklessNeue-HeavyItalic.woff') format('woff');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}

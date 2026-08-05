@@ -1,0 +1,20 @@
+@theme {
+  /* Color system — see DESIGN_PLAN.md §2 */
+  --color-pine: #1b3a2b;
+  --color-pine-soft: #3a5745;
+  --color-paper: #f6f7f2;
+  --color-paper-raised: #eaede4;
+  --color-bone: #fcfdfa;
+  --color-moss: #3f8f5c;
+  --color-moss-deep: #2e6e46;
+
+  /* Typography — see DESIGN_PLAN.md §3 */
+  --font-display: 'Reckless Neue', 'Iowan Old Style', ui-serif, serif;
+  --font-body: 'General Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+:root {
+  /* Layout */
+  --nav-height: 72px;
+}

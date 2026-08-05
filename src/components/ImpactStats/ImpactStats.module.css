@@ -1,0 +1,128 @@
+.section {
+  background: var(--color-paper);
+  padding: 88px 0 80px;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.tile {
+  padding: 0 28px;
+}
+
+.tile:first-child {
+  padding-left: 0;
+}
+
+.tile + .tile {
+  border-left: 1px solid rgba(28, 43, 74, 0.1);
+}
+
+.number {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 1.4vw + 1.3rem, 2.5rem);
+  color: var(--color-moss);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.label {
+  margin: 10px 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-pine-soft);
+  max-width: 20ch;
+}
+
+.certRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 32px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(28, 43, 74, 0.1);
+}
+
+.certMark {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-pine-soft);
+  opacity: 0.7;
+}
+
+.ctaLink {
+  display: inline-block;
+  margin-top: 40px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-moss);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.ctaLink:hover {
+  border-color: var(--color-moss);
+}
+
+@media (max-width: 1099px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 40px;
+  }
+
+  .tile:nth-child(3n + 1) {
+    padding-left: 0;
+    border-left: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .section {
+    padding: 64px 0 56px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  .tile {
+    padding: 24px 0;
+  }
+
+  .tile:first-child {
+    padding-top: 0;
+  }
+
+  .tile + .tile {
+    border-left: none;
+    border-top: 1px solid rgba(28, 43, 74, 0.1);
+  }
+
+  .certRow {
+    gap: 24px;
+    margin-top: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaLink {
+    transition: none;
+  }
+}

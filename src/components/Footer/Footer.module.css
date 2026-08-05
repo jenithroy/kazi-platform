@@ -1,0 +1,147 @@
+.footer {
+  background: var(--color-pine);
+  padding: 80px 0 32px;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 56px;
+  border-bottom: 1px solid rgba(251, 250, 247, 0.12);
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo {
+  width: 68px;
+  height: 48px;
+  background-color: var(--color-bone);
+  -webkit-mask-image: url('/images/logo/kazi-logo-trimmed.png');
+  mask-image: url('/images/logo/kazi-logo-trimmed.png');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+}
+
+.tagline {
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(251, 250, 247, 0.6);
+}
+
+.linkCol,
+.contactCol,
+.locationCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.colHeading {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(251, 250, 247, 0.5);
+  margin-bottom: 2px;
+}
+
+.link {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-bone);
+  text-decoration: none;
+  width: fit-content;
+  transition: opacity 0.2s ease;
+}
+
+.link:hover {
+  opacity: 0.7;
+}
+
+.address {
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(251, 250, 247, 0.6);
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 28px;
+}
+
+.copyright {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(251, 250, 247, 0.45);
+}
+
+.ctaLink {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-moss);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.ctaLink:hover {
+  border-color: var(--color-moss);
+}
+
+@media (max-width: 900px) {
+  .topRow {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 56px 0 24px;
+  }
+
+  .topRow {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 40px;
+  }
+
+  .bottomRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding-top: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .ctaLink {
+    transition: none;
+  }
+}

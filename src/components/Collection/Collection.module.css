@@ -1,0 +1,177 @@
+.collection {
+  background: var(--color-paper);
+  padding: 112px 0;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.header {
+  max-width: 40rem;
+  margin: 0 0 56px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-moss);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.6vw + 1.3rem, 2.75rem);
+  line-height: 1.2;
+  color: var(--color-pine);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 340px 220px 340px;
+  grid-template-areas:
+    'knitwear knitwear outerwear'
+    'knitwear knitwear denim'
+    'accessories footwear footwear';
+  gap: 24px;
+}
+
+.tile {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.tileLink {
+  /* Keeps the <figure>'s flex/gap layout driving the image + caption directly, as if this
+     anchor weren't in the box tree — it stays focusable/clickable, just visually transparent. */
+  display: contents;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.captionName {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-pine);
+}
+
+.captionDescription {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-pine-soft);
+}
+
+.ctaRow {
+  display: flex;
+  gap: 20px;
+  margin-top: 64px;
+}
+
+.ctaFilled {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 28px;
+  background: var(--color-moss);
+  color: var(--color-pine);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.ctaFilled:hover {
+  background: var(--color-moss-deep);
+}
+
+.ctaOutline {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 28px;
+  background: transparent;
+  color: var(--color-pine);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--color-pine);
+  border-radius: 2px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.ctaOutline:hover {
+  background: var(--color-pine);
+  color: var(--color-bone);
+}
+
+@media (max-width: 900px) {
+  .collection {
+    padding: 80px 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas:
+      'knitwear'
+      'outerwear'
+      'denim'
+      'accessories'
+      'footwear';
+    gap: 32px;
+  }
+
+  .image {
+    min-height: 280px;
+  }
+
+  .ctaRow {
+    flex-direction: column;
+    margin-top: 48px;
+  }
+
+  .ctaFilled,
+  .ctaOutline {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaFilled,
+  .ctaOutline {
+    transition: none;
+  }
+}

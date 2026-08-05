@@ -1,0 +1,121 @@
+.testimonials {
+  background: var(--color-paper);
+  padding: 112px 0;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.header {
+  max-width: 40rem;
+  margin: 0 0 56px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-moss);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.6vw + 1.3rem, 2.75rem);
+  line-height: 1.2;
+  color: var(--color-pine);
+}
+
+.placeholderNotice {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--color-pine-soft);
+  opacity: 0.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card {
+  margin: 0;
+  padding: 32px 28px;
+  background: var(--color-bone);
+  border: 1px solid rgba(28, 43, 74, 0.08);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-moss);
+  margin-bottom: 8px;
+}
+
+.quote {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-pine);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.attribution {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(28, 43, 74, 0.1);
+}
+
+.name {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-pine);
+}
+
+.role {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-pine-soft);
+}
+
+@media (max-width: 1099px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .testimonials {
+    padding: 80px 0;
+  }
+
+  .header {
+    margin-bottom: 40px;
+  }
+}
