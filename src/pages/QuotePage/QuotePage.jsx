@@ -9,7 +9,8 @@ import { Nav } from '../../components/Nav/Nav'
 import { Footer } from '../../components/Footer/Footer'
 import QtyStepper from '../AtelierPage/components/QtyStepper'
 import { GarmentMockup2D } from '../AtelierPage/components/GarmentMockup2D'
-import { readQuoteDesigns, clearQuoteDesigns } from '../../lib/quote-handoff'
+import { readQuoteDesigns, clearQuoteDesigns, describeQuoteDesigns } from '../../lib/quote-handoff'
+import { supabase } from '../../lib/supabase'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -40,6 +41,22 @@ const QUANTITY_RANGES = [
 ]
 
 const FILE_ACCEPT = '.png,.jpg,.jpeg,.pdf,.ai,.psd'
+
+// quotes.quantity is an integer — approximate ranges resolve to their lower bound.
+const QUANTITY_RANGE_FLOOR = {
+  'Under 500 units': 250,
+  '500–2,000 units': 500,
+  '2,000–10,000 units': 2000,
+  '10,000+ units': 10000,
+}
+
+function resolveQuantity({ isHandoff, includedDesigns, quantityRange, quantityCustom }) {
+  if (isHandoff) return includedDesigns.reduce((sum, d) => sum + d.qty, 0)
+  if (quantityRange === 'Custom') {
+    return parseInt(quantityCustom.replace(/[^\d]/g, ''), 10) || 0
+  }
+  return QUANTITY_RANGE_FLOOR[quantityRange] ?? 0
+}
 
 const inputClass =
   'w-full border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine focus:outline-none focus:border-pine transition-colors'
@@ -100,6 +117,7 @@ function QuotePage() {
   const [dragActive, setDragActive] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [firstName, setFirstName] = useState('')
+  const [submitError, setSubmitError] = useState(null)
 
   const isHandoff = designs !== null
 
@@ -146,7 +164,76 @@ function QuotePage() {
   }
 
   const onSubmit = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    setSubmitError(null)
+
+    const includedDesigns = isHandoff
+      ? designs.filter((d) => !excludedDesignIds.has(d.id))
+      : []
+
+    const productType = isHandoff
+      ? [...new Set(includedDesigns.map((d) => d.garmentLabel))].join(', ') || 'Atelier design'
+      : SERVICES.find((s) => s.slug === data.service)?.label ?? data.service
+
+    const quantity = resolveQuantity({
+      isHandoff,
+      includedDesigns,
+      quantityRange: data.quantityRange,
+      quantityCustom: data.quantityCustom,
+    })
+
+    const detailsParts = isHandoff
+      ? [describeQuoteDesigns(includedDesigns), data.details]
+      : [
+          `Garment category: ${
+            data.garmentCategory === 'Other' ? data.garmentCategoryOther : data.garmentCategory
+          }`,
+          `Approx. quantity: ${
+            data.quantityRange === 'Custom' ? data.quantityCustom : data.quantityRange
+          }`,
+          data.details,
+        ]
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    const { data: quote, error } = await supabase
+      .from('quotes')
+      .insert({
+        customer_id: user?.id ?? null,
+        contact_name: data.name,
+        contact_email: data.email,
+        contact_phone: data.phone || null,
+        company_name: data.company,
+        product_type: productType,
+        quantity,
+        deadline: data.deadline || null,
+        details: detailsParts.filter(Boolean).join('\n\n'),
+      })
+      .select()
+      .single()
+
+    if (error) {
+      setSubmitError(error.message)
+      return
+    }
+
+    if (file) {
+      const filePath = `${quote.id}/${file.name}`
+      const { error: uploadError } = await supabase.storage
+        .from('design-files')
+        .upload(filePath, file)
+      if (!uploadError) {
+        await supabase.from('quote_files').insert({
+          quote_id: quote.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+          file_type: file.type,
+        })
+      }
+    }
+
     setFirstName(data.name.trim().split(' ')[0])
     if (isHandoff) clearQuoteDesigns()
     setSubmitted(true)
@@ -562,6 +649,7 @@ function QuotePage() {
               <span className="font-body text-xs text-pine-soft">
                 No obligation. We reply within 24 hours.
               </span>
+              {submitError && <p className={`${errorClass} w-full`}>{submitError}</p>}
             </div>
           </motion.form>
         </section>

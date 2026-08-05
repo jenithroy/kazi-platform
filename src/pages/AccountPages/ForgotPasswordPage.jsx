@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowLeft, Mail } from 'lucide-react'
 import { AccountShell } from './AccountShell'
+import { supabase } from '../../lib/supabase'
 
 const inputClass =
   'w-full border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine focus:outline-none focus:border-pine transition-colors'
@@ -19,6 +20,7 @@ const forgotPasswordSchema = z.object({
 
 function ForgotPasswordPage() {
   const [submittedEmail, setSubmittedEmail] = useState(null)
+  const [authError, setAuthError] = useState(null)
 
   const {
     register,
@@ -27,7 +29,14 @@ function ForgotPasswordPage() {
   } = useForm({ resolver: zodResolver(forgotPasswordSchema) })
 
   const onSubmit = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    setAuthError(null)
+    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${window.location.origin}/account/login`,
+    })
+    if (error) {
+      setAuthError(error.message)
+      return
+    }
     setSubmittedEmail(data.email)
   }
 
@@ -74,6 +83,8 @@ function ForgotPasswordPage() {
           />
           {errors.email && <p className={errorClass}>{errors.email.message}</p>}
         </div>
+
+        {authError && <p className={errorClass}>{authError}</p>}
 
         <button type="submit" disabled={isSubmitting} className={filledButton}>
           {isSubmitting ? 'Sending…' : 'Send Reset Link'}

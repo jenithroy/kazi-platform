@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowLeft } from 'lucide-react'
 import { AccountShell } from './AccountShell'
+import { supabase } from '../../lib/supabase'
 
 const inputClass =
   'w-full border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine focus:outline-none focus:border-pine transition-colors'
@@ -22,6 +23,7 @@ function LoginPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [signingIn, setSigningIn] = useState(false)
+  const [authError, setAuthError] = useState(null)
   const redirect = searchParams.get('redirect')
   const redirectQuery = redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''
 
@@ -31,9 +33,18 @@ function LoginPage() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(loginSchema) })
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     setSigningIn(true)
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    setAuthError(null)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    })
+    if (error) {
+      setAuthError(error.message)
+      setSigningIn(false)
+      return
+    }
     navigate(redirect || '/')
   }
 
@@ -78,6 +89,8 @@ function LoginPage() {
           />
           {errors.password && <p className={errorClass}>{errors.password.message}</p>}
         </div>
+
+        {authError && <p className={errorClass}>{authError}</p>}
 
         <button type="submit" disabled={signingIn} className={filledButton}>
           {signingIn ? 'Signing In…' : 'Sign In'}

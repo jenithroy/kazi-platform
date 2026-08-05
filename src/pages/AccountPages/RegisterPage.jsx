@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowLeft, Mail } from 'lucide-react'
 import { AccountShell } from './AccountShell'
+import { supabase } from '../../lib/supabase'
 
 const inputClass =
   'w-full border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine focus:outline-none focus:border-pine transition-colors'
@@ -23,6 +24,7 @@ const registerSchema = z.object({
 function RegisterPage() {
   const [searchParams] = useSearchParams()
   const [submittedEmail, setSubmittedEmail] = useState(null)
+  const [authError, setAuthError] = useState(null)
   const redirect = searchParams.get('redirect')
   const redirectQuery = redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''
 
@@ -33,7 +35,21 @@ function RegisterPage() {
   } = useForm({ resolver: zodResolver(registerSchema) })
 
   const onSubmit = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    setAuthError(null)
+    const { error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          full_name: data.fullName,
+          company_name: data.company || null,
+        },
+      },
+    })
+    if (error) {
+      setAuthError(error.message)
+      return
+    }
     setSubmittedEmail(data.email)
   }
 
@@ -126,6 +142,8 @@ function RegisterPage() {
             <p className="font-body text-xs text-pine-soft/70 mt-1">Minimum 6 characters</p>
           )}
         </div>
+
+        {authError && <p className={errorClass}>{authError}</p>}
 
         <button type="submit" disabled={isSubmitting} className={filledButton}>
           {isSubmitting ? 'Creating Account…' : 'Create Account'}
