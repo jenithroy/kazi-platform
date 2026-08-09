@@ -32,9 +32,10 @@ Environment variables) for the deployed site to reach Supabase.
 
 ## Database (Supabase)
 
-Schema lives in `supabase/migrations/` (repo root). Apply with the Supabase CLI:
+Schema lives in `app/supabase/migrations/`. Apply with the Supabase CLI:
 
 ```bash
+cd app
 npx supabase link --project-ref <your-project-ref>
 npx supabase db push
 ```

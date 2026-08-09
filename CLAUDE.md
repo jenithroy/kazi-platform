@@ -19,13 +19,18 @@ to be planned in a later session.
   in `app/next.config.js`) — the actual app lives in `app/`, not the repo root.
   That's also the Cloudflare Pages "root directory" setting, so `app/` is where
   `npm install` / `npm run dev` / `npm run build` need to run from. Routes are
-  files under `app/src/app/**/page.jsx`; shared page components still live in
-  `app/src/pages/<Name>Page/` (ported from the pre-Next.js React Router setup)
-  and are wired in via a thin re-exporting `page.jsx`, or a server wrapper that
-  awaits `params`/`searchParams` and passes them down as props where a route
-  needs them (see `app/src/app/atelier/page.jsx`, `app/src/app/quote/page.jsx`,
-  `app/src/app/products/[slug]/page.jsx`). Every page/component that uses hooks,
-  motion, or browser APIs is a client component (`'use client'` at the top) —
+  files under `app/src/app/**/page.jsx`; shared page components live in
+  `app/src/views/<Name>Page/` — **not** `app/src/pages/`, which collides with
+  Next's legacy Pages Router auto-detection and breaks the build. Static export
+  can't resolve `searchParams` server-side (no per-request server exists), so
+  routes that read query params (`/atelier`, `/quote`, `/account/login`,
+  `/account/register`, `/collections`) wrap their view in `<Suspense>` and read
+  `useSearchParams()` client-side inside the view itself, rather than a server
+  wrapper awaiting `searchParams` as a prop. `/products/[slug]` is the exception
+  — `generateStaticParams` + `params` work server-side under static export
+  since every value is known at build time. Every page/component that uses
+  hooks, motion, or browser APIs is a client component (`'use client'` at the
+  top) —
   static export still prerenders client components once in Node, so anything
   reading `window`/`document`/`matchMedia` must do it inside `useEffect`, never
   in the render body (see `SmoothScroll.jsx`'s `prefersReducedMotion` state).
@@ -55,8 +60,10 @@ to be planned in a later session.
   — new sections don't need their own offset handling, just a unique `id`.
 - Supabase (`@supabase/supabase-js`) for auth + the quote pipeline — client at
   `app/src/lib/supabase.js`, reading `NEXT_PUBLIC_SUPABASE_URL` /
-  `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Schema/migrations live in `supabase/` at the
-  repo root (not under `app/`).
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Schema/migrations live in
+  `app/supabase/migrations/` — nested under `app/`, matching the original
+  pre-Vite repo structure (and wherever the Supabase GitHub integration's
+  "Supabase directory" setting points).
 
 ## Current state
 
