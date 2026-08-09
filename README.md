@@ -1,29 +1,38 @@
 # kazi
 
-React + Vite project.
+Next.js project, statically exported. The app lives in `app/` — that's the
+directory Cloudflare Pages builds from.
 
-## Scripts
+## Getting started
+
+```bash
+cd app
+npm install
+npm run dev
+```
+
+## Scripts (run from `app/`)
 
 - `npm run dev` — start dev server
-- `npm run build` — production build
+- `npm run build` — static export build (writes to `app/out/`)
 - `npm run lint` — run Oxlint
-- `npm run preview` — preview production build
 
 ## Environment variables
 
-Copy `.env.example` to `.env` and fill in your Supabase project's values:
+Copy `app/.env.example` to `app/.env.local` and fill in your Supabase project's
+values (or set them directly in the Cloudflare Pages project settings):
 
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-These also need to be set in the Cloudflare Pages project settings (Settings →
+These need to be set in the Cloudflare Pages project settings (Settings →
 Environment variables) for the deployed site to reach Supabase.
 
 ## Database (Supabase)
 
-Schema lives in `supabase/migrations/`. Apply with the Supabase CLI:
+Schema lives in `supabase/migrations/` (repo root). Apply with the Supabase CLI:
 
 ```bash
 npx supabase link --project-ref <your-project-ref>
