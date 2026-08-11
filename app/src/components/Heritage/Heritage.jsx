@@ -15,20 +15,11 @@ export function Heritage() {
     <section id="heritage" className={styles.heritage}>
       <div className={styles.inner}>
         <motion.div
-          className={styles.split}
+          className={styles.intro}
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
         >
-          <motion.div className={styles.imageCol} variants={fadeUp}>
-            <img
-              className={styles.image}
-              src="/landing%20page%20images/heritage.jpg"
-              alt="Artisan tailor standing in a golden terraced field near Kathmandu, with a pagoda roof and the Himalayan foothills behind her"
-              loading="lazy"
-            />
-          </motion.div>
-
           <motion.div className={styles.textCol} variants={fadeUp}>
             <span className={styles.eyebrow}>Our Heritage</span>
             <h2 className={styles.heading}>

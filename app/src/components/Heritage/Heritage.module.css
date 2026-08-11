@@ -8,39 +8,24 @@
   padding: 112px 32px 0;
 }
 
-.split {
+.intro {
   display: flex;
-  align-items: flex-start;
-  gap: 64px;
-}
-
-.imageCol {
-  flex: 1 1 0;
+  justify-content: center;
 }
 
 .textCol {
-  flex: 1 1 0;
   display: flex;
   flex-direction: column;
+  max-width: 62ch;
+  text-align: center;
 }
 
 .leadIn {
   margin: 32px 0 0;
-  max-width: 42ch;
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.65;
   color: var(--color-pine-soft);
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 420px;
-  aspect-ratio: 4 / 5;
-  border-radius: 2px;
-  object-fit: cover;
 }
 
 .eyebrow {
@@ -65,7 +50,6 @@
 
 .paragraph {
   margin: 0;
-  max-width: 42ch;
   font-family: var(--font-body);
   font-size: 1.05rem;
   line-height: 1.6;
@@ -96,23 +80,6 @@
 @media (max-width: 900px) {
   .inner {
     padding-top: 80px;
-  }
-
-  .split {
-    flex-direction: column;
-    gap: 32px;
-  }
-
-  .image {
-    min-height: 320px;
-  }
-
-  .leadIn {
-    max-width: none;
-  }
-
-  .paragraph {
-    max-width: none;
   }
 
   .quoteBlock {
