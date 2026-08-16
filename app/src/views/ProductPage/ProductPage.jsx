@@ -164,7 +164,7 @@ function ProductPage({ slug }) {
                 {product.category}
               </span>
               <h1 className="font-display text-3xl md:text-4xl text-pine mb-2">{product.name}</h1>
-              <p className="font-mono text-base text-pine-soft mb-4">{product.price}</p>
+              <p className="font-body font-medium text-base text-pine-soft tabular-nums mb-4">{product.price}</p>
               <p className="font-body text-sm text-pine-soft leading-relaxed mb-6 max-w-md">
                 {product.description}
               </p>

@@ -77,11 +77,12 @@
 .stepNumber {
   display: block;
   margin-top: 20px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.85rem;
   color: var(--color-moss);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
 }
 
 .stepLabel {

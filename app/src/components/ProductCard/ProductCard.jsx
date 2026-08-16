@@ -23,9 +23,9 @@ export function ProductCard({ product }) {
       <div className="mt-3">
         <p className="font-body text-xs tracking-[0.1em] uppercase text-pine">{product.name}</p>
         <div className="flex items-center justify-between mt-1">
-          <span className="font-mono text-xs text-pine-soft">{product.price}</span>
+          <span className="font-body font-medium text-xs text-pine-soft tabular-nums">{product.price}</span>
           {product.moq && (
-            <span className="font-mono text-[10px] text-pine-soft/70">MOQ {product.moq}</span>
+            <span className="font-body text-[10px] text-pine-soft/70 tracking-[0.06em] tabular-nums">MOQ {product.moq}</span>
           )}
         </div>
       </div>

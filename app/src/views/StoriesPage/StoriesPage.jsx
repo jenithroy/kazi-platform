@@ -198,7 +198,7 @@ function StoriesPage() {
               <p className="font-body text-pine-soft leading-relaxed mb-6 max-w-md">
                 {FEATURED_POST.excerpt}
               </p>
-              <p className="font-mono text-xs text-pine-soft tracking-wide mb-6">
+              <p className="font-body text-xs text-pine-soft tracking-wide mb-6">
                 {FEATURED_POST.date} · {FEATURED_POST.readTime}
               </p>
               <button type="button" className={`${outlineButtonSmall} self-start`}>
@@ -227,7 +227,7 @@ function StoriesPage() {
                 <p className="font-body text-sm text-pine-soft leading-relaxed line-clamp-3 mb-4">
                   {post.excerpt}
                 </p>
-                <p className="font-mono text-xs text-pine-soft tracking-wide">
+                <p className="font-body text-xs text-pine-soft tracking-wide">
                   {post.date} · {post.readTime}
                 </p>
               </motion.article>

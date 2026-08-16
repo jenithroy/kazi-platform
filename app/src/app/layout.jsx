@@ -1,8 +1,6 @@
 import { MotionConfig } from 'framer-motion'
 import { SmoothScroll } from '../components/SmoothScroll/SmoothScroll'
 import { CartProvider } from '../lib/cart-context'
-import '@fontsource/jetbrains-mono/400.css'
-import '@fontsource/jetbrains-mono/600.css'
 import './globals.css'
 
 export const metadata = {

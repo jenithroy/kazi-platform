@@ -171,7 +171,7 @@ function HeritagePage() {
                 variants={fadeUp}
               >
                 <div>
-                  <span className="font-mono text-xs text-moss tracking-[0.1em]">
+                  <span className="font-body font-medium text-xs text-moss tracking-[0.1em]">
                     {service.code}
                   </span>
                   <h3 className="font-display text-2xl md:text-3xl text-pine mt-2 mb-2">
@@ -227,7 +227,7 @@ function HeritagePage() {
             >
               {SUPPLY_CHAIN_STEPS.map((step, index) => (
                 <motion.li key={step.label} variants={fadeUp}>
-                  <span className="block font-mono text-sm text-moss mb-3">
+                  <span className="block font-body font-medium text-sm text-moss tracking-[0.06em] tabular-nums mb-3">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <h3 className="font-display text-lg text-pine mb-2">{step.label}</h3>

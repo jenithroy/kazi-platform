@@ -38,6 +38,12 @@ to be planned in a later session.
   `next/dynamic(..., { ssr: false })`, not `React.lazy`, so its WebGL/Three.js
   code never runs during the export's Node prerender pass.
 - Oxlint for linting (`app/.oxlintrc.json`).
+- **Typography is a strict two-font system**: Reckless Neue (`font-display`,
+  self-hosted from `app/public/font/`) for headings and large numeric readouts,
+  General Sans (`font-body`, Fontshare CDN, weights 400/500/600/700) for
+  everything else. There is no mono font — small prices/stats/labels use
+  General Sans with `font-medium` + `tabular-nums` (+ tracking for eyebrow
+  labels). Never introduce a third typeface or a `--font-mono` token.
 - Tailwind CSS v4 (via `@tailwindcss/postcss`, configured in
   `app/postcss.config.mjs`) — use Tailwind utility classes for new components.
   Brand tokens (`pine`, `moss`, `paper`, etc. + fonts) are registered in

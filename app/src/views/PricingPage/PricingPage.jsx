@@ -202,7 +202,7 @@ function PricingPage() {
 
                 <div className="flex items-center justify-between mb-2">
                   <span className={labelClass}>Quantity</span>
-                  <span className="font-mono text-sm text-pine tabular-nums">{qty} units</span>
+                  <span className="font-body font-medium text-sm text-pine tabular-nums">{qty} units</span>
                 </div>
                 <input
                   type="range"
@@ -219,7 +219,7 @@ function PricingPage() {
                   {tierMarks.map((mark) => (
                     <span
                       key={mark.qty}
-                      className={`absolute -translate-x-1/2 font-mono text-[10px] tabular-nums ${
+                      className={`absolute -translate-x-1/2 font-body text-[10px] tabular-nums ${
                         qty >= mark.qty ? 'text-moss' : 'text-pine-soft/50'
                       }`}
                       style={{ left: `${mark.pct}%` }}
@@ -242,7 +242,7 @@ function PricingPage() {
                         />
                         <span className="font-body text-sm text-pine">Embroidery</span>
                       </span>
-                      <span className="font-mono text-xs text-pine-soft tabular-nums">
+                      <span className="font-body font-medium text-xs text-pine-soft tabular-nums">
                         +{formatGBP(EMBROIDERY_PRICE[embroiderySize])}/unit
                       </span>
                     </label>
@@ -278,7 +278,7 @@ function PricingPage() {
                         />
                         <span className="font-body text-sm text-pine">Screen Print</span>
                       </span>
-                      <span className="font-mono text-xs text-pine-soft tabular-nums">
+                      <span className="font-body font-medium text-xs text-pine-soft tabular-nums">
                         +{formatGBP(SCREEN_PRINT_PER_COLOUR)}/unit per colour
                       </span>
                     </label>
@@ -307,7 +307,7 @@ function PricingPage() {
                         />
                         <span className="font-body text-sm text-pine">DTG</span>
                       </span>
-                      <span className="font-mono text-xs text-pine-soft tabular-nums">
+                      <span className="font-body font-medium text-xs text-pine-soft tabular-nums">
                         +{formatGBP(DTG_PRICE)}/unit
                       </span>
                     </label>
@@ -317,13 +317,13 @@ function PricingPage() {
                 <div className="pt-6 border-t border-pine/15">
                   <div className="flex items-baseline justify-between">
                     <span className={labelClass}>Per unit</span>
-                    <span className="font-mono text-2xl text-moss tabular-nums">
+                    <span className="font-display text-3xl text-moss tabular-nums">
                       {formatGBP(perUnit)}
                     </span>
                   </div>
                   <div className="flex items-baseline justify-between mt-2">
                     <span className={labelClass}>Estimated total ({qty} units)</span>
-                    <span className="font-mono text-lg text-pine tabular-nums">
+                    <span className="font-display text-xl text-pine tabular-nums">
                       {formatGBP(total)}
                     </span>
                   </div>
@@ -392,7 +392,7 @@ function PricingPage() {
                               value={sizes[size] || ''}
                               onChange={(e) => updateSize(size, Number(e.target.value) || 0)}
                               placeholder="0"
-                              className="w-full border border-pine/15 bg-paper text-center px-1 py-2 font-mono text-sm text-pine tabular-nums focus:outline-none focus:border-pine"
+                              className="w-full border border-pine/15 bg-paper text-center px-1 py-2 font-body text-sm text-pine tabular-nums focus:outline-none focus:border-pine"
                             />
                           </div>
                         ))}
@@ -513,7 +513,7 @@ function PricingPage() {
                       {PRICING_TIERS.map((tier) => (
                         <tr key={tier.label} className="border-t border-pine/10">
                           <td className="font-body text-sm text-pine px-4 py-2.5">{tier.label}</td>
-                          <td className="font-mono text-sm text-pine tabular-nums text-right px-4 py-2.5">
+                          <td className="font-body font-medium text-sm text-pine tabular-nums text-right px-4 py-2.5">
                             {formatGBP(tier[p.id])}
                           </td>
                         </tr>
@@ -530,7 +530,7 @@ function PricingPage() {
                   <p className="font-body text-xs text-pine-soft uppercase tracking-[0.12em] mb-2">
                     {addon.label}
                   </p>
-                  <p className="font-mono text-lg text-moss tabular-nums">
+                  <p className="font-display text-xl text-moss tabular-nums">
                     {formatGBP(addon.price)}
                     <span className="text-xs text-pine-soft">/unit</span>
                   </p>

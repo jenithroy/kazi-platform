@@ -110,7 +110,7 @@ export function CartDrawer({ open, onClose }) {
                             </p>
                           )}
                           {item.price && (
-                            <p className="font-mono text-xs text-pine-soft mb-2">{item.price}</p>
+                            <p className="font-body font-medium text-xs text-pine-soft tabular-nums mb-2">{item.price}</p>
                           )}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center border border-pine/15">
@@ -122,7 +122,7 @@ export function CartDrawer({ open, onClose }) {
                               >
                                 <Minus size={11} weight="regular" />
                               </button>
-                              <span className="w-8 text-center font-mono text-xs text-pine tabular-nums">
+                              <span className="w-8 text-center font-body font-medium text-xs text-pine tabular-nums">
                                 {item.qty}
                               </span>
                               <button
@@ -154,7 +154,7 @@ export function CartDrawer({ open, onClose }) {
                     <span className="font-body text-xs tracking-[0.12em] uppercase text-pine-soft">
                       Total units
                     </span>
-                    <span className="font-mono text-sm text-pine tabular-nums">{totalItems}</span>
+                    <span className="font-body font-medium text-sm text-pine tabular-nums">{totalItems}</span>
                   </div>
                   <Link
                     href={requestQuoteHref}
