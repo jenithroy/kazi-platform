@@ -98,19 +98,26 @@
   align-items: center;
   height: 48px;
   padding: 0 28px;
-  background: var(--color-moss);
-  color: var(--color-pine);
+  background: var(--color-pine);
+  color: var(--color-bone);
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   border-radius: 2px;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 4px 14px rgba(27, 58, 43, 0.15);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .ctaFilled:hover {
-  background: var(--color-moss-deep);
+  background: var(--color-pine-soft);
+  color: var(--color-bone);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(27, 58, 43, 0.22);
 }
 
 .ctaOutline {
