@@ -7,7 +7,7 @@
   background-image: url('/images/hero.jpeg');
   background-size: cover;
   background-position: center 70%;
-  padding: calc(var(--nav-height) + 96px) 24px 64px;
+  padding: calc(var(--nav-height) + 64px) 24px 96px;
   overflow: hidden;
 }
 
@@ -17,9 +17,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
   text-align: center;
   max-width: 46rem;
+}
+
+/* Lifts the type block clear of the tailor's head lower in the frame, so the
+   headline and the subject each get their own space instead of stacking up. */
+.content .cta {
+  margin-top: 16px;
 }
 
 .headline {
@@ -39,12 +45,24 @@
   display: inline-block;
 }
 
+.subhead {
+  margin: 0;
+  max-width: 34rem;
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.125rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-bone);
+  opacity: 0.92;
+  text-shadow: 0 1px 16px rgba(12, 18, 32, 0.5);
+}
+
 .cta {
   display: inline-flex;
   align-items: center;
   height: 52px;
   padding: 0 32px;
-  background: var(--color-moss);
+  background: var(--color-bone);
   color: var(--color-pine);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -52,15 +70,83 @@
   text-decoration: none;
   white-space: nowrap;
   border-radius: 2px;
-  transition: background-color 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .cta:hover {
-  background: var(--color-moss-deep);
+  background: #ffffff;
+  color: var(--color-pine);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3), 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+.scrollCue {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-bone);
+  text-decoration: none;
+  opacity: 0.85;
+  filter: drop-shadow(0 1px 8px rgba(10, 16, 14, 0.5));
+  transition: opacity 0.2s ease;
+}
+
+.scrollCue:hover {
+  opacity: 1;
+}
+
+.scrollCueLabel {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.scrollCue svg {
+  animation: nudge 2.2s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding-bottom: 84px;
+  }
+
+  .scrollCue {
+    bottom: 20px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero * {
     transition: none !important;
+  }
+
+  .scrollCue svg {
+    animation: none;
   }
 }

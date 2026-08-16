@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { Nav } from '../components/Nav/Nav'
 import { Hero } from '../components/Hero/Hero'
+import { TrustBar } from '../components/TrustBar/TrustBar'
 import { ImpactStats } from '../components/ImpactStats/ImpactStats'
 import { Heritage } from '../components/Heritage/Heritage'
 import { Collection } from '../components/Collection/Collection'
@@ -21,6 +22,7 @@ function HomePage() {
     <>
       <Nav isScrolled={isScrolled} />
       <Hero ref={heroRef} />
+      <TrustBar />
       <ImpactStats />
       <Heritage />
       <Collection />

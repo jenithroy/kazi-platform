@@ -1,0 +1,51 @@
+.bar {
+  background: var(--color-pine);
+  color: var(--color-bone);
+}
+
+.inner {
+  list-style: none;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 40px;
+}
+
+.point {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.icon {
+  color: var(--color-moss);
+  flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+  /* Centred flex would stack these into four ragged single-item rows; a 2×2
+     grid keeps the bar compact and the labels aligned. */
+  .inner {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: center;
+    padding: 16px 24px;
+    gap: 12px 20px;
+  }
+
+  .point {
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    white-space: normal;
+  }
+}
