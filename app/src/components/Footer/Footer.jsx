@@ -28,6 +28,9 @@ export function Footer() {
             <Link href="/pricing" className={styles.link}>
               Pricing
             </Link>
+            <Link href="/video-editing" className={styles.link}>
+              Video Editing
+            </Link>
             <Link href="/stories" className={styles.link}>
               Stories
             </Link>
