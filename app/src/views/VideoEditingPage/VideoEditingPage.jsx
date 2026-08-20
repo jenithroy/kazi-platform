@@ -200,9 +200,6 @@ function VideoEditingPage() {
                 className="w-full aspect-[4/3] lg:aspect-[5/4] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-pine/55 via-pine/5 to-transparent" />
-              <figcaption className="absolute left-0 bottom-0 p-6 font-body text-sm text-bone/90">
-                Studio reel — 2026
-              </figcaption>
             </motion.figure>
           </motion.div>
         </section>
