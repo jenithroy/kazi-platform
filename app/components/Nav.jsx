@@ -8,6 +8,7 @@ import { useCart } from "@/lib/cart-context";
 const LINKS = [
   { label: "Atelier", href: "/atelier" },
   { label: "Our Heritage", href: "/heritage" },
+  { label: "Video Editing", href: "/video-editing" },
 ];
 
 export function Nav() {

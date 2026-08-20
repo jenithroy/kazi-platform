@@ -39,6 +39,9 @@ export function Footer() {
             <Link href="/pricing" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
               Pricing
             </Link>
+            <Link href="/video-editing" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
+              Video Editing
+            </Link>
             <Link href="/stories" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
               Stories
             </Link>
