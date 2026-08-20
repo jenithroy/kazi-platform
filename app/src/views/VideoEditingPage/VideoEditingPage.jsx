@@ -8,7 +8,6 @@ import {
   Film,
   Layers,
   Palette,
-  Play,
   ShoppingBag,
   Sparkles,
 } from 'lucide-react'
@@ -70,22 +69,19 @@ const SERVICES = [
 
 const REEL = [
   {
-    image: 'collection-outerwear.jpg',
+    video: 'studio-reel.mp4',
     label: 'Campaign film',
     caption: 'AW collection launch',
-    duration: '1:48',
   },
   {
-    image: 'process-sampling.jpg',
+    video: 'newtonian-trap.mp4',
     label: 'Behind the seams',
     caption: 'Sampling room, Kathmandu',
-    duration: '2:12',
   },
   {
-    image: 'collection-knitwear.jpg',
+    video: 'marketing-story.mp4',
     label: 'Product reel',
     caption: 'Knitwear PDP set',
-    duration: '0:24',
   },
 ]
 
@@ -154,17 +150,8 @@ function imageSrc(file) {
   return `/landing%20page%20images/${file}`
 }
 
-function PlayBadge({ size = 'md' }) {
-  const box = size === 'lg' ? 'w-16 h-16' : 'w-12 h-12'
-  const glyph = size === 'lg' ? 22 : 16
-  return (
-    <span
-      aria-hidden="true"
-      className={`${box} flex items-center justify-center rounded-full bg-bone/90 text-pine shadow-[0_6px_18px_rgba(27,58,43,0.25)] transition-transform duration-200 group-hover:scale-105`}
-    >
-      <Play size={glyph} strokeWidth={1.5} fill="currentColor" className="translate-x-[1px]" />
-    </span>
-  )
+function videoSrc(file) {
+  return `/videos/${file}`
 }
 
 function VideoEditingPage() {
@@ -204,16 +191,15 @@ function VideoEditingPage() {
             </motion.div>
 
             <motion.figure className="relative group" variants={fadeUp}>
-              <img
-                src={imageSrc('atelier.jpg')}
-                alt="Filming inside the Kazi atelier in Kathmandu"
-                loading="lazy"
+              <video
+                src={videoSrc('studio-hero.mov')}
+                autoPlay
+                muted
+                loop
+                playsInline
                 className="w-full aspect-[4/3] lg:aspect-[5/4] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-pine/55 via-pine/5 to-transparent" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <PlayBadge size="lg" />
-              </div>
               <figcaption className="absolute left-0 bottom-0 p-6 font-body text-sm text-bone/90">
                 Studio reel — 2026
               </figcaption>
@@ -243,28 +229,19 @@ function VideoEditingPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {REEL.map((item) => (
-                <motion.figure key={item.image} className="group" variants={fadeUp}>
+                <motion.figure key={item.video} className="group" variants={fadeUp}>
                   <div className="relative overflow-hidden">
-                    <img
-                      src={imageSrc(item.image)}
-                      alt={`${item.label} — ${item.caption}`}
-                      loading="lazy"
-                      className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    <video
+                      src={videoSrc(item.video)}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      aria-label={`${item.label} — ${item.caption}`}
+                      className="w-full aspect-[9/16] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                     <div className="absolute inset-0 bg-pine/25 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <PlayBadge />
-                    </div>
-                    <span className="absolute right-3 bottom-3 px-2 py-1 bg-pine/85 font-body text-xs font-medium tabular-nums text-bone">
-                      {item.duration}
-                    </span>
                   </div>
-                  <figcaption className="mt-4">
-                    <span className="block font-body text-xs tracking-[0.12em] uppercase text-moss mb-1.5">
-                      {item.label}
-                    </span>
-                    <span className="block font-display text-lg text-pine">{item.caption}</span>
-                  </figcaption>
                 </motion.figure>
               ))}
             </div>
