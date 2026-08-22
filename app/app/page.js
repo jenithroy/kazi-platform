@@ -8,6 +8,14 @@ import { ProcessSection } from "@/components/ProcessSection";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { QuoteRequestSection } from "@/components/QuoteRequestSection";
 
+export const metadata = {
+  title: "Custom Apparel Manufacturing in Nepal | Kazi Manufacturing",
+  description:
+    "Custom clothing manufacturing for UK brands, crafted in Kathmandu, Nepal. Small-batch runs from 50 units, in-house sampling, quality control and worldwide delivery.",
+  alternates: { canonical: "/" },
+  openGraph: { url: "/" },
+};
+
 export default function Home() {
   return (
     <>

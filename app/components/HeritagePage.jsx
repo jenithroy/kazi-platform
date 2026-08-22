@@ -113,8 +113,21 @@ const OPERATING_PRINCIPLES = [
 export function HeritagePage() {
   return (
     <main className="bg-paper">
+      <section className="border-b border-pine/15 px-6 pb-12 pt-16 md:px-8 md:pb-16 md:pt-20">
+        <div className="mx-auto max-w-[1440px]">
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">What We Do</span>
+          <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
+            Manufacturing and editing services, in one place.
+          </h1>
+          <p className="mt-4 max-w-xl font-body leading-relaxed text-pine-soft">
+            From first sample to finished, packed collection — five production services and an
+            in-house editing studio, all run out of one Kathmandu atelier.
+          </p>
+        </div>
+      </section>
+
       <section>
-        <div className="mx-auto max-w-[1440px] px-6 pt-16 md:px-8 md:pt-20">
+        <div className="mx-auto max-w-[1440px] px-6 pt-12 md:px-8 md:pt-16">
           {SERVICES.map((service, index) => (
             <div
               key={service.code}

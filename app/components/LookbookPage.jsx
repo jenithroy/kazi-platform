@@ -30,6 +30,19 @@ export function LookbookPage() {
 
   return (
     <main className="bg-paper">
+      <section className="px-6 pb-10 pt-16 md:px-8 md:pb-12 md:pt-20">
+        <div className="mx-auto max-w-[1440px]">
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Lookbook</span>
+          <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
+            Fabric, fit and finish, by category.
+          </h1>
+          <p className="mt-4 max-w-xl font-body leading-relaxed text-pine-soft">
+            A closer look at what comes off the floor, sorted by the kind of garment you&rsquo;re
+            building.
+          </p>
+        </div>
+      </section>
+
       <div
         className="sticky z-10 border-y border-pine/15 bg-paper/95 backdrop-blur"
         style={{ top: "calc(var(--stripe-height) + var(--nav-height))" }}

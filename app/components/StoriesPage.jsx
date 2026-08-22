@@ -127,7 +127,16 @@ function NewsletterStrip() {
 export function StoriesPage() {
   return (
     <main className="bg-paper">
-      <section className="px-6 pt-16 pb-16 md:px-8 md:pt-20 md:pb-20">
+      <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
+        <div className="mx-auto max-w-[1440px]">
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Stories</span>
+          <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
+            Notes from the floor and the brands we work with.
+          </h1>
+        </div>
+      </section>
+
+      <section className="px-6 pb-16 md:px-8 md:pb-20">
         <article className="mx-auto grid max-w-[1440px] rounded-sm border border-pine/15 md:grid-cols-2">
           <div className="relative flex min-h-[280px] items-end bg-pine p-8 md:min-h-[420px]">
             <span className="font-body text-xs tracking-[0.18em] text-bone/70 uppercase">{FEATURED_POST.category}</span>

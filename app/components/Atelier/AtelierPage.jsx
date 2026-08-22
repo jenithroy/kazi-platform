@@ -589,6 +589,7 @@ function AtelierPage() {
       className="overflow-hidden bg-paper relative h-[calc(100dvh-var(--nav-height)-var(--stripe-height))]"
       style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
     >
+      <h1 className="sr-only">Design your garment in the Kazi Atelier</h1>
       <div className="absolute inset-0">
         <div ref={canvasAreaRef} className="relative w-full h-full bg-paper-raised/40 overflow-hidden">
 
