@@ -96,8 +96,8 @@ export function Nav() {
         <Link
           href="/"
           aria-label="Kazi Manufacturing home"
-          className={`col-start-1 h-16 w-28 justify-self-start transition-colors duration-300 md:col-start-2 md:justify-self-center ${
-            isLight ? "bg-pine" : "bg-bone drop-shadow-[0_1px_6px_rgba(10,16,14,0.4)]"
+          className={`col-start-1 h-20 w-32 justify-self-start transition-colors duration-300 md:col-start-2 md:justify-self-center ${
+            isLight ? "bg-pine" : "bg-bone drop-shadow-[0_1px_10px_rgba(10,16,14,0.55)]"
           }`}
           style={{
             maskImage: "url(/images/logo/kazi-logo-trimmed.png)",
@@ -115,10 +115,10 @@ export function Nav() {
           {scrolled && (
             <Link
               href="/quote"
-              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold shadow-[0_2px_12px_rgba(0,0,0,0.18)] transition-all duration-200 hover:-translate-y-px ${
+              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold transition-all duration-200 hover:-translate-y-px ${
                 isLight
-                  ? "border-transparent bg-pine text-bone hover:bg-pine-soft"
-                  : "border-white/30 bg-bone text-pine hover:bg-white"
+                  ? "border-transparent bg-pine text-bone shadow-[0_2px_12px_rgba(0,0,0,0.18)] hover:bg-pine-soft"
+                  : "border-white/30 bg-transparent text-white hover:bg-white hover:text-pine"
               }`}
             >
               Get a Quote
