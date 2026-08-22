@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Captions, Film, Layers, Palette, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowRight, Captions, Check, Film, Layers, Palette, ShoppingBag, Sparkles } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 
 const filledButton =
@@ -8,39 +8,49 @@ const filledButton =
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
-// Placeholder service copy for the editing studio — structurally what Kazi offers alongside
-// manufacturing, but the turnaround windows and inclusions below are stand-ins until Kazi
-// confirms the studio's real capacity.
+const eyebrow = "mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss";
+const sectionHeading = "m-0 font-display text-2xl text-pine md:text-3xl";
+
+// Copy here is plain on purpose — ordinary sentences, no em-dashes, no "not X, just Y"
+// constructions. Turnaround windows, package scopes and the revision count below are
+// placeholders until Kazi confirms what the studio actually commits to.
+const FACTS = [
+  ["Small in-house team", "The people who edit are the people you speak to."],
+  ["Overlap with UK hours", "Reviews land in your morning, not overnight."],
+  ["Two revision rounds", "Included in the price on every project."],
+  ["You keep the files", "Masters, exports and project files on delivery."],
+];
+
 const SERVICES = [
   {
     icon: ShoppingBag,
-    title: "Product & PDP video",
-    body: "Clean, on-white and on-model cuts built for your product pages — every angle, drape and stitch detail edited to the same grade as your stills.",
+    title: "Product video",
+    body: "Short cuts for product pages, on-white or on-model. We grade them against your photography so the video and the stills look like they came from one shoot.",
   },
   {
     icon: Sparkles,
-    title: "Social cut-downs",
-    body: "One shoot, many edits. Vertical 9:16 for Reels and TikTok, 1:1 for feed, 16:9 for YouTube — reframed and paced for each platform, not just cropped.",
+    title: "Social versions",
+    body: "Vertical for Reels and TikTok, square for feed, widescreen for YouTube. Each one is reframed and re-timed for where it runs, so the garment stays in shot.",
   },
   {
     icon: Film,
-    title: "Brand & campaign films",
-    body: "Longer-form storytelling for a drop, a collection or a season — narrative assembly, music, sound design and a final grade that holds up on a big screen.",
+    title: "Campaign films",
+    body: "Longer pieces for a launch or a season, usually between 60 and 120 seconds. Assembly, music, sound design and a final grade.",
   },
   {
     icon: Layers,
-    title: "Motion graphics & titles",
-    body: "Typography, lower-thirds, size charts, fabric callouts and animated logo stings, all built in your own type and colour system.",
+    title: "Motion graphics",
+    body: "Titles, lower thirds, size charts, fabric callouts and logo animations, built with the type and colours you already use elsewhere.",
   },
   {
     icon: Palette,
-    title: "Colour grading & clean-up",
-    body: "Colour-accurate garments across every shot, plus retouching — stray threads, creases, background fixes — so the fabric on screen matches the fabric in the box.",
+    title: "Grading and clean-up",
+    body: "Consistent colour from shot to shot, so a garment looks the same throughout. We also clear up stray threads, creases and background clutter.",
   },
   {
     icon: Captions,
-    title: "Captions & versioning",
-    body: "Burnt-in and SRT subtitles, sound-off-first edits, and regional versions with swapped pricing, language or end cards for each market you sell into.",
+    title: "Captions and versions",
+    body: "Subtitles burnt in or supplied as SRT files, edits that still work with the sound off, and regional versions carrying different prices, language or end cards.",
   },
 ];
 
@@ -51,32 +61,75 @@ const REEL = [
 ];
 
 const FORMATS = [
-  { ratio: "16:9", use: "YouTube & site hero", className: "aspect-video" },
+  { ratio: "16:9", use: "YouTube and site headers", className: "aspect-video" },
   { ratio: "4:5", use: "Instagram feed", className: "aspect-[4/5]" },
   { ratio: "9:16", use: "Reels, TikTok, Shorts", className: "aspect-[9/16]" },
+];
+
+const PACKAGES = [
+  {
+    name: "Product set",
+    summary: "For a drop that needs its product pages filled.",
+    points: [
+      "Up to 10 product videos",
+      "One master ratio and two social crops",
+      "Colour matched to your stills",
+      "About five working days",
+    ],
+  },
+  {
+    name: "Campaign",
+    summary: "For a season launch built around one film.",
+    points: [
+      "A hero film up to two minutes",
+      "Four platform versions",
+      "Motion titles in your brand style",
+      "Music licensing handled for you",
+    ],
+    featured: true,
+  },
+  {
+    name: "Retainer",
+    summary: "For brands posting something every week.",
+    points: [
+      "A monthly block of edits",
+      "A standing turnaround window",
+      "Shared footage and asset library",
+      "First place in the queue",
+    ],
+  },
 ];
 
 const PROCESS = [
   {
     step: "01",
     title: "Brief",
-    body: "You send footage and references — a shoot, phone clips, or our own factory-floor coverage. We agree deliverables, formats and tone before a single cut.",
+    body: "You send footage and a few references. We agree what the deliverables are, what shapes they need to be in and roughly what the thing should feel like.",
   },
   {
     step: "02",
     title: "First cut",
-    body: "You get a watermarked review link with timestamped comments. No file wrangling, no version confusion — one link, one thread.",
+    body: "You get a watermarked review link. Comments attach to the timecode they refer to, so nobody has to describe where in the video they mean.",
   },
   {
     step: "03",
     title: "Revisions",
-    body: "Two rounds are included on every project. We work through your notes in order and re-post to the same link, so the history stays in one place.",
+    body: "Two rounds come with every project. We work through your notes and repost to the same link, so earlier versions stay where you left them.",
   },
   {
     step: "04",
     title: "Delivery",
-    body: "Final masters plus every platform export you need, delivered with the source project files so nothing about your footage stays locked to us.",
+    body: "Final masters and every export you asked for, sent with the project files. If you move to another editor later, they can pick the work up from there.",
   },
+];
+
+const INTAKE = [
+  "Footage. Raw camera files are ideal, but phone clips are fine too",
+  "Your logo, type and colour references",
+  "Two or three edits you like, and one you do not",
+  "Where each version will run, and how long it can be",
+  "Any music direction, or leave the licensing with us",
+  "The date it needs to be live",
 ];
 
 const DELIVERABLES = [
@@ -91,23 +144,27 @@ const DELIVERABLES = [
 const FAQS = [
   {
     q: "Do I have to manufacture with Kazi to use the editing studio?",
-    a: "No — the studio takes on standalone editing work for clothing brands. That said, most of our clients are brands already producing with us: the team knows the garments, so the edit gets the fabric and the fit right first time.",
+    a: "No, we take on editing work on its own. Most of the brands we edit for do produce with us, and it helps: the team has seen the garment in production, so the fabric and the fit tend to come out right on the first pass.",
   },
   {
     q: "What if I don't have footage yet?",
-    a: "We can film it. Our team covers the production floor in Kathmandu — cutting, stitching, hand-finishing, QC — which gives you genuine behind-the-scenes material about your own order rather than stock library clips.",
+    a: "We can film it for you. The team covers the production floor in Kathmandu while your order is being made, which gives you footage of your own garments instead of stock clips from somebody else's factory.",
   },
   {
     q: "How do I send you large files?",
-    a: "Any of the usual routes: a shared drive link, WeTransfer, Frame.io, or a direct upload we set up for you. Raw camera files are welcome — we would far rather grade from the original than from a compressed export.",
+    a: "A shared drive link, WeTransfer or Frame.io all work, and we can set up a direct upload if that is easier. Send the original camera files where you can, since a compressed export gives us much less to grade from.",
   },
   {
     q: "Can you match our existing brand guidelines?",
-    a: "Yes. Send your type, colour and logo assets with the brief and we build the motion system against them, so new edits sit alongside your existing content instead of looking borrowed.",
+    a: "Yes. Send the type, colour and logo assets along with the brief and we build the titles and graphics against them, so the new work sits alongside what you already have.",
+  },
+  {
+    q: "Who owns the finished work?",
+    a: "You do, from the moment we deliver: the masters, the exports and the project files. We only use a piece in our own showreel if you tell us we can.",
   },
   {
     q: "How is editing priced?",
-    a: "Per project — based on runtime, the number of deliverables and how much source footage there is. Tell us the scope on the quote form and you get a fixed figure back. No hourly meter.",
+    a: "Per project, based on how long the finished pieces are, how many versions you need and how much footage there is to work through. Describe the scope on the quote form and we come back with a fixed figure.",
   },
 ];
 
@@ -125,16 +182,15 @@ export function VideoEditingPage() {
       <section className="px-6 pb-16 pt-16 md:px-8 md:pb-20 md:pt-20">
         <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
-            <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">
-              Also from Kazi
-            </span>
+            <span className={eyebrow}>Also from Kazi</span>
             <h1 className="m-0 font-display text-4xl leading-tight text-pine md:text-5xl">
               We edit video, too.
             </h1>
             <p className="m-0 mt-6 max-w-xl font-body text-lg leading-relaxed text-pine-soft">
-              Alongside the factory floor, Kazi runs a small in-house editing studio for the
-              brands we manufacture for. Product videos, campaign films and social cut-downs —
-              made by people who already know how your garments are built.
+              Kazi runs a small editing team alongside the factory, mostly for brands who already
+              manufacture with us. They cut product videos, campaign films and social posts.
+              Because the same people watch the garments come off the floor, the edits usually get
+              fabric and fit right without much going back and forth.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/quote" className={filledButton}>
@@ -160,7 +216,20 @@ export function VideoEditingPage() {
         </div>
       </section>
 
-      <section id="showreel" className="border-t border-pine/15 bg-bone px-6 py-20 md:px-8 md:py-24">
+      <section className="border-y border-pine/15 bg-bone px-6 py-12 md:px-8">
+        <div className="mx-auto grid max-w-[1440px] gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {FACTS.map(([value, label], index) => (
+            <Reveal key={value} delay={index * 60} as="div">
+              <dl className="m-0">
+                <dt className="mb-1.5 font-display text-lg text-pine md:text-xl">{value}</dt>
+                <dd className="m-0 font-body text-sm leading-relaxed text-pine-soft">{label}</dd>
+              </dl>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section id="showreel" className="px-6 py-20 md:px-8 md:py-24">
         <div className="mx-auto max-w-[1440px]">
           <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-4">
             <h2 className="m-0 max-w-xl font-display text-2xl text-pine md:text-3xl">
@@ -195,9 +264,9 @@ export function VideoEditingPage() {
         </div>
       </section>
 
-      <section className="px-6 py-20 md:px-8 md:py-24">
+      <section id="services" className="border-t border-pine/15 bg-bone px-6 py-20 md:px-8 md:py-24">
         <div className="mx-auto max-w-[1440px]">
-          <Reveal as="h2" className="m-0 mb-10 max-w-xl font-display text-2xl text-pine md:text-3xl">
+          <Reveal as="h2" className={`${sectionHeading} mb-10 max-w-xl`}>
             What the studio takes on
           </Reveal>
 
@@ -213,15 +282,16 @@ export function VideoEditingPage() {
         </div>
       </section>
 
-      <section className="border-t border-pine/15 bg-bone px-6 py-20 md:px-8 md:py-24">
+      <section className="px-6 py-20 md:px-8 md:py-24">
         <div className="mx-auto max-w-[1440px]">
           <Reveal className="mb-10 max-w-xl">
             <h2 className="m-0 mb-4 font-display text-2xl text-pine md:text-3xl">
-              One shoot, cut for every place it runs.
+              The same footage, cut three or four ways
             </h2>
             <p className="m-0 font-body leading-relaxed text-pine-soft">
-              Each platform gets its own edit — reframed around the garment, re-paced for how
-              people actually watch there. Not one master squeezed into three boxes.
+              A campaign usually has to run on a product page, in a feed and in a vertical video
+              app on the same week. We cut each version separately so the garment stays in frame
+              and the pacing suits where people are watching.
             </p>
           </Reveal>
 
@@ -231,7 +301,7 @@ export function VideoEditingPage() {
                 <div className={`relative overflow-hidden rounded-sm ${format.className}`}>
                   <Image
                     src={imageSrc("collection-denim.jpg")}
-                    alt={`${format.ratio} crop for ${format.use}`}
+                    alt={`The same shot cropped to ${format.ratio} for ${format.use}`}
                     fill
                     sizes="(min-width: 640px) 33vw, 100vw"
                     className="object-cover"
@@ -241,6 +311,54 @@ export function VideoEditingPage() {
                   </span>
                 </div>
                 <figcaption className="mt-3 font-body text-sm text-pine-soft">{format.use}</figcaption>
+              </Reveal>
+            ))}
+          </div>
+          <p className="m-0 mt-6 max-w-4xl font-body text-sm text-pine-soft">One shot, three crops.</p>
+        </div>
+      </section>
+
+      <section className="border-t border-pine/15 bg-bone px-6 py-20 md:px-8 md:py-24">
+        <div className="mx-auto max-w-[1440px]">
+          <Reveal className="mb-10 max-w-xl">
+            <span className={eyebrow}>Ways brands work with us</span>
+            <h2 className="m-0 mb-4 font-display text-2xl text-pine md:text-3xl">
+              Three common shapes
+            </h2>
+            <p className="m-0 font-body leading-relaxed text-pine-soft">
+              These are starting points rather than fixed products. Most projects end up somewhere
+              between two of them, and we price whatever yours turns out to be.
+            </p>
+          </Reveal>
+
+          <div className="grid gap-6 md:grid-cols-3 md:gap-8">
+            {PACKAGES.map((pkg, index) => (
+              <Reveal
+                key={pkg.name}
+                delay={index * 80}
+                as="article"
+                className={`flex flex-col rounded-sm border p-8 ${
+                  pkg.featured ? "border-pine bg-paper" : "border-pine/15"
+                }`}
+              >
+                <h3 className="m-0 mb-2 font-display text-xl text-pine">{pkg.name}</h3>
+                <p className="m-0 mb-6 font-body text-sm leading-relaxed text-pine-soft">
+                  {pkg.summary}
+                </p>
+                <ul className="m-0 mb-8 list-none space-y-2.5 p-0">
+                  {pkg.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2.5">
+                      <Check size={14} strokeWidth={2} className="mt-1 shrink-0 text-moss" />
+                      <span className="font-body text-sm leading-relaxed text-pine">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/quote"
+                  className={`mt-auto ${pkg.featured ? filledButton : outlineButton}`}
+                >
+                  Scope this <ArrowRight size={14} strokeWidth={1.5} />
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -260,19 +378,17 @@ export function VideoEditingPage() {
           </Reveal>
 
           <Reveal delay={100} className="order-1 lg:order-2">
-            <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">
-              No footage yet?
-            </span>
+            <span className={eyebrow}>If you have no footage</span>
             <h2 className="m-0 mb-4 font-display text-2xl text-pine md:text-3xl">
-              We can film it on the floor your order is made on.
+              We can film your order being made
             </h2>
             <p className="m-0 mb-6 max-w-md font-body leading-relaxed text-pine-soft">
-              Cutting, stitching, hand-finishing, QC, packing — filmed in Kathmandu while your run
-              is in production. It gives you real provenance content about your own garments, not
-              a stock library clip of somebody else&rsquo;s factory.
+              Cutting, stitching, hand-finishing, checking and packing, filmed in Kathmandu while
+              your run is on the floor. It takes a bit of planning around the production schedule,
+              so tell us early if you want it.
             </p>
             <Link href="/quote" className={outlineButton}>
-              Book floor coverage <ArrowRight size={14} strokeWidth={1.5} />
+              Ask about filming <ArrowRight size={14} strokeWidth={1.5} />
             </Link>
           </Reveal>
         </div>
@@ -301,23 +417,33 @@ export function VideoEditingPage() {
       <section className="px-6 py-20 md:px-8 md:py-24">
         <div className="mx-auto grid max-w-[1440px] items-start gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
-            <h2 className="m-0 mb-4 font-display text-2xl text-pine md:text-3xl">
-              Everything you need, in every format you sell in.
+            <span className={eyebrow}>What helps us start</span>
+            <h2 className="m-0 mb-6 font-display text-2xl text-pine md:text-3xl">
+              Send these and we can quote properly
             </h2>
-            <p className="m-0 max-w-md font-body leading-relaxed text-pine-soft">
-              One project, one delivery — masters, platform exports, captions and the source
-              files. You keep the lot, project files included, so another editor can pick up where
-              we left off if you ever want them to.
-            </p>
+            <ul className="m-0 list-none space-y-3 p-0">
+              {INTAKE.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <Check size={15} strokeWidth={2} className="mt-1 shrink-0 text-moss" />
+                  <span className="font-body leading-relaxed text-pine-soft">{item}</span>
+                </li>
+              ))}
+            </ul>
           </Reveal>
 
-          <Reveal delay={100} as="dl" className="m-0 grid gap-px border border-pine/15 bg-pine/15 sm:grid-cols-2">
-            {DELIVERABLES.map(([label, value]) => (
-              <div key={label} className="bg-bone p-6">
-                <dt className="mb-2 font-body text-xs uppercase tracking-[0.12em] text-pine-soft">{label}</dt>
-                <dd className="m-0 font-body text-sm font-medium tabular-nums text-pine">{value}</dd>
-              </div>
-            ))}
+          <Reveal delay={100}>
+            <span className={eyebrow}>What comes back</span>
+            <h2 className="m-0 mb-6 font-display text-2xl text-pine md:text-3xl">
+              Specifications we deliver to
+            </h2>
+            <dl className="m-0 grid gap-px border border-pine/15 bg-pine/15 sm:grid-cols-2">
+              {DELIVERABLES.map(([label, value]) => (
+                <div key={label} className="bg-bone p-6">
+                  <dt className="mb-2 font-body text-xs uppercase tracking-[0.12em] text-pine-soft">{label}</dt>
+                  <dd className="m-0 font-body text-sm font-medium tabular-nums text-pine">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </Reveal>
         </div>
       </section>
@@ -360,11 +486,11 @@ export function VideoEditingPage() {
         <Reveal className="mx-auto flex max-w-[1440px] flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="m-0 mb-2 font-display text-2xl text-bone md:text-3xl">
-              Got footage sitting in a folder?
+              Footage sitting in a folder?
             </h2>
             <p className="m-0 max-w-md font-body leading-relaxed text-bone/75">
-              Tell us what you shot and where it needs to run. We&rsquo;ll come back with a scope,
-              a fixed price and a delivery date.
+              Tell us what you shot and where it needs to run, and we will reply with a scope, a
+              price and a delivery date.
             </p>
           </div>
           <Link

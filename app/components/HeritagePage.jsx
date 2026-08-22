@@ -62,6 +62,22 @@ const SERVICES = [
       "Printed to film, then heat-pressed on — works on fabrics and colours other print methods struggle with.",
     specs: ["Works on any fabric", "No minimum order", "Ideal for dark garments", "Edge-to-edge possible"],
   },
+  {
+    code: "SVC-06",
+    title: "Video Editing",
+    slug: "video-editing",
+    href: "/video-editing",
+    ctaLabel: "Explore Video Editing",
+    tagline: "Product video, campaign films and social cuts",
+    description:
+      "A small in-house editing team working alongside the factory floor — product videos, campaign films and social versions cut by people who already know how your garments are made.",
+    specs: [
+      "Product, campaign & social cuts",
+      "Delivered up to 4K, every platform ratio",
+      "2 revision rounds included",
+      "Turnaround 3–7 working days",
+    ],
+  },
 ];
 
 const SUPPLY_CHAIN_STEPS = [
@@ -117,7 +133,7 @@ export function HeritagePage() {
                 <p className="mb-6 max-w-md font-body leading-relaxed text-pine-soft">
                   {service.description}
                 </p>
-                <Link href={`/quote?service=${service.slug}`} className={filledButtonSmall}>
+                <Link href={service.href ?? `/quote?service=${service.slug}`} className={filledButtonSmall}>
                   {service.ctaLabel}
                 </Link>
               </div>
