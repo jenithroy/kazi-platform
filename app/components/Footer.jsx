@@ -30,11 +30,11 @@ export function Footer() {
             <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/50">
               Explore
             </span>
-            <Link href="#atelier" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
-              Atelier
+            <Link href="/atelier" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
+              Design
             </Link>
-            <Link href="#heritage" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
-              Our Heritage
+            <Link href="/heritage" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
+              Services
             </Link>
             <Link href="/pricing" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
               Pricing

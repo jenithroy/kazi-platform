@@ -6,9 +6,8 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 
 const LINKS = [
-  { label: "Atelier", href: "/atelier" },
-  { label: "Our Heritage", href: "/heritage" },
-  { label: "Video Editing", href: "/video-editing" },
+  { label: "Design", href: "/atelier" },
+  { label: "Services", href: "/heritage" },
 ];
 
 export function Nav() {
