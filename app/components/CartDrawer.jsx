@@ -13,8 +13,13 @@ const filledButton =
 // Sits above every other fixed/sticky layer on the site (TrustStripe and Nav top out at
 // z-50/z-40, DiscountPopup at z-50) — the bag has to win that stack regardless of which page
 // it's opened from.
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export function CartDrawer() {
   const closeButtonRef = useRef(null);
+  const dialogRef = useRef(null);
+  const previouslyFocusedRef = useRef(null);
   const { items, removeItem, updateQty, totalItems, isOpen, closeCart } = useCart();
   const lenis = useLenis();
 
@@ -29,10 +34,28 @@ export function CartDrawer() {
     // all (prefers-reduced-motion, see SmoothScroll.tsx).
     lenis?.stop();
     document.body.style.overflow = "hidden";
+    previouslyFocusedRef.current = document.activeElement;
     closeButtonRef.current?.focus();
 
     function handleKeyDown(event) {
-      if (event.key === "Escape") closeCart();
+      if (event.key === "Escape") {
+        closeCart();
+        return;
+      }
+      // Trap Tab within the drawer while it's open — otherwise focus can escape into the
+      // (visually hidden but still reachable) page behind it.
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusable = Array.from(dialogRef.current.querySelectorAll(FOCUSABLE_SELECTOR));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
     window.addEventListener("keydown", handleKeyDown);
 
@@ -40,6 +63,7 @@ export function CartDrawer() {
       lenis?.start();
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
+      previouslyFocusedRef.current?.focus?.();
     };
   }, [isOpen, closeCart, lenis]);
 
@@ -56,6 +80,7 @@ export function CartDrawer() {
       />
 
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Bag"

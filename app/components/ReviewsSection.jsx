@@ -99,7 +99,7 @@ function ReviewCard({ name, role, rating, quote }) {
         </span>
         <div className="flex flex-col">
           <span className="font-body text-sm font-semibold text-pine">{name}</span>
-          <span className="font-body text-xs text-pine-soft/70">{role}</span>
+          <span className="font-body text-xs text-pine-soft">{role}</span>
         </div>
       </div>
     </div>

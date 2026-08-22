@@ -263,25 +263,25 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
               <div className="space-y-5">
                 <div>
                   <label className={labelClass} htmlFor="name">Name</label>
-                  <input id="name" className={inputClass} type="text" autoComplete="name" value={form.name} onChange={(e) => field("name", e.target.value)} />
-                  {errors.name && <p className={errorClass}>{errors.name}</p>}
+                  <input id="name" className={inputClass} type="text" autoComplete="name" value={form.name} onChange={(e) => field("name", e.target.value)} aria-describedby={errors.name ? "name-error" : undefined} aria-invalid={errors.name ? "true" : undefined} />
+                  {errors.name && <p id="name-error" role="alert" className={errorClass}>{errors.name}</p>}
                 </div>
 
                 <div>
                   <label className={labelClass} htmlFor="email">Email</label>
-                  <input id="email" className={inputClass} type="email" autoComplete="email" value={form.email} onChange={(e) => field("email", e.target.value)} />
-                  {errors.email && <p className={errorClass}>{errors.email}</p>}
+                  <input id="email" className={inputClass} type="email" autoComplete="email" value={form.email} onChange={(e) => field("email", e.target.value)} aria-describedby={errors.email ? "email-error" : undefined} aria-invalid={errors.email ? "true" : undefined} />
+                  {errors.email && <p id="email-error" role="alert" className={errorClass}>{errors.email}</p>}
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className={labelClass} htmlFor="company">Company</label>
-                    <input id="company" className={inputClass} type="text" autoComplete="organization" value={form.company} onChange={(e) => field("company", e.target.value)} />
-                    {errors.company && <p className={errorClass}>{errors.company}</p>}
+                    <input id="company" className={inputClass} type="text" autoComplete="organization" value={form.company} onChange={(e) => field("company", e.target.value)} aria-describedby={errors.company ? "company-error" : undefined} aria-invalid={errors.company ? "true" : undefined} />
+                    {errors.company && <p id="company-error" role="alert" className={errorClass}>{errors.company}</p>}
                   </div>
                   <div>
                     <label className={labelClass} htmlFor="phone">
-                      Phone <span className="text-pine-soft/70 normal-case">(optional)</span>
+                      Phone <span className="text-pine-soft normal-case">(optional)</span>
                     </label>
                     <input id="phone" className={inputClass} type="tel" autoComplete="tel" value={form.phone} onChange={(e) => field("phone", e.target.value)} />
                   </div>
@@ -348,26 +348,26 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                   <>
                     <div>
                       <span className={labelClass}>Service</span>
-                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Service">
+                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Service" aria-describedby={errors.service ? "service-error" : undefined}>
                         {SERVICES.map((s) => (
                           <button key={s.slug} type="button" onClick={() => field("service", s.slug)} className={pillButton(form.service === s.slug)}>
                             {s.label}
                           </button>
                         ))}
                       </div>
-                      {errors.service && <p className={errorClass}>{errors.service}</p>}
+                      {errors.service && <p id="service-error" role="alert" className={errorClass}>{errors.service}</p>}
                     </div>
 
                     <div>
                       <span className={labelClass}>Garment Category</span>
-                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Garment category">
+                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Garment category" aria-describedby={errors.garmentCategory ? "garmentCategory-error" : undefined}>
                         {GARMENT_CATEGORIES.map((category) => (
                           <button key={category} type="button" onClick={() => field("garmentCategory", category)} className={pillButton(form.garmentCategory === category)}>
                             {category}
                           </button>
                         ))}
                       </div>
-                      {errors.garmentCategory && <p className={errorClass}>{errors.garmentCategory}</p>}
+                      {errors.garmentCategory && <p id="garmentCategory-error" role="alert" className={errorClass}>{errors.garmentCategory}</p>}
                       {form.garmentCategory === "Other" && (
                         <>
                           <input
@@ -377,22 +377,24 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                             aria-label="Garment category (other)"
                             value={form.garmentCategoryOther}
                             onChange={(e) => field("garmentCategoryOther", e.target.value)}
+                            aria-describedby={errors.garmentCategoryOther ? "garmentCategoryOther-error" : undefined}
+                            aria-invalid={errors.garmentCategoryOther ? "true" : undefined}
                           />
-                          {errors.garmentCategoryOther && <p className={errorClass}>{errors.garmentCategoryOther}</p>}
+                          {errors.garmentCategoryOther && <p id="garmentCategoryOther-error" role="alert" className={errorClass}>{errors.garmentCategoryOther}</p>}
                         </>
                       )}
                     </div>
 
                     <div>
                       <span className={labelClass}>Approximate Quantity</span>
-                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Approximate quantity">
+                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Approximate quantity" aria-describedby={errors.quantityRange ? "quantityRange-error" : undefined}>
                         {QUANTITY_RANGES.map((range) => (
                           <button key={range} type="button" onClick={() => field("quantityRange", range)} className={pillButton(form.quantityRange === range)}>
                             {range}
                           </button>
                         ))}
                       </div>
-                      {errors.quantityRange && <p className={errorClass}>{errors.quantityRange}</p>}
+                      {errors.quantityRange && <p id="quantityRange-error" role="alert" className={errorClass}>{errors.quantityRange}</p>}
                       {form.quantityRange === "Custom" && (
                         <>
                           <input
@@ -403,8 +405,10 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                             aria-label="Approximate quantity (custom)"
                             value={form.quantityCustom}
                             onChange={(e) => field("quantityCustom", e.target.value)}
+                            aria-describedby={errors.quantityCustom ? "quantityCustom-error" : undefined}
+                            aria-invalid={errors.quantityCustom ? "true" : undefined}
                           />
-                          {errors.quantityCustom && <p className={errorClass}>{errors.quantityCustom}</p>}
+                          {errors.quantityCustom && <p id="quantityCustom-error" role="alert" className={errorClass}>{errors.quantityCustom}</p>}
                         </>
                       )}
                     </div>
@@ -413,21 +417,21 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
 
                 <div>
                   <label className={labelClass} htmlFor="deadline">
-                    Deadline <span className="text-pine-soft/70 normal-case">(optional)</span>
+                    Deadline <span className="text-pine-soft normal-case">(optional)</span>
                   </label>
                   <input id="deadline" className={inputClass} type="date" value={form.deadline} onChange={(e) => field("deadline", e.target.value)} />
                 </div>
 
                 <div>
                   <label className={labelClass} htmlFor="details">Project Details</label>
-                  <textarea id="details" rows={4} className={inputClass} value={form.details} onChange={(e) => field("details", e.target.value)} />
-                  {errors.details && <p className={errorClass}>{errors.details}</p>}
+                  <textarea id="details" rows={4} className={inputClass} value={form.details} onChange={(e) => field("details", e.target.value)} aria-describedby={errors.details ? "details-error" : undefined} aria-invalid={errors.details ? "true" : undefined} />
+                  {errors.details && <p id="details-error" role="alert" className={errorClass}>{errors.details}</p>}
                 </div>
 
                 {!hideArtwork && (
                   <div>
                     <span className={labelClass}>
-                      Artwork file <span className="text-pine-soft/70 normal-case">(optional)</span>
+                      Artwork file <span className="text-pine-soft normal-case">(optional)</span>
                     </span>
                     <div
                       onDragOver={(e) => {
@@ -469,6 +473,13 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
               {submitting ? "Sending…" : "Get a Quote"}
             </button>
             <span className="font-body text-xs text-pine-soft">No obligation. We reply within 24 hours.</span>
+            <span className="w-full font-body text-xs text-pine-soft">
+              By submitting, you agree to our{" "}
+              <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+                Privacy Policy
+              </Link>
+              .
+            </span>
             {submitError && <p className={`${errorClass} w-full`}>{submitError}</p>}
           </div>
         </form>

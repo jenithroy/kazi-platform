@@ -65,8 +65,8 @@ export function ForgotPasswordPage() {
       <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div>
           <label className={labelClass} htmlFor="email">Email</label>
-          <input id="email" className={inputClass} type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          {error && <p className={errorClass}>{error}</p>}
+          <input id="email" className={inputClass} type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-describedby={error ? "email-error" : undefined} aria-invalid={error ? "true" : undefined} />
+          {error && <p id="email-error" role="alert" className={errorClass}>{error}</p>}
         </div>
 
         <button type="submit" disabled={submitting} className={filledButton}>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
 const outlineButtonSmall =
@@ -63,6 +64,7 @@ const POSTS = [
 
 function NewsletterStrip() {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -71,6 +73,10 @@ function NewsletterStrip() {
     e.preventDefault();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Enter a valid email");
+      return;
+    }
+    if (!consent) {
+      setError("Tick the box to confirm you'd like to hear from us");
       return;
     }
     setError(null);
@@ -105,9 +111,10 @@ function NewsletterStrip() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  aria-describedby={error ? "newsletter-error" : undefined}
+                  aria-invalid={error ? "true" : undefined}
                   className="w-full rounded-sm border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine transition-colors focus:border-pine focus:outline-none"
                 />
-                {error && <p className="mt-1 font-body text-xs text-red-600">{error}</p>}
               </div>
               <button
                 type="submit"
@@ -117,6 +124,27 @@ function NewsletterStrip() {
                 {submitting ? "Subscribing…" : "Subscribe"}
               </button>
             </div>
+            <label className="mt-3 flex max-w-md items-start gap-2.5 font-body text-xs leading-relaxed text-pine-soft">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                aria-describedby={error ? "newsletter-error" : undefined}
+                aria-invalid={error ? "true" : undefined}
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-moss"
+              />
+              I&rsquo;d like to receive occasional story updates by email. You can unsubscribe any
+              time — see our{" "}
+              <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+                Privacy Policy
+              </Link>
+              .
+            </label>
+            {error && (
+              <p id="newsletter-error" role="alert" className="mt-2 font-body text-xs text-red-600">
+                {error}
+              </p>
+            )}
           </form>
         )}
       </div>

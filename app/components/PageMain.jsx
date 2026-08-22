@@ -11,7 +11,7 @@ export function PageMain({ children }) {
   const isHome = usePathname() === "/";
 
   return (
-    <main className="flex-1" style={{ paddingTop: isHome ? 0 : "var(--nav-height)" }}>
+    <main id="main-content" className="flex-1" style={{ paddingTop: isHome ? 0 : "var(--nav-height)" }}>
       {children}
     </main>
   );

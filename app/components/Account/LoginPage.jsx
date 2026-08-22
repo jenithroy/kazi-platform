@@ -53,8 +53,8 @@ export function LoginPage() {
       <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div>
           <label className={labelClass} htmlFor="email">Email</label>
-          <input id="email" className={inputClass} type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          {errors.email && <p className={errorClass}>{errors.email}</p>}
+          <input id="email" className={inputClass} type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-describedby={errors.email ? "email-error" : undefined} aria-invalid={errors.email ? "true" : undefined} />
+          {errors.email && <p id="email-error" role="alert" className={errorClass}>{errors.email}</p>}
         </div>
 
         <div>
@@ -64,8 +64,8 @@ export function LoginPage() {
               Forgot password?
             </Link>
           </div>
-          <input id="password" className={inputClass} type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {errors.password && <p className={errorClass}>{errors.password}</p>}
+          <input id="password" className={inputClass} type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} aria-describedby={errors.password ? "password-error" : undefined} aria-invalid={errors.password ? "true" : undefined} />
+          {errors.password && <p id="password-error" role="alert" className={errorClass}>{errors.password}</p>}
         </div>
 
         {authError && <p className={errorClass}>{authError}</p>}

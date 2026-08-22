@@ -27,7 +27,7 @@ export function Footer() {
           </div>
 
           <nav aria-label="Footer" className="flex flex-col gap-3.5">
-            <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/50">
+            <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/60">
               Explore
             </span>
             <Link href="/atelier" className="w-fit font-body text-[0.95rem] text-bone transition-opacity hover:opacity-70">
@@ -51,7 +51,7 @@ export function Footer() {
           </nav>
 
           <div className="flex flex-col gap-3.5">
-            <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/50">
+            <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/60">
               Contact
             </span>
             <a
@@ -63,7 +63,7 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col gap-3.5">
-            <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/50">
+            <span className="mb-0.5 font-body text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-bone/60">
               Location
             </span>
             <address className="font-body text-[0.95rem] not-italic leading-[1.5] text-bone/60">
@@ -73,7 +73,23 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-start gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between md:pt-7">
-          <span className="font-body text-[0.82rem] text-bone/45">© 2026 Kazi Manufacturing. All rights reserved.</span>
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <span className="font-body text-[0.82rem] text-bone/60">© 2026 Kazi Manufacturing. All rights reserved.</span>
+            <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Link href="/privacy-policy" className="font-body text-[0.82rem] text-bone/60 underline-offset-2 transition-colors hover:text-bone hover:underline">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="font-body text-[0.82rem] text-bone/60 underline-offset-2 transition-colors hover:text-bone hover:underline">
+                Terms
+              </Link>
+              <Link href="/cookies" className="font-body text-[0.82rem] text-bone/60 underline-offset-2 transition-colors hover:text-bone hover:underline">
+                Cookies
+              </Link>
+              <Link href="/accessibility" className="font-body text-[0.82rem] text-bone/60 underline-offset-2 transition-colors hover:text-bone hover:underline">
+                Accessibility
+              </Link>
+            </nav>
+          </div>
           <Link
             href="/quote"
             className="border-b border-transparent font-body text-[0.9rem] font-semibold text-moss transition-colors hover:border-moss"

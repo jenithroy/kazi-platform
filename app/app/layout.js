@@ -76,6 +76,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="flex min-h-full flex-col">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <CartProvider>
           <SmoothScroll>
             <Nav />

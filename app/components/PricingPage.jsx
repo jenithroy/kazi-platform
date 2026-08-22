@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Upload, X } from "lucide-react";
 import QtyStepper from "@/components/Atelier/QtyStepper";
 
@@ -184,7 +185,7 @@ export function PricingPage() {
                   <span
                     key={mark.qty}
                     className={`absolute -translate-x-1/2 font-body text-[10px] tabular-nums ${
-                      qty >= mark.qty ? "text-moss" : "text-pine-soft/50"
+                      qty >= mark.qty ? "text-moss" : "text-pine-soft"
                     }`}
                     style={{ left: `${mark.pct}%` }}
                   >
@@ -309,8 +310,10 @@ export function PricingPage() {
                         autoComplete="name"
                         value={form.name}
                         onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                        aria-describedby={errors.name ? "name-error" : undefined}
+                        aria-invalid={errors.name ? "true" : undefined}
                       />
-                      {errors.name && <p className={errorClass}>{errors.name}</p>}
+                      {errors.name && <p id="name-error" role="alert" className={errorClass}>{errors.name}</p>}
                     </div>
                     <div>
                       <label className={labelClass} htmlFor="company">Company</label>
@@ -321,8 +324,10 @@ export function PricingPage() {
                         autoComplete="organization"
                         value={form.company}
                         onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
+                        aria-describedby={errors.company ? "company-error" : undefined}
+                        aria-invalid={errors.company ? "true" : undefined}
                       />
-                      {errors.company && <p className={errorClass}>{errors.company}</p>}
+                      {errors.company && <p id="company-error" role="alert" className={errorClass}>{errors.company}</p>}
                     </div>
                   </div>
 
@@ -336,12 +341,14 @@ export function PricingPage() {
                         autoComplete="email"
                         value={form.email}
                         onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                        aria-describedby={errors.email ? "email-error" : undefined}
+                        aria-invalid={errors.email ? "true" : undefined}
                       />
-                      {errors.email && <p className={errorClass}>{errors.email}</p>}
+                      {errors.email && <p id="email-error" role="alert" className={errorClass}>{errors.email}</p>}
                     </div>
                     <div>
                       <label className={labelClass} htmlFor="phone">
-                        Phone <span className="text-pine-soft/70 normal-case">(optional)</span>
+                        Phone <span className="text-pine-soft normal-case">(optional)</span>
                       </label>
                       <input
                         id="phone"
@@ -371,7 +378,7 @@ export function PricingPage() {
 
                   <div>
                     <span className={labelClass}>
-                      Artwork file <span className="text-pine-soft/70 normal-case">(optional)</span>
+                      Artwork file <span className="text-pine-soft normal-case">(optional)</span>
                     </span>
                     <div
                       onDragOver={(e) => {
@@ -425,8 +432,10 @@ export function PricingPage() {
                       className={inputClass}
                       value={form.details}
                       onChange={(e) => setForm((f) => ({ ...f, details: e.target.value }))}
+                      aria-describedby={errors.details ? "details-error" : undefined}
+                      aria-invalid={errors.details ? "true" : undefined}
                     />
-                    {errors.details && <p className={errorClass}>{errors.details}</p>}
+                    {errors.details && <p id="details-error" role="alert" className={errorClass}>{errors.details}</p>}
                   </div>
 
                   <div className="pt-2">
@@ -434,6 +443,13 @@ export function PricingPage() {
                       {submitting ? "Sending…" : `Submit Quote — ${formatGBP(total)} estimate`}
                     </button>
                     <p className="mt-3 font-body text-xs text-pine-soft">No obligation. We reply within 24 hours.</p>
+                    <p className="mt-1 font-body text-xs text-pine-soft">
+                      By submitting, you agree to our{" "}
+                      <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+                        Privacy Policy
+                      </Link>
+                      .
+                    </p>
                   </div>
                 </form>
               )}

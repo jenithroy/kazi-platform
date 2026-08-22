@@ -27,7 +27,7 @@ export function ProductCard({ product }) {
             {product.price}
           </span>
           {product.moq && (
-            <span className="font-body text-[10px] tracking-[0.06em] tabular-nums text-pine-soft/70">
+            <span className="font-body text-[10px] tracking-[0.06em] tabular-nums text-pine-soft">
               MOQ {product.moq}
             </span>
           )}

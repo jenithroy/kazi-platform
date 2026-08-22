@@ -90,27 +90,27 @@ export function RegisterPage() {
       <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div>
           <label className={labelClass} htmlFor="fullName">Full Name</label>
-          <input id="fullName" className={inputClass} type="text" autoComplete="name" value={form.fullName} onChange={(e) => field("fullName", e.target.value)} />
-          {errors.fullName && <p className={errorClass}>{errors.fullName}</p>}
+          <input id="fullName" className={inputClass} type="text" autoComplete="name" value={form.fullName} onChange={(e) => field("fullName", e.target.value)} aria-describedby={errors.fullName ? "fullName-error" : undefined} aria-invalid={errors.fullName ? "true" : undefined} />
+          {errors.fullName && <p id="fullName-error" role="alert" className={errorClass}>{errors.fullName}</p>}
         </div>
 
         <div>
           <label className={labelClass} htmlFor="company">
-            Company <span className="text-pine-soft/70 normal-case">(optional)</span>
+            Company <span className="text-pine-soft normal-case">(optional)</span>
           </label>
           <input id="company" className={inputClass} type="text" autoComplete="organization" value={form.company} onChange={(e) => field("company", e.target.value)} />
         </div>
 
         <div>
           <label className={labelClass} htmlFor="email">Email</label>
-          <input id="email" className={inputClass} type="email" autoComplete="email" value={form.email} onChange={(e) => field("email", e.target.value)} />
-          {errors.email && <p className={errorClass}>{errors.email}</p>}
+          <input id="email" className={inputClass} type="email" autoComplete="email" value={form.email} onChange={(e) => field("email", e.target.value)} aria-describedby={errors.email ? "email-error" : undefined} aria-invalid={errors.email ? "true" : undefined} />
+          {errors.email && <p id="email-error" role="alert" className={errorClass}>{errors.email}</p>}
         </div>
 
         <div>
           <label className={labelClass} htmlFor="password">Password</label>
-          <input id="password" className={inputClass} type="password" autoComplete="new-password" value={form.password} onChange={(e) => field("password", e.target.value)} />
-          {errors.password ? <p className={errorClass}>{errors.password}</p> : <p className="mt-1 font-body text-xs text-pine-soft/70">Minimum 6 characters</p>}
+          <input id="password" className={inputClass} type="password" autoComplete="new-password" value={form.password} onChange={(e) => field("password", e.target.value)} aria-describedby={errors.password ? "password-error" : undefined} aria-invalid={errors.password ? "true" : undefined} />
+          {errors.password ? <p id="password-error" role="alert" className={errorClass}>{errors.password}</p> : <p className="mt-1 font-body text-xs text-pine-soft">Minimum 6 characters</p>}
         </div>
 
         {authError && <p className={errorClass}>{authError}</p>}
@@ -118,6 +118,17 @@ export function RegisterPage() {
         <button type="submit" disabled={submitting} className={filledButton}>
           {submitting ? "Creating Account…" : "Create Account"}
         </button>
+        <p className="font-body text-xs text-pine-soft">
+          By creating an account, you agree to our{" "}
+          <Link href="/terms" className="text-pine underline underline-offset-2 hover:text-moss">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </form>
 
       <p className="mt-6 text-center font-body text-sm text-pine-soft">

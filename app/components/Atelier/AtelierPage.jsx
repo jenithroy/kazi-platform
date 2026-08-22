@@ -699,7 +699,7 @@ function AtelierPage() {
                     className={`relative w-full text-left border px-4 py-3 transition-all duration-200 ${
                       garment === g.id ? 'border-pine bg-pine text-bone' : 'border-pine/15 bg-bone hover:border-pine/40 text-pine'
                     }`}>
-                    <p className={`font-body text-[9px] tracking-[0.18em] uppercase mb-1 ${garment === g.id ? 'text-bone/50' : 'text-pine-soft'}`}>{g.code}</p>
+                    <p className={`font-body text-[9px] tracking-[0.18em] uppercase mb-1 ${garment === g.id ? 'text-bone/70' : 'text-pine-soft'}`}>{g.code}</p>
                     <p className="font-display text-sm mb-0.5">{g.label}</p>
                     <p className={`font-body text-xs ${garment === g.id ? 'text-bone/60' : 'text-pine-soft'}`}>{g.desc}</p>
                     {garment === g.id && <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-moss" />}
@@ -718,7 +718,7 @@ function AtelierPage() {
                       fabric === f.id ? 'border-pine bg-pine text-bone' : 'border-pine/15 bg-bone hover:border-pine/40'
                     }`}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className={`font-body text-[9px] tracking-[0.18em] uppercase ${fabric === f.id ? 'text-bone/50' : 'text-pine-soft'}`}>{f.code}</span>
+                      <span className={`font-body text-[9px] tracking-[0.18em] uppercase ${fabric === f.id ? 'text-bone/70' : 'text-pine-soft'}`}>{f.code}</span>
                       <span className={`font-body text-[10px] border px-1.5 py-0.5 ${fabric === f.id ? 'border-bone/30 text-bone' : 'border-pine/15 text-pine-soft'}`}>{f.spec}</span>
                     </div>
                     <p className={`font-display text-sm mb-0.5 ${fabric === f.id ? 'text-bone' : 'text-pine'}`}>{f.label}</p>

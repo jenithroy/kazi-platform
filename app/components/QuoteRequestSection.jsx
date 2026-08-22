@@ -157,7 +157,7 @@ export function QuoteRequestSection() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className={labelClass} htmlFor="qr-phone">
-                    Phone <span className="font-normal tracking-normal text-pine-soft/70 normal-case">(optional)</span>
+                    Phone <span className="font-normal tracking-normal text-pine-soft normal-case">(optional)</span>
                   </label>
                   <input id="qr-phone" className={inputClass} type="tel" autoComplete="tel" value={form.phone} onChange={(e) => field("phone", e.target.value)} />
                 </div>

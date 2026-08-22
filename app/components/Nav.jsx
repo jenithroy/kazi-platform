@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
@@ -25,6 +25,25 @@ export function Nav() {
   const [dark, setDark] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { totalItems, openCart } = useCart();
+  const menuButtonRef = useRef(null);
+  const firstMenuLinkRef = useRef(null);
+
+  // Disclosure pattern (not a modal): Escape closes the menu and returns focus to the
+  // toggle button, and opening moves focus into the panel so keyboard users land somewhere
+  // useful instead of the menu appearing with focus left behind on the button.
+  useEffect(() => {
+    if (!menuOpen) return;
+    firstMenuLinkRef.current?.focus();
+
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
 
   useEffect(() => {
     function onScroll() {
@@ -152,9 +171,11 @@ export function Nav() {
           </button>
 
           <button
+            ref={menuButtonRef}
             type="button"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             onClick={() => setMenuOpen((open) => !open)}
             className={`inline-flex h-9 w-9 items-center justify-center transition-colors duration-300 md:hidden ${iconColor}`}
           >
@@ -170,10 +191,11 @@ export function Nav() {
       </div>
 
       {menuOpen && (
-        <div className="flex flex-col gap-1 bg-bone px-6 pb-5 shadow-[0_1px_0_rgba(28,43,74,0.08)] md:hidden">
-          {LINKS.map((link) => (
+        <div id="mobile-menu" className="flex flex-col gap-1 bg-bone px-6 pb-5 shadow-[0_1px_0_rgba(28,43,74,0.08)] md:hidden">
+          {LINKS.map((link, index) => (
             <Link
               key={link.label}
+              ref={index === 0 ? firstMenuLinkRef : undefined}
               href={link.href}
               onClick={() => setMenuOpen(false)}
               className="border-b border-paper-raised py-2.5 font-body text-base font-medium text-pine"

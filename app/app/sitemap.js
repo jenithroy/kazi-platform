@@ -13,6 +13,10 @@ const STATIC_ROUTES = [
   { path: "/video-editing", changeFrequency: "monthly", priority: 0.7 },
   { path: "/stories", changeFrequency: "weekly", priority: 0.6 },
   { path: "/quote", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/cookies", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/accessibility", changeFrequency: "yearly", priority: 0.3 },
 ];
 
 export default function sitemap() {

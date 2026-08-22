@@ -215,7 +215,7 @@ export function ProductPage({ slug }) {
 
             <div className="mb-6">
               <span className="mb-2 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase">
-                Quantity <span className="text-pine-soft/70 normal-case">(MOQ {product.moq})</span>
+                Quantity <span className="text-pine-soft normal-case">(MOQ {product.moq})</span>
               </span>
               <QtyStepper value={qty} onChange={setQty} min={product.moq} max={10000} step={10} />
             </div>
