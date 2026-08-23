@@ -10,6 +10,9 @@ const LINKS = [
   { label: "Services", href: "/heritage" },
 ];
 
+// Shown only in the mobile hamburger menu, not the desktop nav.
+const MOBILE_ONLY_LINKS = [{ label: "Video Editing", href: "/video-editing" }];
+
 export function Nav() {
   // Only the homepage opens on a dark, full-bleed hero image — every other route starts on
   // plain page content, so the transparent/white-text treatment below has nothing dark to
@@ -192,7 +195,7 @@ export function Nav() {
 
       {menuOpen && (
         <div id="mobile-menu" className="flex flex-col gap-1 bg-bone px-6 pb-5 shadow-[0_1px_0_rgba(28,43,74,0.08)] md:hidden">
-          {LINKS.map((link, index) => (
+          {[...LINKS, ...MOBILE_ONLY_LINKS].map((link, index) => (
             <Link
               key={link.label}
               ref={index === 0 ? firstMenuLinkRef : undefined}

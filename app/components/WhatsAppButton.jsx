@@ -3,9 +3,7 @@
 import { usePathname } from "next/navigation";
 import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 
-// TODO: replace with the real business WhatsApp number (international format, digits only,
-// e.g. "447123456789" for a UK mobile) before launch.
-const WHATSAPP_NUMBER = "000000000000";
+const WHATSAPP_NUMBER = "447442435738";
 const WHATSAPP_MESSAGE = "Hi Kazi Manufacturing, I'd like to talk about a custom order.";
 
 export function WhatsAppButton() {
