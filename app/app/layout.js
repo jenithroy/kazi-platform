@@ -6,7 +6,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { PageMain } from "@/components/PageMain";
 import { CartDrawer } from "@/components/CartDrawer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_PHONE } from "@/lib/site";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -53,6 +53,7 @@ const ORGANIZATION_JSON_LD = {
   logo: `${SITE_URL}/images/logo/kazi-logo-trimmed.png`,
   image: `${SITE_URL}/hero/hero.jpeg`,
   email: "hello@kazimanufacturing.com",
+  telephone: SITE_PHONE,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Kathmandu",

@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import { SITE_PHONE_DIGITS } from "@/lib/site";
 
-const WHATSAPP_NUMBER = "447442435738";
 const WHATSAPP_MESSAGE = "Hi Kazi Manufacturing, I'd like to talk about a custom order.";
 
 export function WhatsAppButton() {
@@ -13,7 +13,7 @@ export function WhatsAppButton() {
 
   return (
     <a
-      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+      href={`https://wa.me/${SITE_PHONE_DIGITS}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
