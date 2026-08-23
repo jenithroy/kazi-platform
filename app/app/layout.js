@@ -6,6 +6,8 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { PageMain } from "@/components/PageMain";
 import { CartDrawer } from "@/components/CartDrawer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { CookieConsentProvider } from "@/lib/cookie-consent";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_PHONE } from "@/lib/site";
 
 export const metadata = {
@@ -80,15 +82,18 @@ export default function RootLayout({ children }) {
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        <CartProvider>
-          <SmoothScroll>
-            <Nav />
-            <PageMain>{children}</PageMain>
-            <Footer />
-            <WhatsAppButton />
-            <CartDrawer />
-          </SmoothScroll>
-        </CartProvider>
+        <CookieConsentProvider>
+          <CartProvider>
+            <SmoothScroll>
+              <Nav />
+              <PageMain>{children}</PageMain>
+              <Footer />
+              <WhatsAppButton />
+              <CartDrawer />
+            </SmoothScroll>
+          </CartProvider>
+          <CookieConsentBanner />
+        </CookieConsentProvider>
       </body>
     </html>
   );
