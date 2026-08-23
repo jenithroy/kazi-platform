@@ -10,9 +10,9 @@ import { Reveal } from "@/components/Reveal";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const CRAFTED_IMAGES = [
-  "/images/crafted-by/hands-1.jpeg",
-  "/images/crafted-by/hands-2.jpeg",
-  "/images/crafted-by/hands-3.jpeg",
+  "/images/crafted-by/1st.jpeg",
+  "/images/crafted-by/2nd.jpeg",
+  "/images/crafted-by/last.jpeg",
 ];
 
 export function CraftedBySection() {

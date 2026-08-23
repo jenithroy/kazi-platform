@@ -111,11 +111,6 @@ export function ProcessSection() {
 
   return (
     <section ref={sectionRef} className="relative bg-white">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-pine to-white md:h-56"
-      />
-
       <div className="relative mx-auto max-w-[1100px] px-6 pb-24 pt-40 md:px-8 md:pb-32 md:pt-56">
         <Reveal className="mb-16 max-w-xl md:mb-20">
           <h2 className="m-0 font-display text-3xl leading-[1.2] text-pine md:text-4xl lg:text-[2.75rem]">
