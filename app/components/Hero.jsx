@@ -13,11 +13,11 @@ export function Hero() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[60vh] bg-gradient-to-b from-black/30 via-black/8 to-transparent"
       />
 
-      <div className="relative z-[1] flex max-w-[46rem] flex-col items-center gap-7 text-center">
-        <Reveal as="h1" className="m-0 font-display text-[clamp(2.25rem,4vw+1.25rem,3.75rem)] font-normal leading-[1.15] text-bone [text-shadow:0_2px_28px_rgba(12,18,32,0.35)]">
-          Built for Your Brand.
+      <div className="relative z-[1] flex max-w-[58rem] flex-col items-center gap-7 text-center">
+        <Reveal as="h1" className="m-0 font-display text-[clamp(2rem,3.25vw+1rem,3.25rem)] font-normal leading-[1.15] text-bone [text-shadow:0_2px_28px_rgba(12,18,32,0.35)]">
+          Bespoke Apparel
           <br />
-          Crafted in <em className="italic">Nepal</em>.
+          Manufacturing in <em className="italic">Nepal</em>
         </Reveal>
         <Reveal delay={160}>
           <Link
