@@ -64,13 +64,14 @@ export function GarmentMockup2D({
       {/* 1. Neutral grayscale base — clean start regardless of the source photo's cast. The
           source photography is a white garment, so its flat fabric area only spans roughly
           the 205–240/255 luminance band (measured), not true white — multiplying the chosen
-          colour by that dimmer base was what left every colour looking washed out/whitish.
-          This contrast curve clips that flat-fabric band to true white (so multiply reproduces
-          the picked colour exactly there) while still letting genuine folds/shadows read through. */}
+          colour by that dimmer base is what left colours looking washed out/whitish. This
+          contrast curve clips that entire flat-fabric band to true white (so multiply
+          reproduces the picked colour exactly, with zero tint from the mockup's own white),
+          leaving only the genuinely deep creases/shadows (well below the fabric band) visible. */}
       <image
         href={src} x="0" y="0" width={width} height={height}
         preserveAspectRatio="none"
-        style={{ filter: 'grayscale(1) contrast(1.25) brightness(1.02)' }}
+        style={{ filter: 'grayscale(1) contrast(2.4) brightness(1.1)' }}
       />
 
       {/* 2. Colour, masked to the garment silhouette and multiplied over the shading so fabric
@@ -85,16 +86,10 @@ export function GarmentMockup2D({
         <rect x="0" y="0" width={width} height={height} fill={`url(#${patternId})`} mask={`url(#${maskId})`} style={{ mixBlendMode: 'multiply', opacity: patternOpacity }} />
       )}
 
-      {/* 3. Highlight sheen on top for a bit of depth. Because the source photo's fabric is
-          almost uniformly bright to begin with, this layer (after its own contrast/brightness
-          boost) reads as near-white across nearly the whole garment, not just true highlights —
-          screen-blending that in at any real strength recreated the same whitish wash layer 1
-          just fixed. Kept, but at low opacity, so it stays a faint sheen instead of a colour cast. */}
-      <image
-        href={src} x="0" y="0" width={width} height={height}
-        preserveAspectRatio="none"
-        style={{ filter: 'grayscale(1) contrast(1.2) brightness(1.15)', opacity: 0.05, mixBlendMode: 'screen' }}
-      />
+      {/* No highlight-sheen layer: the source photo's fabric is almost uniformly bright to
+          begin with, so a screen-blended "highlight" layer read as near-white across nearly
+          the whole garment (not just true highlights) — at any real opacity it just re-tinted
+          every colour toward white, the exact effect layer 1 above exists to remove. */}
     </svg>
   )
 }
