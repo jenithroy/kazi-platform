@@ -61,11 +61,16 @@ export function GarmentMockup2D({
         )}
       </defs>
 
-      {/* 1. Neutral grayscale base — clean start regardless of the source photo's cast. */}
+      {/* 1. Neutral grayscale base — clean start regardless of the source photo's cast. The
+          source photography is a white garment, so its flat fabric area only spans roughly
+          the 205–240/255 luminance band (measured), not true white — multiplying the chosen
+          colour by that dimmer base was what left every colour looking washed out/whitish.
+          This contrast curve clips that flat-fabric band to true white (so multiply reproduces
+          the picked colour exactly there) while still letting genuine folds/shadows read through. */}
       <image
         href={src} x="0" y="0" width={width} height={height}
         preserveAspectRatio="none"
-        style={{ filter: 'grayscale(1) contrast(1.08) brightness(1.04)' }}
+        style={{ filter: 'grayscale(1) contrast(1.25) brightness(1.02)' }}
       />
 
       {/* 2. Colour, masked to the garment silhouette and multiplied over the shading so fabric
@@ -80,11 +85,15 @@ export function GarmentMockup2D({
         <rect x="0" y="0" width={width} height={height} fill={`url(#${patternId})`} mask={`url(#${maskId})`} style={{ mixBlendMode: 'multiply', opacity: patternOpacity }} />
       )}
 
-      {/* 3. Highlight sheen on top for a bit of depth. */}
+      {/* 3. Highlight sheen on top for a bit of depth. Because the source photo's fabric is
+          almost uniformly bright to begin with, this layer (after its own contrast/brightness
+          boost) reads as near-white across nearly the whole garment, not just true highlights —
+          screen-blending that in at any real strength recreated the same whitish wash layer 1
+          just fixed. Kept, but at low opacity, so it stays a faint sheen instead of a colour cast. */}
       <image
         href={src} x="0" y="0" width={width} height={height}
         preserveAspectRatio="none"
-        style={{ filter: 'grayscale(1) contrast(1.2) brightness(1.15)', opacity: 0.16, mixBlendMode: 'screen' }}
+        style={{ filter: 'grayscale(1) contrast(1.2) brightness(1.15)', opacity: 0.05, mixBlendMode: 'screen' }}
       />
     </svg>
   )

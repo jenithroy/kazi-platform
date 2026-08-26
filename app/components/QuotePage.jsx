@@ -43,6 +43,7 @@ function resolveQuantity({
 }
 
 const FILE_ACCEPT = ".png,.jpg,.jpeg,.pdf,.ai,.psd";
+const ADDITIONAL_FILE_ACCEPT = ".png,.jpg,.jpeg,.pdf,.ai,.psd,.zip,.doc,.docx,.xls,.xlsx,.csv,.txt";
 
 const inputClass =
   "w-full rounded-sm border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine transition-colors focus:border-pine focus:outline-none";
@@ -72,6 +73,7 @@ function validate(form, isHandoff) {
     errors.quantityCustom = "Tell us your approximate quantity";
   }
   if (!form.details.trim()) errors.details = "Tell us a little about the project";
+  if (!form.agreedToTerms) errors.agreedToTerms = "Please accept the terms and conditions to continue";
   return errors;
 }
 
@@ -80,6 +82,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
   const [designs, setDesigns] = useState(() => readQuoteDesigns());
   const [excludedDesignIds, setExcludedDesignIds] = useState(new Set());
   const [file, setFile] = useState(null);
+  const [additionalFiles, setAdditionalFiles] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -109,6 +112,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
     quantityCustom: "",
     deadline: "",
     details: initialDetails,
+    agreedToTerms: false,
   });
   const [errors, setErrors] = useState({});
 
@@ -132,6 +136,28 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
   function handleFiles(fileList) {
     const picked = fileList?.[0];
     if (picked) setFile(picked);
+  }
+
+  function addAdditionalFiles(fileList) {
+    const picked = Array.from(fileList ?? []);
+    if (picked.length) setAdditionalFiles((prev) => [...prev, ...picked]);
+  }
+
+  function removeAdditionalFile(index) {
+    setAdditionalFiles((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  async function uploadQuoteFile(quoteId, f, prefix = "") {
+    const filePath = `${quoteId}/${prefix}${f.name}`;
+    const { error: uploadError } = await supabase.storage.from("design-files").upload(filePath, f);
+    if (uploadError) return;
+    await supabase.from("quote_files").insert({
+      quote_id: quoteId,
+      file_name: f.name,
+      file_path: filePath,
+      file_size: f.size,
+      file_type: f.type,
+    });
   }
 
   async function onSubmit(e) {
@@ -190,18 +216,9 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
       return;
     }
 
-    if (file) {
-      const filePath = `${quote.id}/${file.name}`;
-      const { error: uploadError } = await supabase.storage.from("design-files").upload(filePath, file);
-      if (!uploadError) {
-        await supabase.from("quote_files").insert({
-          quote_id: quote.id,
-          file_name: file.name,
-          file_path: filePath,
-          file_size: file.size,
-          file_type: file.type,
-        });
-      }
+    if (file) await uploadQuoteFile(quote.id, file);
+    for (let i = 0; i < additionalFiles.length; i++) {
+      await uploadQuoteFile(quote.id, additionalFiles[i], `additional-${i}-`);
     }
 
     setSubmitting(false);
@@ -429,6 +446,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                 </div>
 
                 {!hideArtwork && (
+                  <>
                   <div>
                     <span className={labelClass}>
                       Artwork file <span className="text-pine-soft normal-case">(optional)</span>
@@ -463,16 +481,70 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                       )}
                     </div>
                   </div>
+
+                  <div>
+                    <span className={labelClass}>
+                      Additional files <span className="text-pine-soft/70 normal-case">(optional)</span>
+                    </span>
+                    <label className="flex cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-pine/15 p-4 text-center transition-colors hover:border-pine/40">
+                      <input
+                        type="file"
+                        multiple
+                        accept={ADDITIONAL_FILE_ACCEPT}
+                        onChange={(e) => {
+                          addAdditionalFiles(e.target.files);
+                          e.target.value = "";
+                        }}
+                        aria-label="Upload additional files"
+                        className="sr-only"
+                      />
+                      <Upload size={18} strokeWidth={1.5} className="text-pine-soft" />
+                      <span className="font-body text-sm text-pine">Add your own files</span>
+                    </label>
+                    {additionalFiles.length > 0 && (
+                      <ul className="mt-2 space-y-1.5">
+                        {additionalFiles.map((f, i) => (
+                          <li
+                            key={`${f.name}-${i}`}
+                            className="flex items-center justify-between gap-2 rounded-sm border border-pine/15 bg-paper px-3 py-2"
+                          >
+                            <span className="min-w-0 truncate font-body text-sm text-pine">{f.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => removeAdditionalFile(i)}
+                              aria-label={`Remove ${f.name}`}
+                              className="shrink-0 text-pine-soft transition-colors hover:text-red-600"
+                            >
+                              <X size={14} strokeWidth={1.5} />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  </>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 border-t border-pine/15 p-6 md:p-12">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-pine/15 p-6 md:p-12">
+            <label className="flex max-w-sm items-start gap-2.5">
+              <input
+                type="checkbox"
+                checked={form.agreedToTerms}
+                onChange={(e) => field("agreedToTerms", e.target.checked)}
+                aria-label="I agree to the terms and conditions"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-moss"
+              />
+              <span className="font-body text-xs text-pine-soft">
+                I agree to Kazi&rsquo;s terms and conditions.
+              </span>
+            </label>
             <button type="submit" disabled={submitting} className={filledButton}>
               {submitting ? "Sending…" : "Get a Quote"}
             </button>
-            <span className="font-body text-xs text-pine-soft">No obligation. We reply within 24 hours.</span>
+            {errors.agreedToTerms && <p className={`${errorClass} w-full`}>{errors.agreedToTerms}</p>}
             <span className="w-full font-body text-xs text-pine-soft">
               By submitting, you agree to our{" "}
               <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
