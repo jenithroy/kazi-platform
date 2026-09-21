@@ -8,6 +8,7 @@ import QtyStepper from "@/components/Atelier/QtyStepper";
 import { GarmentMockup2D } from "@/components/Atelier/GarmentMockup2D";
 import { readQuoteDesigns, clearQuoteDesigns, describeQuoteDesigns } from "@/lib/quote-handoff";
 import { supabase } from "@/lib/supabase";
+import { getAttribution } from "@/lib/attribution";
 
 // Slugs match the deep links Heritage's per-service CTAs use (`/quote?service=dtg`, etc).
 const SERVICES = [
@@ -197,6 +198,9 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
     const { data: quote, error } = await supabase
       .from("quotes")
       .insert({
+        // Campaign attribution captured when the visitor landed (lib/attribution.js), so
+        // the ERP's Meta Ads module can credit this request to the ad that paid for it.
+        ...getAttribution(),
         customer_id: user?.id ?? null,
         contact_name: form.name,
         contact_email: form.email,

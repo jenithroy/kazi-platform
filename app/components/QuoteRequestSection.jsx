@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { readQuoteDesigns, clearQuoteDesigns, describeQuoteDesigns } from "@/lib/quote-handoff";
 import { supabase } from "@/lib/supabase";
+import { getAttribution } from "@/lib/attribution";
 import { Reveal } from "@/components/Reveal";
 
 const GARMENT_CATEGORIES = ["Knitwear", "Outerwear", "Denim", "Accessories", "Footwear", "Other"];
@@ -93,6 +94,9 @@ export function QuoteRequestSection() {
     } = await supabase.auth.getUser();
 
     const { error } = await supabase.from("quotes").insert({
+      // Campaign attribution captured when the visitor landed (lib/attribution.js), so
+      // the ERP's Meta Ads module can credit this request to the ad that paid for it.
+      ...getAttribution(),
       customer_id: user?.id ?? null,
       contact_name: form.name,
       contact_email: form.email,

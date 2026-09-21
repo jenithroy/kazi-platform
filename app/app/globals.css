@@ -76,3 +76,26 @@ img {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   ERP chart palette
+   ---------------------------------------------------------------------------
+   Categorical slots 1-3 of the validated default data-viz palette, checked against this
+   product's chart surface (#fcfdfa) with all pairs in play: worst CVD ΔE 9.2, worst
+   normal-vision ΔE 24.0. The cap at three series is part of the validation — a fourth slot
+   puts yellow next to orange and fails the all-pairs floor, so a fourth series folds into
+   "Other" or gets its own chart instead.
+   Aqua sits at 2.76:1 against the surface, below the 3:1 contrast gate, so every chart
+   using it ships the relief: direct end labels plus the table view under each figure.
+   There are no dark-mode steps because the product has no dark mode at all; a single
+   module inventing one would read as a bug rather than a feature.
+*/
+.viz-root {
+  --viz-surface: var(--color-bone);
+  --viz-grid: #e2e7db;
+  --viz-ink: var(--color-pine);
+  --viz-ink-soft: var(--color-pine-soft);
+  --viz-series-1: #2a78d6;
+  --viz-series-2: #eb6834;
+  --viz-series-3: #1baf7a;
+}

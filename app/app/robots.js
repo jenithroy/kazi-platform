@@ -28,7 +28,9 @@ export default function robots() {
     rules: {
       userAgent: ["*", ...AI_CRAWLERS],
       allow: "/",
-      disallow: ["/account/", "/atelier/quote"],
+      // /erp is the internal ERP. Its pages also carry robots: noindex, but a crawler should
+      // not be fetching them at all.
+      disallow: ["/account/", "/atelier/quote", "/erp/"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

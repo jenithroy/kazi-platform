@@ -6,6 +6,18 @@ const CookieConsentContext = createContext(null);
 
 const STORAGE_KEY = "kazi-cookie-consent";
 
+// Read outside of React for the modules that need the visitor's choice but aren't
+// components (marketing attribution, see lib/attribution.js). Returns null when no choice
+// has been recorded yet or storage is unavailable.
+export function readStoredConsent() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored === "accepted" || stored === "rejected" ? stored : null;
+  } catch {
+    return null;
+  }
+}
+
 export function CookieConsentProvider({ children }) {
   // null = no choice recorded yet (banner shows once hydrated); "accepted" | "rejected"
   // once the visitor has picked one. Starts null on both the server-prerendered pass and

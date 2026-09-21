@@ -1,13 +1,8 @@
 import "./globals.css";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
 import { CartProvider } from "@/lib/cart-context";
-import { SmoothScroll } from "@/components/SmoothScroll";
-import { PageMain } from "@/components/PageMain";
-import { CartDrawer } from "@/components/CartDrawer";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { SiteShell } from "@/components/SiteShell";
 import { CookieConsentProvider } from "@/lib/cookie-consent";
+import { AttributionCapture } from "@/components/AttributionCapture";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_PHONE } from "@/lib/site";
 
 export const metadata = {
@@ -83,16 +78,10 @@ export default function RootLayout({ children }) {
           Skip to content
         </a>
         <CookieConsentProvider>
+          <AttributionCapture />
           <CartProvider>
-            <SmoothScroll>
-              <Nav />
-              <PageMain>{children}</PageMain>
-              <Footer />
-              <WhatsAppButton />
-              <CartDrawer />
-            </SmoothScroll>
+            <SiteShell>{children}</SiteShell>
           </CartProvider>
-          <CookieConsentBanner />
         </CookieConsentProvider>
       </body>
     </html>
