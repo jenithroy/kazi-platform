@@ -24,6 +24,7 @@ Caveat: the sandbox blocks `api.fontshare.com`, so General Sans fell back to sys
 - #10: broken anchors fixed, and the hash handler is guarded.
 - #11 (partly): dead components and 16 unused assets removed, and ESLint is down from 13 errors to 8 (all in `GarmentViewer.jsx`).
 - #12 (partly): ARIA roles on ratings and swatches, `ProcessSection` list markup, `/atelier/quote` `<h1>`, a branded 404 page, and `lang="en-GB"`.
+- Font loading (#11): the site now uses Reckless Neue throughout, so General Sans and its render-blocking Fontshare stylesheet load only on the Atelier pages, where it is a garment-text option.
 
 axe results after these fixes: colour-contrast nodes went from 308 to 30, the only ones left being the intentionally faded inactive `ProcessSection` steps. Every other serious or landmark rule is now at 0, except `region` (the floating WhatsApp button).
 
@@ -33,7 +34,6 @@ axe results after these fixes: colour-contrast nodes went from 308 to 30, the on
 - #4 Suspense and prerendering
 - #6 motion pause controls
 - The `GarmentViewer.jsx` lint errors
-- Self-hosting General Sans
 - Scoping GSAP and Lenis to the routes that need them
 
 ---
