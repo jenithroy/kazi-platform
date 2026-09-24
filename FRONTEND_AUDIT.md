@@ -147,7 +147,7 @@ The WhatsApp button and cookie banner sit outside any landmark (`region`). This 
 If lint isn't gating CI, the list will only grow. Fix these or explicitly disable them with a justification comment, as other files already do.
 
 **Dead code**
-- `TrustStripe.jsx` is unused. The `--stripe-height` variable it relied on is still referenced in three places.
+- `TrustStripe.jsx` is unused. The `--stripe-height` variable it relied on is still referenced in several files.
 - `DiscountPopup.jsx` is unused. It also lacks Escape handling and focus management, and uses an `h3` with no parent heading, so fix those if it's revived.
 
 **Unused files in `public/`** (they're still deployed)
