@@ -1127,7 +1127,7 @@ function AtelierPage() {
               <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0" />
 
               <button onClick={handleQuoteClick} title="Request a Quote"
-                className="flex items-center gap-1.5 h-9 sm:h-10 pl-3.5 pr-3 sm:pl-4 sm:pr-3.5 rounded-lg bg-moss-deep text-bone font-body text-[11px] font-semibold tracking-[0.15em] uppercase hover:bg-pine-soft transition-colors duration-150 whitespace-nowrap shrink-0">
+                className="flex items-center gap-1.5 h-9 sm:h-10 pl-3.5 pr-3 sm:pl-4 sm:pr-3.5 rounded-lg btn-gradient text-bone font-body text-[11px] font-semibold tracking-[0.15em] uppercase whitespace-nowrap shrink-0">
                 Get a Quote <ArrowRight size={13} strokeWidth={1.5} />
               </button>
             </div>

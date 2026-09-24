@@ -8,7 +8,7 @@ import { Minus, Plus, ShoppingBag, Trash, X } from "@phosphor-icons/react";
 import { useCart, describeCartItems } from "@/lib/cart-context";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
+  "inline-flex h-11 items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 
 // Sits above every other fixed/sticky layer on the site (Nav tops out at z-50, the cookie
 // banner at z-60) — the bag has to win that stack regardless of which page

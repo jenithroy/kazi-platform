@@ -28,7 +28,7 @@ const GarmentMockup2D = dynamic(
 );
 
 const filledButton =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine sm:w-auto";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone sm:w-auto";
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 

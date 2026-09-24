@@ -50,7 +50,7 @@ const inputClass =
 const labelClass = "mb-1.5 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase";
 const errorClass = "mt-1 font-body text-xs text-red-600";
 const filledButton =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 const pillButton = (active) =>

@@ -7,7 +7,7 @@ import { CATEGORIES, products } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
+  "inline-flex h-11 items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 const outlineButton =
   "inline-flex h-11 items-center justify-center rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 

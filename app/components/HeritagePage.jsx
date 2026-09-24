@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
+  "inline-flex h-11 items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 const outlineButton =
   "inline-flex h-11 items-center justify-center rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 const filledButtonSmall =
-  "inline-flex h-9 items-center justify-center rounded-sm bg-moss-deep px-4 font-body text-xs font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
+  "inline-flex h-9 items-center justify-center rounded-sm btn-gradient px-4 font-body text-xs font-semibold tracking-wide text-bone";
 
 // Service catalogue and process steps below are this project's own placeholder set, written to
 // match the site's voice — not a confirmed list of what Kazi actually offers or its real specs.

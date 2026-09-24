@@ -4,7 +4,7 @@ import { ArrowRight, Captions, Check, Film, Layers, Palette, ShoppingBag, Sparkl
 import { Reveal } from "@/components/Reveal";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center gap-2 rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
+  "inline-flex h-11 items-center justify-center gap-2 rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
@@ -495,7 +495,7 @@ export function VideoEditingPage() {
           </div>
           <Link
             href="/quote"
-            className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-sm bg-moss-deep px-7 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine md:self-auto"
+            className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-sm btn-gradient px-7 font-body text-sm font-semibold tracking-wide text-bone md:self-auto"
           >
             Start a project <ArrowRight size={14} strokeWidth={1.5} />
           </Link>

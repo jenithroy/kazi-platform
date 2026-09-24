@@ -283,7 +283,7 @@ export function QuoteRequestSection() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex h-12 items-center rounded-sm bg-moss-deep px-7 font-body text-sm font-semibold text-bone transition-colors hover:bg-pine disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex h-12 items-center rounded-sm btn-gradient px-7 font-body text-sm font-semibold text-bone disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {submitting ? "Sending…" : "Get a Quote"}
                 </button>

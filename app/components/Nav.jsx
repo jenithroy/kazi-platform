@@ -137,10 +137,10 @@ export function Nav() {
           {scrolled && (
             <Link
               href="/quote"
-              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold transition-all duration-200 hover:-translate-y-px ${
+              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold hover:-translate-y-px ${
                 isLight
-                  ? "border-transparent bg-pine text-bone shadow-[0_2px_12px_rgba(0,0,0,0.18)] hover:bg-pine-soft"
-                  : "border-white/30 bg-transparent text-white hover:bg-white hover:text-pine"
+                  ? "btn-gradient border-transparent text-bone shadow-[0_2px_12px_rgba(0,0,0,0.18)]"
+                  : "border-white/30 bg-transparent text-white transition-all duration-200 hover:bg-white hover:text-pine"
               }`}
             >
               Get a Quote
@@ -227,7 +227,7 @@ export function Nav() {
           <Link
             href="/quote"
             onClick={() => setMenuOpen(false)}
-            className="mt-3 inline-flex h-10 items-center justify-center rounded-sm bg-pine px-5 font-body text-sm font-semibold text-bone"
+            className="btn-gradient mt-3 inline-flex h-10 items-center justify-center rounded-sm px-5 font-body text-sm font-semibold text-bone"
           >
             Get a Quote
           </Link>

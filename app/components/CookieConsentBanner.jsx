@@ -36,7 +36,7 @@ export function CookieConsentBanner() {
           <button
             type="button"
             onClick={accept}
-            className="inline-flex h-10 flex-1 items-center justify-center rounded-sm bg-moss-deep px-5 font-body text-sm font-semibold text-bone transition-colors hover:bg-pine sm:flex-none"
+            className="inline-flex h-10 flex-1 items-center justify-center rounded-sm btn-gradient px-5 font-body text-sm font-semibold text-bone sm:flex-none"
           >
             Accept All
           </button>

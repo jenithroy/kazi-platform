@@ -15,6 +15,32 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+/* Primary filled button. At rest it shows the first half of the gradient (#387a52 -> #24583a);
+   hover slides it toward the darker pine end rather than swapping colours. Every stop keeps
+   bone text at >= 4.5:1 (the lightest, #387a52, is 5.05:1). The solid background-color is
+   the fallback if gradients are unsupported. */
+@utility btn-gradient {
+  background-color: var(--color-moss-deep);
+  background-image: linear-gradient(
+    120deg,
+    #387a52 0%,
+    #24583a 50%,
+    var(--color-pine) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  transition:
+    background-position 400ms ease,
+    box-shadow 200ms ease,
+    translate 200ms ease,
+    scale 200ms ease;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background-position: 100% 50%;
+  }
+}
+
 :root {
   --nav-height: 88px;
   --stripe-height: 0px;
