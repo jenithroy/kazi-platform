@@ -22,7 +22,7 @@ const GarmentViewer = dynamic(() => import('./GarmentViewer'), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center">
-      <span className="font-body text-[10px] text-moss tracking-[0.18em] uppercase animate-pulse">
+      <span className="font-body text-[10px] text-moss-deep tracking-[0.18em] uppercase animate-pulse">
         Loading model…
       </span>
     </div>
@@ -195,7 +195,7 @@ function AtelierPage() {
   // Mobile browsers resize their chrome (address bar, etc.) without reliably firing a
   // `dvh` recompute on a page that never scrolls — measure the true visible height directly
   // so the dock can never end up positioned underneath it. Also subtract the site's global
-  // chrome above (TrustStripe + Nav) — unlike the source repo, this project renders those in
+  // chrome above (the Nav, plus any --stripe-height banner) — unlike the source repo, this project renders those in
   // the root layout on every route instead of per-page, so the "full viewport" this page was
   // designed for is actually `100dvh` minus that chrome.
   useEffect(() => {
@@ -231,6 +231,9 @@ function AtelierPage() {
   // height varies with content (a fabric list vs. an expanded layer editor), so this is
   // measured directly rather than assumed.
   useEffect(() => {
+    // Resetting to null when there's no panel to measure is the "no measurement" branch of the
+    // same DOM sync the ResizeObserver below performs, not derived state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!activePanel) { setSwitchTop(null); return }
     const panelEl = leftPanelRef.current
     const areaEl = canvasAreaRef.current
@@ -274,7 +277,7 @@ function AtelierPage() {
       switchActiveSide(side)
       return
     }
-    setRotateRequest({ side, nonce: Date.now() })
+    setRotateRequest((prev) => ({ side, nonce: (prev?.nonce ?? 0) + 1 }))
   }
 
   function handleFacingSideChange(side) {
@@ -396,7 +399,6 @@ function AtelierPage() {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLayerId, activePanel, contextMenu])
 
   function openLayerContextMenu(id, clientX, clientY) {
@@ -647,7 +649,7 @@ function AtelierPage() {
               showEstimate ? 'bg-pine border-pine' : 'bg-bone/90 backdrop-blur-sm border-pine/15 hover:border-pine/40'
             }`}
           >
-            <Calculator size={13} strokeWidth={1.5} className={showEstimate ? 'text-moss' : 'text-moss'} />
+            <Calculator size={13} strokeWidth={1.5} className={showEstimate ? 'text-moss-deep' : 'text-moss-deep'} />
             <span className={`font-body text-[10px] tracking-[0.18em] uppercase whitespace-nowrap ${showEstimate ? 'text-bone' : 'text-pine'}`}>
               Estimate
             </span>
@@ -915,7 +917,7 @@ function AtelierPage() {
                 {/* Current design — always shown live, so the piece on the canvas right now
                     is never hidden behind a save step. */}
                 <div>
-                  <p className="font-body text-[9px] tracking-[0.18em] text-moss uppercase mb-1.5">Currently editing</p>
+                  <p className="font-body text-[9px] tracking-[0.18em] text-moss-deep uppercase mb-1.5">Currently editing</p>
                   <div
                     role="button"
                     tabIndex={0}
@@ -1010,7 +1012,7 @@ function AtelierPage() {
                       </p>
                       <p className="font-display text-xs text-pine">Estimated Total</p>
                     </div>
-                    <span className="font-display text-lg text-moss shrink-0">£{estimateGrandTotal.toFixed(2)}</span>
+                    <span className="font-display text-lg text-moss-deep shrink-0">£{estimateGrandTotal.toFixed(2)}</span>
                   </div>
                   <p className="font-body text-[9px] text-pine-soft leading-relaxed">
                     Indicative only — your formal quote confirms final pricing.
@@ -1093,7 +1095,7 @@ function AtelierPage() {
                   <button key={mode} onClick={() => setViewMode(mode)}
                     title={mode === '3d' ? '3D model' : '2D mockup'} aria-pressed={viewMode === mode}
                     className={`px-2.5 h-8 sm:h-9 rounded-md font-body text-[10px] tracking-[0.18em] uppercase transition-colors duration-150 ${
-                      viewMode === mode ? 'bg-moss text-pine' : 'text-bone/70 hover:text-bone'
+                      viewMode === mode ? 'bg-bone text-pine' : 'text-bone/70 hover:text-bone'
                     }`}>
                     {mode}
                   </button>
@@ -1106,7 +1108,7 @@ function AtelierPage() {
                 <button key={id} onClick={() => togglePanel(id)} title={label} aria-label={label}
                   aria-pressed={activePanel === id}
                   className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center rounded-lg transition-colors duration-150 ${
-                    activePanel === id ? 'bg-moss text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
+                    activePanel === id ? 'bg-bone text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
                   }`}>
                   <Icon size={17} strokeWidth={1.5} />
                 </button>
@@ -1117,7 +1119,7 @@ function AtelierPage() {
               <button onClick={() => { setShowCollection((v) => !v); setShowEstimate(false) }} title="Collection" aria-label="Collection"
                 aria-pressed={showCollection}
                 className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center rounded-lg transition-colors duration-150 ${
-                  showCollection ? 'bg-moss text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
+                  showCollection ? 'bg-bone text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
                 }`}>
                 <BookmarkPlus size={17} strokeWidth={1.5} />
               </button>
@@ -1125,7 +1127,7 @@ function AtelierPage() {
               <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0" />
 
               <button onClick={handleQuoteClick} title="Request a Quote"
-                className="flex items-center gap-1.5 h-9 sm:h-10 pl-3.5 pr-3 sm:pl-4 sm:pr-3.5 rounded-lg bg-moss text-pine font-body text-[11px] font-semibold tracking-[0.15em] uppercase hover:bg-moss-deep transition-colors duration-150 whitespace-nowrap shrink-0">
+                className="flex items-center gap-1.5 h-9 sm:h-10 pl-3.5 pr-3 sm:pl-4 sm:pr-3.5 rounded-lg bg-moss-deep text-bone font-body text-[11px] font-semibold tracking-[0.15em] uppercase hover:bg-pine-soft transition-colors duration-150 whitespace-nowrap shrink-0">
                 Get a Quote <ArrowRight size={13} strokeWidth={1.5} />
               </button>
             </div>

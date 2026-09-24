@@ -11,7 +11,7 @@ const inputClass =
 const labelClass = "mb-1.5 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase";
 const errorClass = "mt-1 font-body text-xs text-red-600";
 const filledButton =
-  "inline-flex h-11 w-full items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex h-11 w-full items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine disabled:cursor-not-allowed disabled:opacity-60";
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -42,14 +42,14 @@ export function ForgotPasswordPage() {
     return (
       <AccountShell>
         <div className="text-center">
-          <span className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-moss/15 text-moss">
+          <span className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-moss/15 text-moss-deep">
             <Mail size={22} strokeWidth={2} />
           </span>
           <h1 className="mb-3 font-display text-2xl text-pine">Check your email</h1>
           <p className="mb-8 font-body text-sm text-pine-soft">
             We&rsquo;ve sent a password reset link to {submittedEmail}.
           </p>
-          <Link href="/account/login" className="font-body text-sm text-moss transition-colors hover:text-moss-deep">
+          <Link href="/account/login" className="font-body text-sm text-moss-deep transition-colors hover:text-pine">
             Back to login &rarr;
           </Link>
         </div>
@@ -74,7 +74,7 @@ export function ForgotPasswordPage() {
         </button>
       </form>
 
-      <Link href="/account/login" className="mt-6 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss">
+      <Link href="/account/login" className="mt-6 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss-deep">
         <ArrowLeft size={14} strokeWidth={1.5} /> Back to login
       </Link>
     </AccountShell>

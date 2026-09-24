@@ -14,6 +14,10 @@ export function CartProvider({ children }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
+      // localStorage doesn't exist during the static prerender, so this has to be a
+      // post-mount read rather than a lazy useState initializer (which would also break
+      // hydration by rendering a different bag on the client's first pass).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setItems(JSON.parse(raw));
     } catch {
       // corrupt/unavailable storage — start from an empty bag
@@ -71,6 +75,8 @@ export function CartProvider({ children }) {
       openCart: () => setIsOpen(true),
       closeCart: () => setIsOpen(false),
     }),
+    // The helpers only touch state through setters, so they're safe to capture from any render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [items, totalItems, isOpen],
   );
 

@@ -62,7 +62,7 @@ const inputClass =
 const labelClass = "mb-1.5 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase";
 const errorClass = "mt-1 font-body text-xs text-red-600";
 const filledButton =
-  "inline-flex h-12 w-full items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
+  "inline-flex h-12 w-full items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 
 function validate(form) {
   const errors = {};
@@ -127,10 +127,10 @@ export function PricingPage() {
   }
 
   return (
-    <main className="bg-paper">
+    <div className="bg-paper">
       <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Pricing</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Pricing</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Estimate your order, then get a firm quote.
           </h1>
@@ -185,7 +185,7 @@ export function PricingPage() {
                   <span
                     key={mark.qty}
                     className={`absolute -translate-x-1/2 font-body text-[10px] tabular-nums ${
-                      qty >= mark.qty ? "text-moss" : "text-pine-soft"
+                      qty >= mark.qty ? "text-moss-deep" : "text-pine-soft"
                     }`}
                     style={{ left: `${mark.pct}%` }}
                   >
@@ -276,7 +276,7 @@ export function PricingPage() {
               <div className="border-t border-pine/15 pt-6">
                 <div className="flex items-baseline justify-between">
                   <span className={labelClass}>Per unit</span>
-                  <span className="font-display text-3xl tabular-nums text-moss">{formatGBP(perUnit)}</span>
+                  <span className="font-display text-3xl tabular-nums text-moss-deep">{formatGBP(perUnit)}</span>
                 </div>
                 <div className="mt-2 flex items-baseline justify-between">
                   <span className={labelClass}>Estimated total ({qty} units)</span>
@@ -367,6 +367,7 @@ export function PricingPage() {
                       {GARMENT_COLOURS.map((c) => (
                         <span
                           key={c.hex}
+                          role="img"
                           title={c.label}
                           aria-label={c.label}
                           className="h-8 w-8 rounded-full border-2 border-pine/15"
@@ -445,7 +446,7 @@ export function PricingPage() {
                     <p className="mt-3 font-body text-xs text-pine-soft">No obligation. We reply within 24 hours.</p>
                     <p className="mt-1 font-body text-xs text-pine-soft">
                       By submitting, you agree to our{" "}
-                      <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+                      <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss-deep">
                         Privacy Policy
                       </Link>
                       .
@@ -460,7 +461,7 @@ export function PricingPage() {
 
       <section className="border-t border-pine/15 px-6 py-16 md:px-8 md:py-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss uppercase">
+          <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
             Reference
           </span>
           <h2 className="mb-10 max-w-2xl font-display text-3xl text-pine md:text-4xl">
@@ -500,7 +501,7 @@ export function PricingPage() {
             {ADDON_REFERENCE.map((addon) => (
               <div key={addon.label} className="rounded-sm border border-pine/15 bg-bone p-4">
                 <p className="mb-2 font-body text-xs tracking-[0.12em] text-pine-soft uppercase">{addon.label}</p>
-                <p className="font-display text-xl tabular-nums text-moss">
+                <p className="font-display text-xl tabular-nums text-moss-deep">
                   {formatGBP(addon.price)}
                   <span className="text-xs text-pine-soft">/unit</span>
                 </p>
@@ -509,6 +510,6 @@ export function PricingPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

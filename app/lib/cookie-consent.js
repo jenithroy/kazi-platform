@@ -17,6 +17,8 @@ export function CookieConsentProvider({ children }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
+      // Post-mount read for the same reason as cart-context: no localStorage at prerender time.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (stored === "accepted" || stored === "rejected") setConsent(stored);
     } catch {
       // storage unavailable (private browsing) — banner just shows every visit

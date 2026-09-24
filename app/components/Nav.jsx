@@ -167,7 +167,7 @@ export function Nav() {
               <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a48,48,0,0,1-96,0,8,8,0,0,1,16,0,32,32,0,0,0,64,0,8,8,0,0,1,16,0Z"></path>
             </svg>
             {totalItems > 0 && (
-              <span className="absolute top-0.5 right-0.5 inline-flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-moss px-[3px] font-body text-[0.625rem] font-semibold leading-none text-pine">
+              <span className="absolute top-0.5 right-0.5 inline-flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-moss-deep px-[3px] font-body text-[0.625rem] font-semibold leading-none text-bone">
                 {totalItems}
               </span>
             )}
@@ -206,6 +206,24 @@ export function Nav() {
               {link.label}
             </Link>
           ))}
+          {/* The header bag icon is desktop-only (no room beside the logo, CTA and account
+              icon at phone widths), so the menu is the mobile way back into the bag. */}
+          <button
+            type="button"
+            onClick={() => {
+              setMenuOpen(false);
+              openCart();
+            }}
+            className="flex items-center justify-between border-b border-paper-raised py-2.5 text-left font-body text-base font-medium text-pine"
+          >
+            Bag
+            {totalItems > 0 && (
+              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-moss-deep px-1.5 text-xs font-semibold text-bone">
+                {totalItems}
+                <span className="sr-only"> items</span>
+              </span>
+            )}
+          </button>
           <Link
             href="/quote"
             onClick={() => setMenuOpen(false)}

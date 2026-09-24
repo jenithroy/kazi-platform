@@ -104,7 +104,9 @@ export function SmoothScroll({ children }) {
       const hash = anchor.getAttribute("href");
       if (!hash || hash.length < 2) return;
 
-      const target = document.querySelector(hash);
+      // getElementById rather than querySelector: a hash that isn't a valid CSS selector
+      // (e.g. "#1-intro") would make querySelector throw inside this document-wide handler.
+      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
       if (!target) return;
 
       event.preventDefault();

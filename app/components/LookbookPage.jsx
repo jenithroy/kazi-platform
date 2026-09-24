@@ -6,7 +6,7 @@ import Image from "next/image";
 import { categoryImage } from "@/lib/products";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
+  "inline-flex h-11 items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
 const outlineButton =
   "inline-flex h-11 items-center justify-center rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
@@ -29,10 +29,10 @@ export function LookbookPage() {
     activeCategory === "All" ? GALLERY : GALLERY.filter((item) => item.category === activeCategory);
 
   return (
-    <main className="bg-paper">
+    <div className="bg-paper">
       <section className="px-6 pb-10 pt-16 md:px-8 md:pb-12 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Lookbook</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Lookbook</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Fabric, fit and finish, by category.
           </h1>
@@ -56,7 +56,7 @@ export function LookbookPage() {
                 type="button"
                 onClick={() => setActiveCategory(category)}
                 className={`inline-flex h-9 shrink-0 items-center rounded-sm px-4 font-body text-xs font-semibold tracking-wide transition-colors duration-150 ${
-                  active ? "bg-moss text-pine" : "border border-pine text-pine hover:bg-bone"
+                  active ? "bg-moss-deep text-bone" : "border border-pine text-pine hover:bg-bone"
                 }`}
               >
                 {category}
@@ -107,13 +107,13 @@ export function LookbookPage() {
           </div>
           <p className="mt-8 font-body text-sm text-pine-soft">
             Ready to start an order? Browse priced, shoppable styles in the{" "}
-            <Link href="/collections" className="text-pine underline transition-colors hover:text-moss">
+            <Link href="/collections" className="text-pine underline transition-colors hover:text-moss-deep">
               Collection
             </Link>
             .
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

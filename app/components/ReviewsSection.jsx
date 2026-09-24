@@ -67,7 +67,7 @@ const ROW_TWO = [
 
 function Stars({ rating }) {
   return (
-    <div className="flex items-center gap-0.5" aria-label={`${rating} out of 5 stars`}>
+    <div role="img" className="flex items-center gap-0.5" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
@@ -115,7 +115,7 @@ export function ReviewsSection() {
   return (
     <section id="reviews" className="overflow-hidden bg-white py-20 md:py-28">
       <Reveal className="mx-auto mb-14 max-w-[760px] px-6 text-center md:mb-20">
-        <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Reviews</span>
+        <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Reviews</span>
         <h2 className="m-0 font-display text-3xl leading-[1.2] text-pine md:text-4xl lg:text-[2.75rem]">
           What brands say about working with us.
         </h2>

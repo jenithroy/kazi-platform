@@ -118,49 +118,53 @@ export function ProcessSection() {
           </h2>
         </Reveal>
 
-        <ol ref={listRef} className="relative m-0 list-none p-0 pl-10 md:pl-14">
-          <div className="absolute left-0 top-1 bottom-1 w-px bg-pine/10" />
-          <div ref={fillRef} className="absolute left-0 top-1 w-px bg-moss" style={{ height: 0 }}>
+        {/* The progress track lives beside the <ol>, not inside it — a list may only contain
+            <li> children. */}
+        <div className="relative">
+          <div aria-hidden="true" className="absolute left-0 top-1 bottom-1 w-px bg-pine/10" />
+          <div aria-hidden="true" ref={fillRef} className="absolute left-0 top-1 w-px bg-moss" style={{ height: 0 }}>
             <span className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-moss shadow-[0_0_10px_2px_rgba(63,143,92,0.55)]" />
           </div>
 
-          {PROCESS_STEPS.map((step, index) => (
-            <li
-              key={step.title}
-              ref={(el) => (stepRefs.current[index] = el)}
-              className="relative pb-24 opacity-100 transition-opacity duration-500 last:pb-0 md:pb-32"
-            >
-              <span
-                ref={(el) => (markerRefs.current[index] = el)}
-                className="absolute -left-10 top-1 h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-pine/20 bg-white transition-colors duration-500 md:-left-14"
-              />
+          <ol ref={listRef} className="relative m-0 list-none p-0 pl-10 md:pl-14">
+            {PROCESS_STEPS.map((step, index) => (
+              <li
+                key={step.title}
+                ref={(el) => (stepRefs.current[index] = el)}
+                className="relative pb-24 opacity-100 transition-opacity duration-500 last:pb-0 md:pb-32"
+              >
+                <span
+                  ref={(el) => (markerRefs.current[index] = el)}
+                  className="absolute -left-10 top-1 h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-pine/20 bg-white transition-colors duration-500 md:-left-14"
+                />
 
-              <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,300px)] md:items-start md:gap-12">
-                <div>
-                  <span className="mb-2 block font-body text-sm font-medium tabular-nums text-moss">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="m-0 font-display text-xl text-pine md:text-2xl">{step.title}</h3>
-                </div>
-
-                <div>
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-pine/10 bg-paper-raised">
-                    <Image
-                      src={step.image}
-                      alt={step.title}
-                      fill
-                      sizes="(min-width: 768px) 300px, 100vw"
-                      className="object-cover"
-                    />
+                <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,300px)] md:items-start md:gap-12">
+                  <div>
+                    <span className="mb-2 block font-body text-sm font-medium tabular-nums text-moss-deep">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="m-0 font-display text-xl text-pine md:text-2xl">{step.title}</h3>
                   </div>
-                  <p className="m-0 mt-3 font-body text-sm leading-relaxed text-pine-soft md:text-base">
-                    {step.description}
-                  </p>
+
+                  <div>
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-pine/10 bg-paper-raised">
+                      <Image
+                        src={step.image}
+                        alt={step.title}
+                        fill
+                        sizes="(min-width: 768px) 300px, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="m-0 mt-3 font-body text-sm leading-relaxed text-pine-soft md:text-base">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ol>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );

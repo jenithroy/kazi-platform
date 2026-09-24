@@ -50,7 +50,7 @@ const inputClass =
 const labelClass = "mb-1.5 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase";
 const errorClass = "mt-1 font-body text-xs text-red-600";
 const filledButton =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 const pillButton = (active) =>
@@ -229,9 +229,9 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
 
   if (submitted) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-paper px-6 py-24 md:px-8">
+      <div className="flex min-h-[70vh] items-center justify-center bg-paper px-6 py-24 md:px-8">
         <div className="max-w-md text-center">
-          <span className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-moss/15 text-moss">
+          <span className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-moss/15 text-moss-deep">
             <Check size={22} strokeWidth={2} />
           </span>
           <h1 className="mb-3 font-display text-3xl text-pine md:text-4xl">Request received</h1>
@@ -239,32 +239,34 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
             Thank you, {firstName}. Our team will review your enquiry and respond within 24 hours.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link href="/" className="inline-flex items-center gap-2 font-body text-sm text-pine transition-colors hover:text-moss">
+            <Link href="/" className="inline-flex items-center gap-2 font-body text-sm text-pine transition-colors hover:text-moss-deep">
               <ArrowLeft size={14} strokeWidth={1.5} /> Return home
             </Link>
-            <Link href="/atelier" className="inline-flex items-center gap-2 font-body text-sm text-pine transition-colors hover:text-moss">
+            <Link href="/atelier" className="inline-flex items-center gap-2 font-body text-sm text-pine transition-colors hover:text-moss-deep">
               Explore the Atelier <ArrowRight size={14} strokeWidth={1.5} />
             </Link>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="bg-paper">
+    <div className="bg-paper">
       <section className="px-6 pt-16 pb-12 md:px-8 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          {!hideHeading && (
+          {hideHeading ? (
+            <h1 className="sr-only">Request a quote for your Atelier design</h1>
+          ) : (
             <>
-              <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss uppercase">
+              <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
                 Request a Quote
               </span>
               <h1 className="mb-4 font-display text-4xl text-pine md:text-5xl">Tell us what you&rsquo;re making.</h1>
             </>
           )}
           {isHandoff && (
-            <Link href="/atelier" className="mt-6 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss">
+            <Link href="/atelier" className="mt-6 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss-deep">
               <ArrowLeft size={14} strokeWidth={1.5} /> Back to Atelier
             </Link>
           )}
@@ -484,7 +486,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
 
                   <div>
                     <span className={labelClass}>
-                      Additional files <span className="text-pine-soft/70 normal-case">(optional)</span>
+                      Additional files <span className="text-pine-soft normal-case">(optional)</span>
                     </span>
                     <label className="flex cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-pine/15 p-4 text-center transition-colors hover:border-pine/40">
                       <input
@@ -547,7 +549,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
             {errors.agreedToTerms && <p className={`${errorClass} w-full`}>{errors.agreedToTerms}</p>}
             <span className="w-full font-body text-xs text-pine-soft">
               By submitting, you agree to our{" "}
-              <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+              <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss-deep">
                 Privacy Policy
               </Link>
               .
@@ -567,6 +569,6 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { Reveal } from "@/components/Reveal";
 
 export function Hero() {
   return (
     <section
-      id="top"
       className="relative flex min-h-[100dvh] items-start justify-center overflow-hidden bg-cover bg-[position:50%_85%] px-6 pt-[calc(var(--nav-height)+64px)] pb-24 md:pb-24"
       style={{ backgroundImage: "url(/hero/hero.jpeg)" }}
     >
@@ -14,23 +12,25 @@ export function Hero() {
       />
 
       <div className="relative z-[1] flex max-w-[58rem] flex-col items-center gap-7 text-center">
-        <Reveal as="h1" className="m-0 font-display text-[clamp(2rem,3.25vw+1rem,3.25rem)] font-normal leading-[1.15] text-bone [text-shadow:0_2px_28px_rgba(12,18,32,0.35)]">
+        <h1 className="m-0 font-display text-[clamp(2rem,3.25vw+1rem,3.25rem)] font-normal leading-[1.15] text-bone [text-shadow:0_2px_28px_rgba(12,18,32,0.35)]">
           Bespoke Apparel
           <br />
           Manufacturing in <em className="italic">Nepal</em>
-        </Reveal>
-        <Reveal delay={160}>
+        </h1>
+        {/* The headline and CTA are the first thing on the page (and its LCP element), so they
+            render visible straight from the HTML rather than waiting on Reveal's JS fade-in. */}
+        <div>
           <Link
             href="/quote"
             className="mt-2 inline-flex h-13 items-center whitespace-nowrap rounded-sm border border-white/40 bg-bone px-8 font-body text-base font-semibold text-pine shadow-[0_4px_20px_rgba(0,0,0,0.22),0_2px_6px_rgba(0,0,0,0.12)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-white hover:shadow-[0_8px_28px_rgba(0,0,0,0.3),0_3px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] active:translate-y-0"
           >
             Get a Quote
           </Link>
-        </Reveal>
+        </div>
       </div>
 
       <a
-        href="#trust"
+        href="#brands"
         aria-label="Scroll to content"
         className="absolute bottom-5 left-1/2 z-[1] inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-pine/40 py-2 pl-4 pr-3 text-bone opacity-90 backdrop-blur-sm transition-opacity hover:opacity-100 md:bottom-7"
       >

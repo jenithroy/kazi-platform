@@ -13,6 +13,31 @@ Caveat: the sandbox blocks `api.fontshare.com`, so General Sans fell back to sys
 
 ---
 
+## Progress
+
+**Fixed in this branch**
+- #3: the hero no longer uses `Reveal`, and `Reveal` only hides content once JS has flagged `<html class="js">`.
+- #5: primary buttons are now bone text on `moss-deep` with a pine hover, small green text uses `moss-deep`, footer headings use `bone/60`, and inline account links are underlined.
+- #7: the bag is reachable from the mobile menu.
+- #8: nested `<main>` elements removed.
+- #9: homepage quote form errors are linked to their fields, focus moves to the first error, and submit is hardened.
+- #10: broken anchors fixed, and the hash handler is guarded.
+- #11 (partly): dead components and 16 unused assets removed, and ESLint is down from 13 errors to 8 (all in `GarmentViewer.jsx`).
+- #12 (partly): ARIA roles on ratings and swatches, `ProcessSection` list markup, `/atelier/quote` `<h1>`, a branded 404 page, and `lang="en-GB"`.
+
+axe results after these fixes: colour-contrast nodes went from 308 to 30, the only ones left being the intentionally faded inactive `ProcessSection` steps. Every other serious or landmark rule is now at 0, except `region` (the floating WhatsApp button).
+
+**Still open**
+- #1 image pipeline
+- #2 video transcoding
+- #4 Suspense and prerendering
+- #6 motion pause controls
+- The `GarmentViewer.jsx` lint errors
+- Self-hosting General Sans
+- Scoping GSAP and Lenis to the routes that need them
+
+---
+
 ## Summary
 
 | # | Area | Severity | Finding |

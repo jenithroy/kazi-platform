@@ -32,9 +32,8 @@ export const Reveal = forwardRef(function Reveal(
         if (typeof forwardedRef === "function") forwardedRef(el);
         else if (forwardedRef) forwardedRef.current = el;
       }}
-      className={`transition-all duration-700 ease-out ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      } ${className}`}
+      className={`reveal ${className}`}
+      data-revealed={visible ? "" : undefined}
       style={{ transitionDelay: `${delay}ms`, ...style }}
       {...props}
     />

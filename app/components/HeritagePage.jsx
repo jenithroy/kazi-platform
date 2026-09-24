@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
+  "inline-flex h-11 items-center justify-center rounded-sm bg-moss-deep px-6 font-body text-sm font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
 const outlineButton =
   "inline-flex h-11 items-center justify-center rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 const filledButtonSmall =
-  "inline-flex h-9 items-center justify-center rounded-sm bg-moss px-4 font-body text-xs font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
+  "inline-flex h-9 items-center justify-center rounded-sm bg-moss-deep px-4 font-body text-xs font-semibold tracking-wide text-bone transition-colors hover:bg-pine";
 
 // Service catalogue and process steps below are this project's own placeholder set, written to
 // match the site's voice — not a confirmed list of what Kazi actually offers or its real specs.
@@ -112,10 +112,10 @@ const OPERATING_PRINCIPLES = [
 
 export function HeritagePage() {
   return (
-    <main className="bg-paper">
+    <div className="bg-paper">
       <section className="border-b border-pine/15 px-6 pb-12 pt-16 md:px-8 md:pb-16 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">What We Do</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">What We Do</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Manufacturing and editing services, in one place.
           </h1>
@@ -136,7 +136,7 @@ export function HeritagePage() {
               }`}
             >
               <div>
-                <span className="font-body text-xs font-medium tracking-[0.1em] text-moss">
+                <span className="font-body text-xs font-medium tracking-[0.1em] text-moss-deep">
                   {service.code}
                 </span>
                 <h2 className="mt-2 mb-2 font-display text-2xl text-pine md:text-3xl">
@@ -155,7 +155,7 @@ export function HeritagePage() {
                 <ul className="space-y-3">
                   {service.specs.map((spec) => (
                     <li key={spec} className="flex items-start gap-2.5 font-body text-sm text-pine">
-                      <Check size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-moss" />
+                      <Check size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-moss-deep" />
                       {spec}
                     </li>
                   ))}
@@ -169,7 +169,7 @@ export function HeritagePage() {
       <section className="border-t border-pine/15 py-16 md:py-20">
         <div className="mx-auto max-w-[1440px] px-6 md:px-8">
           <div className="mb-12">
-            <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss uppercase">
+            <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
               How a Garment Moves
             </span>
             <h2 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
@@ -180,7 +180,7 @@ export function HeritagePage() {
           <ol className="grid gap-8 md:grid-cols-5 md:gap-6">
             {SUPPLY_CHAIN_STEPS.map((step, index) => (
               <li key={step.label}>
-                <span className="mb-3 block font-body text-sm font-medium tracking-[0.06em] tabular-nums text-moss">
+                <span className="mb-3 block font-body text-sm font-medium tracking-[0.06em] tabular-nums text-moss-deep">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <h3 className="mb-2 font-display text-lg text-pine">{step.label}</h3>
@@ -193,7 +193,7 @@ export function HeritagePage() {
 
       <section className="border-t border-pine/15 bg-bone py-16">
         <div className="mx-auto max-w-[1440px] px-6 text-center md:px-8">
-          <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss uppercase">
+          <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
             How We Operate
           </span>
           <p className="font-body text-sm tracking-wide text-pine-soft md:text-base">
@@ -220,6 +220,6 @@ export function HeritagePage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

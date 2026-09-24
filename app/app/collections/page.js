@@ -14,7 +14,7 @@ function CollectionsFallback() {
     <div className="bg-paper">
       <section className="px-6 pb-10 pt-16 md:px-8 md:pb-12 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Shop the Range</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Shop the Range</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">The Collection</h1>
           <p className="mt-4 max-w-xl font-body leading-relaxed text-pine-soft">
             Ready-to-order styles across knitwear, outerwear, denim, accessories and footwear —
