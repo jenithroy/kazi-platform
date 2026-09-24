@@ -17,10 +17,10 @@ function renderBlock(block, i) {
 
 export function LegalPageLayout({ title, lastUpdated, intro, sections }) {
   return (
-    <main className="bg-paper">
+    <div className="bg-paper">
       <section className="border-b border-pine/15 px-6 pb-10 pt-16 md:px-8 md:pb-12 md:pt-20">
         <div className="mx-auto max-w-3xl">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Legal</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Legal</span>
           <h1 className="m-0 font-display text-3xl text-pine md:text-4xl">{title}</h1>
           <p className="mt-4 font-body text-sm text-pine-soft">Last updated: {lastUpdated}</p>
           {intro && (
@@ -39,6 +39,6 @@ export function LegalPageLayout({ title, lastUpdated, intro, sections }) {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

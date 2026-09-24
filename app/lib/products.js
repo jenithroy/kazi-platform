@@ -1,6 +1,6 @@
 // Placeholder catalogue for /collections and /products/[slug]. Structurally correct,
 // numerically fictional — every price/MOQ/sustainability figure needs a real-data pass
-// before ship, same flag already used elsewhere (TrustStripe's stats, e.g.) for unverified
+// before ship, same flag used for any other unverified
 // placeholder content. Don't quote these prices to a customer.
 //
 // `garmentModel` is only set where the Atelier's 3D viewer actually has a matching mesh

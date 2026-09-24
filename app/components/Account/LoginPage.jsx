@@ -12,7 +12,7 @@ const inputClass =
 const labelClass = "mb-1.5 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase";
 const errorClass = "mt-1 font-body text-xs text-red-600";
 const filledButton =
-  "inline-flex h-11 w-full items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex h-11 w-full items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone disabled:cursor-not-allowed disabled:opacity-60";
 
 export function LoginPage() {
   const router = useRouter();
@@ -60,7 +60,7 @@ export function LoginPage() {
         <div>
           <div className="mb-1.5 flex items-center justify-between">
             <label className="font-body text-xs tracking-[0.12em] text-pine-soft uppercase" htmlFor="password">Password</label>
-            <Link href={`/account/forgot-password${redirectQuery}`} className="font-body text-xs text-moss transition-colors hover:text-moss-deep">
+            <Link href={`/account/forgot-password${redirectQuery}`} className="font-body text-xs text-moss-deep transition-colors hover:text-pine">
               Forgot password?
             </Link>
           </div>
@@ -77,12 +77,12 @@ export function LoginPage() {
 
       <p className="mt-6 text-center font-body text-sm text-pine-soft">
         Don&rsquo;t have an account?{" "}
-        <Link href={`/account/register${redirectQuery}`} className="text-moss transition-colors hover:text-moss-deep">
+        <Link href={`/account/register${redirectQuery}`} className="text-moss-deep underline underline-offset-2 transition-colors hover:text-pine">
           Create account &rarr;
         </Link>
       </p>
 
-      <Link href="/" className="mt-8 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss">
+      <Link href="/" className="mt-8 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss-deep">
         <ArrowLeft size={14} strokeWidth={1.5} /> Return home
       </Link>
     </AccountShell>

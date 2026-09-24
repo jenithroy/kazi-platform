@@ -8,10 +8,10 @@ import { Minus, Plus, ShoppingBag, Trash, X } from "@phosphor-icons/react";
 import { useCart, describeCartItems } from "@/lib/cart-context";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
+  "inline-flex h-11 items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 
-// Sits above every other fixed/sticky layer on the site (TrustStripe and Nav top out at
-// z-50/z-40, DiscountPopup at z-50) — the bag has to win that stack regardless of which page
+// Sits above every other fixed/sticky layer on the site (Nav tops out at z-50, the cookie
+// banner at z-60) — the bag has to win that stack regardless of which page
 // it's opened from.
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';

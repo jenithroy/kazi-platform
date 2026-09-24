@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 
 export default function QtyStepper({
@@ -13,10 +13,13 @@ export default function QtyStepper({
   disabled = false,
 }) {
   const [draft, setDraft] = useState(String(value));
-
-  useEffect(() => {
+  // Re-sync the text field when the value changes from outside (e.g. a preset button) —
+  // adjusted during render rather than in an effect, so there's no extra stale-draft render.
+  const [syncedValue, setSyncedValue] = useState(value);
+  if (value !== syncedValue) {
+    setSyncedValue(value);
     setDraft(String(value));
-  }, [value]);
+  }
 
   function clamp(n) {
     return Math.min(max, Math.max(min, n));

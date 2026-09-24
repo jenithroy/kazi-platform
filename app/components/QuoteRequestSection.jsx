@@ -52,6 +52,19 @@ function validate(form) {
   return errors;
 }
 
+// Field key -> input id, in on-screen order, so a failed submit can move focus to the first
+// field that needs fixing and each error can be tied to its input via aria-describedby.
+const FIELD_IDS = {
+  name: "qr-name",
+  company: "qr-company",
+  email: "qr-email",
+  garmentCategory: "qr-garment-category",
+  garmentCategoryOther: "qr-garment-category-other",
+  orderVolume: "qr-order-volume",
+  orderVolumeOther: "qr-order-volume-other",
+  message: "qr-message",
+};
+
 function resolveQuantity(form) {
   if (form.orderVolume === "Other") return parseInt(form.orderVolumeOther.replace(/[^\d]/g, ""), 10) || 0;
   return ORDER_VOLUME_FLOOR[form.orderVolume] ?? 0;
@@ -79,39 +92,62 @@ export function QuoteRequestSection() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  function a11yProps(key) {
+    return errors[key]
+      ? { "aria-invalid": "true", "aria-describedby": `${FIELD_IDS[key]}-error` }
+      : {};
+  }
+
+  function fieldError(name) {
+    if (!errors[name]) return null;
+    return (
+      <span id={`${FIELD_IDS[name]}-error`} className={errorClass}>
+        {errors[name]}
+      </span>
+    );
+  }
+
   async function onSubmit(e) {
     e.preventDefault();
     const nextErrors = validate(form);
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
+    const firstInvalid = Object.keys(FIELD_IDS).find((key) => nextErrors[key]);
+    if (firstInvalid) {
+      document.getElementById(FIELD_IDS[firstInvalid])?.focus();
+      return;
+    }
 
     setSubmitting(true);
     setSubmitError(null);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    const { error } = await supabase.from("quotes").insert({
-      customer_id: user?.id ?? null,
-      contact_name: form.name,
-      contact_email: form.email,
-      contact_phone: form.phone || null,
-      company_name: form.company,
-      product_type: form.garmentCategory === "Other" ? form.garmentCategoryOther : form.garmentCategory,
-      quantity: resolveQuantity(form),
-      details: form.message,
-    });
+      const { error } = await supabase.from("quotes").insert({
+        customer_id: user?.id ?? null,
+        contact_name: form.name,
+        contact_email: form.email,
+        contact_phone: form.phone || null,
+        company_name: form.company,
+        product_type: form.garmentCategory === "Other" ? form.garmentCategoryOther : form.garmentCategory,
+        quantity: resolveQuantity(form),
+        details: form.message,
+      });
+      if (error) throw error;
 
-    if (error) {
-      setSubmitError(error.message);
+      clearQuoteDesigns();
+      setSubmitted(true);
+    } catch (err) {
+      // Raw Supabase/network messages aren't meant for visitors — keep them in the console.
+      console.error("Quote request failed", err);
+      setSubmitError(
+        "We couldn't send your request just now. Please try again, or email hello@kazimanufacturing.com.",
+      );
+    } finally {
       setSubmitting(false);
-      return;
     }
-
-    setSubmitting(false);
-    clearQuoteDesigns();
-    setSubmitted(true);
   }
 
   return (
@@ -139,21 +175,21 @@ export function QuoteRequestSection() {
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
                   <label className={labelClass} htmlFor="qr-name">Name</label>
-                  <input id="qr-name" className={inputClass} type="text" autoComplete="name" value={form.name} onChange={(e) => field("name", e.target.value)} />
-                  {errors.name && <span className={errorClass}>{errors.name}</span>}
+                  <input id="qr-name" {...a11yProps("name")} className={inputClass} type="text" autoComplete="name" value={form.name} onChange={(e) => field("name", e.target.value)} />
+                  {fieldError("name")}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className={labelClass} htmlFor="qr-company">Company Name</label>
-                  <input id="qr-company" className={inputClass} type="text" autoComplete="organization" value={form.company} onChange={(e) => field("company", e.target.value)} />
-                  {errors.company && <span className={errorClass}>{errors.company}</span>}
+                  <input id="qr-company" {...a11yProps("company")} className={inputClass} type="text" autoComplete="organization" value={form.company} onChange={(e) => field("company", e.target.value)} />
+                  {fieldError("company")}
                 </div>
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
                   <label className={labelClass} htmlFor="qr-email">Email</label>
-                  <input id="qr-email" className={inputClass} type="email" autoComplete="email" value={form.email} onChange={(e) => field("email", e.target.value)} />
-                  {errors.email && <span className={errorClass}>{errors.email}</span>}
+                  <input id="qr-email" {...a11yProps("email")} className={inputClass} type="email" autoComplete="email" value={form.email} onChange={(e) => field("email", e.target.value)} />
+                  {fieldError("email")}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className={labelClass} htmlFor="qr-phone">
@@ -168,6 +204,7 @@ export function QuoteRequestSection() {
                   <label className={labelClass} htmlFor="qr-garment-category">Garment Category</label>
                   <select
                     id="qr-garment-category"
+                    {...a11yProps("garmentCategory")}
                     className={`${inputClass} appearance-none bg-[image:linear-gradient(45deg,transparent_50%,var(--color-pine-soft)_50%),linear-gradient(135deg,var(--color-pine-soft)_50%,transparent_50%)] bg-[position:calc(100%-20px)_center,calc(100%-14px)_center] bg-[size:6px_6px] bg-no-repeat`}
                     value={form.garmentCategory}
                     onChange={(e) => field("garmentCategory", e.target.value)}
@@ -177,10 +214,12 @@ export function QuoteRequestSection() {
                       <option key={category} value={category}>{category}</option>
                     ))}
                   </select>
-                  {errors.garmentCategory && <span className={errorClass}>{errors.garmentCategory}</span>}
+                  {fieldError("garmentCategory")}
                   {form.garmentCategory === "Other" && (
                     <>
                       <input
+                        id="qr-garment-category-other"
+                        {...a11yProps("garmentCategoryOther")}
                         className={inputClass}
                         type="text"
                         placeholder="Tell us the category"
@@ -188,7 +227,7 @@ export function QuoteRequestSection() {
                         value={form.garmentCategoryOther}
                         onChange={(e) => field("garmentCategoryOther", e.target.value)}
                       />
-                      {errors.garmentCategoryOther && <span className={errorClass}>{errors.garmentCategoryOther}</span>}
+                      {fieldError("garmentCategoryOther")}
                     </>
                   )}
                 </div>
@@ -197,6 +236,7 @@ export function QuoteRequestSection() {
                   <label className={labelClass} htmlFor="qr-order-volume">Approximate Order Volume</label>
                   <select
                     id="qr-order-volume"
+                    {...a11yProps("orderVolume")}
                     className={`${inputClass} appearance-none bg-[image:linear-gradient(45deg,transparent_50%,var(--color-pine-soft)_50%),linear-gradient(135deg,var(--color-pine-soft)_50%,transparent_50%)] bg-[position:calc(100%-20px)_center,calc(100%-14px)_center] bg-[size:6px_6px] bg-no-repeat`}
                     value={form.orderVolume}
                     onChange={(e) => field("orderVolume", e.target.value)}
@@ -206,10 +246,12 @@ export function QuoteRequestSection() {
                       <option key={volume} value={volume}>{volume}</option>
                     ))}
                   </select>
-                  {errors.orderVolume && <span className={errorClass}>{errors.orderVolume}</span>}
+                  {fieldError("orderVolume")}
                   {form.orderVolume === "Other" && (
                     <>
                       <input
+                        id="qr-order-volume-other"
+                        {...a11yProps("orderVolumeOther")}
                         className={inputClass}
                         type="text"
                         inputMode="numeric"
@@ -218,7 +260,7 @@ export function QuoteRequestSection() {
                         value={form.orderVolumeOther}
                         onChange={(e) => field("orderVolumeOther", e.target.value)}
                       />
-                      {errors.orderVolumeOther && <span className={errorClass}>{errors.orderVolumeOther}</span>}
+                      {fieldError("orderVolumeOther")}
                     </>
                   )}
                 </div>
@@ -228,24 +270,25 @@ export function QuoteRequestSection() {
                 <label className={labelClass} htmlFor="qr-message">Project Details</label>
                 <textarea
                   id="qr-message"
+                  {...a11yProps("message")}
                   rows={4}
                   className={`${inputClass} min-h-24 resize-y`}
                   value={form.message}
                   onChange={(e) => field("message", e.target.value)}
                 />
-                {errors.message && <span className={errorClass}>{errors.message}</span>}
+                {fieldError("message")}
               </div>
 
               <div className="mt-2 flex flex-col items-start gap-3.5">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex h-12 items-center rounded-sm bg-moss px-7 font-body text-sm font-semibold text-pine transition-colors hover:bg-moss-deep disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex h-12 items-center rounded-sm btn-gradient px-7 font-body text-sm font-semibold text-bone disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {submitting ? "Sending…" : "Get a Quote"}
                 </button>
-                <span className="font-body text-sm text-pine-soft/80">No obligation. We reply within 24 hours.</span>
-                {submitError && <p className={errorClass}>{submitError}</p>}
+                <span className="font-body text-sm text-pine-soft">No obligation. We reply within 24 hours.</span>
+                {submitError && <p role="alert" className={errorClass}>{submitError}</p>}
               </div>
             </form>
           )}

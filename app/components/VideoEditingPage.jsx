@@ -4,11 +4,11 @@ import { ArrowRight, Captions, Check, Film, Layers, Palette, ShoppingBag, Sparkl
 import { Reveal } from "@/components/Reveal";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center gap-2 rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
+  "inline-flex h-11 items-center justify-center gap-2 rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
-const eyebrow = "mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss";
+const eyebrow = "mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep";
 const sectionHeading = "m-0 font-display text-2xl text-pine md:text-3xl";
 
 // Copy here is plain on purpose — ordinary sentences, no em-dashes, no "not X, just Y"
@@ -273,7 +273,7 @@ export function VideoEditingPage() {
           <div className="grid gap-px border border-pine/15 bg-pine/15 sm:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map(({ icon: Icon, title, body }, index) => (
               <Reveal key={title} delay={index * 60} as="article" className="bg-bone p-8">
-                <Icon size={22} strokeWidth={1.5} className="mb-5 text-moss" />
+                <Icon size={22} strokeWidth={1.5} className="mb-5 text-moss-deep" />
                 <h3 className="m-0 mb-3 font-display text-xl leading-snug text-pine">{title}</h3>
                 <p className="m-0 font-body text-sm leading-relaxed text-pine-soft">{body}</p>
               </Reveal>
@@ -348,7 +348,7 @@ export function VideoEditingPage() {
                 <ul className="m-0 mb-8 list-none space-y-2.5 p-0">
                   {pkg.points.map((point) => (
                     <li key={point} className="flex items-start gap-2.5">
-                      <Check size={14} strokeWidth={2} className="mt-1 shrink-0 text-moss" />
+                      <Check size={14} strokeWidth={2} className="mt-1 shrink-0 text-moss-deep" />
                       <span className="font-body text-sm leading-relaxed text-pine">{point}</span>
                     </li>
                   ))}
@@ -403,7 +403,7 @@ export function VideoEditingPage() {
           <div className="grid gap-8 sm:grid-cols-2 md:gap-10 lg:grid-cols-4">
             {PROCESS.map(({ step, title, body }, index) => (
               <Reveal key={step} delay={index * 80} className="border-t border-pine/15 pt-5">
-                <span className="mb-3 block font-body text-sm font-medium tabular-nums tracking-[0.12em] text-moss">
+                <span className="mb-3 block font-body text-sm font-medium tabular-nums tracking-[0.12em] text-moss-deep">
                   {step}
                 </span>
                 <h3 className="m-0 mb-3 font-display text-xl text-pine">{title}</h3>
@@ -424,7 +424,7 @@ export function VideoEditingPage() {
             <ul className="m-0 list-none space-y-3 p-0">
               {INTAKE.map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <Check size={15} strokeWidth={2} className="mt-1 shrink-0 text-moss" />
+                  <Check size={15} strokeWidth={2} className="mt-1 shrink-0 text-moss-deep" />
                   <span className="font-body leading-relaxed text-pine-soft">{item}</span>
                 </li>
               ))}
@@ -461,7 +461,7 @@ export function VideoEditingPage() {
                   {q}
                   <span
                     aria-hidden="true"
-                    className="shrink-0 font-body text-moss transition-transform duration-150 group-open:rotate-45"
+                    className="shrink-0 font-body text-moss-deep transition-transform duration-150 group-open:rotate-45"
                   >
                     +
                   </span>
@@ -495,7 +495,7 @@ export function VideoEditingPage() {
           </div>
           <Link
             href="/quote"
-            className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-sm bg-moss px-7 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep md:self-auto"
+            className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-sm btn-gradient px-7 font-body text-sm font-semibold tracking-wide text-bone md:self-auto"
           >
             Start a project <ArrowRight size={14} strokeWidth={1.5} />
           </Link>

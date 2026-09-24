@@ -28,7 +28,7 @@ const GarmentMockup2D = dynamic(
 );
 
 const filledButton =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep sm:w-auto";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone sm:w-auto";
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
@@ -142,7 +142,7 @@ export function ProductPage({ slug }) {
 
           {/* Info */}
           <div className="flex flex-col">
-            <span className="mb-2 font-body text-xs tracking-[0.18em] text-moss uppercase">
+            <span className="mb-2 font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
               {product.category}
             </span>
             <h1 className="mb-2 font-display text-3xl text-pine md:text-4xl">{product.name}</h1>
@@ -249,7 +249,7 @@ export function ProductPage({ slug }) {
                   <ul className="space-y-1.5 pb-4">
                     {product.specs.map((spec) => (
                       <li key={spec} className="flex items-start gap-2 font-body text-sm text-pine-soft">
-                        <span className="mt-1 text-moss">•</span>
+                        <span className="mt-1 text-moss-deep">•</span>
                         <span>{spec}</span>
                       </li>
                     ))}
@@ -271,7 +271,7 @@ export function ProductPage({ slug }) {
                   <ul className="space-y-1.5 pb-4">
                     {product.sustainability.map((item) => (
                       <li key={item} className="flex items-start gap-2 font-body text-sm text-pine-soft">
-                        <span className="mt-1 text-moss">•</span>
+                        <span className="mt-1 text-moss-deep">•</span>
                         <span>{item}</span>
                       </li>
                     ))}

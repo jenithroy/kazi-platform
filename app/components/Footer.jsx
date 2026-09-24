@@ -24,7 +24,7 @@ const linkClass =
 
 function ColumnHeading({ children }) {
   return (
-    <span className="mb-1 flex items-center gap-2 font-body text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-bone/50">
+    <span className="mb-1 flex items-center gap-2 font-body text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-bone/60">
       <span aria-hidden="true" className="h-1 w-1 rounded-full bg-moss" />
       {children}
     </span>
@@ -50,7 +50,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 border-b border-bone/10 py-10 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-10 md:py-14">
           <div className="flex flex-col gap-5">
             <Link
-              href="#top"
+              href="/"
               aria-label="Kazi Manufacturing home"
               className="h-14 w-20 bg-bone"
               style={{

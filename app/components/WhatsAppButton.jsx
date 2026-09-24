@@ -40,7 +40,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-moss text-pine shadow-lg transition-all hover:scale-105 hover:bg-moss-deep sm:right-6"
+      className="fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full btn-gradient text-bone shadow-lg hover:scale-105 sm:right-6"
       style={{ bottom: `calc(${bottom}px + env(safe-area-inset-bottom))` }}
     >
       <WhatsappLogo size={30} weight="fill" />
