@@ -1,4 +1,59 @@
-/* Reckless Neue — licensed family, self-hosted from /font. See DESIGN_PLAN.md §3. */
+/* ITC Garamond Condensed (ITC Garamond Std, condensed widths) — licensed family, self-hosted
+   from /font; the display face. No Book Condensed Italic file yet, so 400 italics render
+   in Light Condensed Italic. */
+
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src:
+    url('/font/ITCGaramondStd-LtCond.woff2') format('woff2'),
+    url('/font/ITCGaramondStd-LtCond.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src:
+    url('/font/ITCGaramondStd-LtCondIta.woff2') format('woff2'),
+    url('/font/ITCGaramondStd-LtCondIta.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src:
+    url('/font/ITCGaramondStd-BkCond.woff2') format('woff2'),
+    url('/font/ITCGaramondStd-BkCond.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src:
+    url('/font/ITCGaramondStd-BdCond.woff2') format('woff2'),
+    url('/font/ITCGaramondStd-BdCond.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src:
+    url('/font/ITCGaramondStd-BdCondIta.woff2') format('woff2'),
+    url('/font/ITCGaramondStd-BdCondIta.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Reckless Neue — licensed family, self-hosted from /font. See DESIGN_PLAN.md §3.
+   No longer the display face; kept because the Atelier text tool offers it (lib/design-layers.js). */
 
 @font-face {
   font-family: 'Reckless Neue';
