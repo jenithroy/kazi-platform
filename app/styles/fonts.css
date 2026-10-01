@@ -1,6 +1,5 @@
 /* ITC Garamond Condensed (ITC Garamond Std, condensed widths) — licensed family, self-hosted
-   from /font; the display face. No Book Condensed Italic file yet, so 400 italics render
-   in Light Condensed Italic. */
+   from /font; the site's display and body face. */
 
 @font-face {
   font-family: 'ITC Garamond Condensed';
@@ -29,6 +28,16 @@
     url('/font/ITCGaramondStd-BkCond.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ITC Garamond Condensed';
+  src:
+    url('/font/ITCGaramondStd-BkCondIta.woff2') format('woff2'),
+    url('/font/ITCGaramondStd-BkCondIta.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
 }
 

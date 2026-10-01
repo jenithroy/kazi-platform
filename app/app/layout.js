@@ -68,6 +68,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
       <head>
+        {/* General Sans is no longer the body face, but the Atelier text tool still offers it (lib/design-layers.js). */}
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link
           rel="stylesheet"
