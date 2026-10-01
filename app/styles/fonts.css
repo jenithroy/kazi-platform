@@ -1,5 +1,28 @@
+/* Instrument Serif — SIL Open Font License, self-hosted from /font; the display face. Regular
+   and Italic only, so keep display text at weight 400. */
+
+@font-face {
+  font-family: 'Instrument Serif';
+  src:
+    url('/font/InstrumentSerif-Regular.woff2') format('woff2'),
+    url('/font/InstrumentSerif-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  src:
+    url('/font/InstrumentSerif-Italic.woff2') format('woff2'),
+    url('/font/InstrumentSerif-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* ITC Garamond Condensed (ITC Garamond Std, condensed widths) — licensed family, self-hosted
-   from /font; the site's display and body face. */
+   from /font; the body face. */
 
 @font-face {
   font-family: 'ITC Garamond Condensed';
