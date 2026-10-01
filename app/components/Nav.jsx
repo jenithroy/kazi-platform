@@ -108,7 +108,7 @@ export function Nav() {
             <Link
               key={link.label}
               href={link.href}
-              className={`font-body text-[0.9rem] font-medium tracking-wide transition-colors duration-300 hover:opacity-75 ${linkColor}`}
+              className={`font-display text-base tracking-wide transition-colors duration-300 hover:opacity-75 ${linkColor}`}
             >
               {link.label}
             </Link>
@@ -201,7 +201,7 @@ export function Nav() {
               ref={index === 0 ? firstMenuLinkRef : undefined}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="border-b border-paper-raised py-2.5 font-body text-base font-medium text-pine"
+              className="border-b border-paper-raised py-2.5 font-display text-xl text-pine"
             >
               {link.label}
             </Link>
