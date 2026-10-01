@@ -7,9 +7,8 @@ import { ArrowRight, Check } from "lucide-react";
 const outlineButtonSmall =
   "inline-flex items-center gap-2 justify-center h-9 px-4 rounded-sm border border-moss text-pine font-body text-xs font-semibold tracking-wide hover:bg-moss hover:text-pine transition-colors duration-150";
 
-// Editorial placeholder — page shell only. These are stand-ins for real posts, written fresh
-// for this project rather than reused from anywhere else. Replace with actual stories once
-// they exist.
+// Editorial placeholders, shown only until the first story is published from /admin. They're
+// stand-ins written fresh for this project, not real posts, so they don't link anywhere.
 const FEATURED_POST = {
   category: "Process",
   title: "What actually happens between your tech pack and your first sample",
@@ -152,18 +151,85 @@ function NewsletterStrip() {
   );
 }
 
-export function StoriesPage() {
+function StoryMeta({ story }) {
   return (
-    <main className="bg-paper">
-      <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
-        <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Stories</span>
-          <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
-            Notes from the floor and the brands we work with.
-          </h1>
-        </div>
-      </section>
+    <p className="font-body text-xs tracking-wide text-pine-soft">
+      <time dateTime={story.publishedAt}>{story.date}</time> · {story.readTime}
+    </p>
+  );
+}
 
+function FeaturedStory({ story }) {
+  return (
+    <article className="relative mx-auto grid max-w-[1440px] overflow-hidden rounded-sm border border-pine/15 md:grid-cols-2">
+      <div className="relative flex min-h-[280px] items-end bg-pine p-8 md:min-h-[420px]">
+        {story.coverUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- images are unoptimized in the static export
+          <img
+            src={story.coverUrl}
+            alt={story.coverAlt}
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          story.category && (
+            <span className="font-body text-xs tracking-[0.18em] text-bone/70 uppercase">{story.category}</span>
+          )
+        )}
+      </div>
+      <div className="flex flex-col justify-center bg-bone p-8 md:p-12">
+        <span className="mb-4 font-body text-xs tracking-[0.12em] text-moss uppercase">
+          {story.category ? `Featured · ${story.category}` : "Featured"}
+        </span>
+        <h2 className="mb-4 font-display text-2xl leading-tight text-pine md:text-3xl">
+          <Link href={story.href} className="after:absolute after:inset-0 hover:text-moss-deep">
+            {story.title}
+          </Link>
+        </h2>
+        {story.excerpt && <p className="mb-6 max-w-md font-body leading-relaxed text-pine-soft">{story.excerpt}</p>}
+        <div className="mb-6">
+          <StoryMeta story={story} />
+        </div>
+        <span aria-hidden="true" className={`${outlineButtonSmall} self-start`}>
+          Read Story <ArrowRight size={14} strokeWidth={1.5} />
+        </span>
+      </div>
+    </article>
+  );
+}
+
+function StoryCard({ story }) {
+  return (
+    <article className="group relative">
+      {story.coverUrl && (
+        // eslint-disable-next-line @next/next/no-img-element -- images are unoptimized in the static export
+        <img
+          src={story.coverUrl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="mb-5 aspect-[16/10] w-full rounded-sm object-cover"
+        />
+      )}
+      {story.category && (
+        <span className="mb-3 block font-body text-xs tracking-[0.12em] text-moss uppercase">{story.category}</span>
+      )}
+      <h3 className="mb-3 font-display text-xl leading-snug text-pine">
+        <Link href={story.href} className="after:absolute after:inset-0 group-hover:text-moss-deep">
+          {story.title}
+        </Link>
+      </h3>
+      {story.excerpt && (
+        <p className="mb-4 line-clamp-3 font-body text-sm leading-relaxed text-pine-soft">{story.excerpt}</p>
+      )}
+      <StoryMeta story={story} />
+    </article>
+  );
+}
+
+function PlaceholderStories() {
+  return (
+    <>
       <section className="px-6 pb-16 md:px-8 md:pb-20">
         <article className="mx-auto grid max-w-[1440px] rounded-sm border border-pine/15 md:grid-cols-2">
           <div className="relative flex min-h-[280px] items-end bg-pine p-8 md:min-h-[420px]">
@@ -197,8 +263,46 @@ export function StoriesPage() {
           ))}
         </div>
       </section>
+    </>
+  );
+}
+
+// `stories` are the live stories from the CMS, already shaped for display by app/stories/page.js.
+export function StoriesPage({ stories = [] }) {
+  const featured = stories.find((story) => story.featured) ?? stories[0];
+  const rest = stories.filter((story) => story !== featured);
+
+  return (
+    <div className="bg-paper">
+      <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
+        <div className="mx-auto max-w-[1440px]">
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Stories</span>
+          <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
+            Notes from the floor and the brands we work with.
+          </h1>
+        </div>
+      </section>
+
+      {featured ? (
+        <>
+          <section className="px-6 pb-16 md:px-8 md:pb-20">
+            <FeaturedStory story={featured} />
+          </section>
+          {rest.length > 0 && (
+            <section aria-label="More stories" className="px-6 pb-20 md:px-8 md:pb-24">
+              <div className="mx-auto grid max-w-[1440px] gap-x-8 gap-y-12 sm:grid-cols-2 md:gap-x-10 lg:grid-cols-3">
+                {rest.map((story) => (
+                  <StoryCard key={story.slug} story={story} />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      ) : (
+        <PlaceholderStories />
+      )}
 
       <NewsletterStrip />
-    </main>
+    </div>
   );
 }

@@ -1,40 +1,43 @@
 import { SITE_URL } from "@/lib/site";
-import { products } from "@/lib/products";
+import { ALL_SEO_ROUTES } from "@/lib/seo-routes";
+import { getLiveStories, getPageOverrides } from "@/lib/cms";
+import { storyPath } from "@/lib/stories";
 
 export const dynamic = "force-static";
 
-const STATIC_ROUTES = [
-  { path: "/", changeFrequency: "weekly", priority: 1 },
-  { path: "/atelier", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/heritage", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/collections", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/lookbook", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/pricing", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/video-editing", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/stories", changeFrequency: "weekly", priority: 0.6 },
-  { path: "/quote", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/cookies", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/accessibility", changeFrequency: "yearly", priority: 0.3 },
-];
+// Entries carry the trailing slash every URL is actually served at (trailingSlash in
+// next.config.mjs) — without it each entry was a redirect, which Search Console reports as
+// "Page with redirect" instead of indexing it. lastModified is only given where it's real
+// (stories, and pages edited in /admin): a build timestamp on every URL tells Google
+// nothing, and it stops trusting lastmod for the whole site.
+export default async function sitemap() {
+  const [stories, overrides] = await Promise.all([getLiveStories(), getPageOverrides()]);
 
-export default function sitemap() {
-  const lastModified = new Date();
+  const indexable = stories.filter(
+    (story) => !story.noindex && (!story.canonical_url || story.canonical_url === `${SITE_URL}${storyPath(story.slug)}`),
+  );
+  // ISO timestamps sort as strings.
+  const latest = (...dates) => dates.filter(Boolean).sort().at(-1);
 
-  const staticEntries = STATIC_ROUTES.map((route) => ({
-    url: `${SITE_URL}${route.path}`,
-    lastModified,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
+  const pageEntries = ALL_SEO_ROUTES.filter((route) => !overrides[route.path]?.noindex).map((route) => {
+    const lastModified =
+      route.path === "/stories"
+        ? latest(overrides[route.path]?.updated_at, ...indexable.map((story) => story.updated_at))
+        : overrides[route.path]?.updated_at;
+    return {
+      url: route.path === "/" ? `${SITE_URL}/` : `${SITE_URL}${route.path}/`,
+      ...(lastModified ? { lastModified } : {}),
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
+    };
+  });
+
+  const storyEntries = indexable.map((story) => ({
+    url: `${SITE_URL}${storyPath(story.slug)}`,
+    lastModified: story.updated_at || story.published_at,
+    changeFrequency: "monthly",
+    priority: 0.6,
   }));
 
-  const productEntries = products.map((product) => ({
-    url: `${SITE_URL}/products/${product.slug}`,
-    lastModified,
-    changeFrequency: "weekly",
-    priority: 0.7,
-  }));
-
-  return [...staticEntries, ...productEntries];
+  return [...pageEntries, ...storyEntries];
 }

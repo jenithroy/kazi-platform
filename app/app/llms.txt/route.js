@@ -1,4 +1,12 @@
-# Kazi Manufacturing
+import { getLiveStories } from "@/lib/cms";
+import { SITE_URL } from "@/lib/site";
+import { storyPath } from "@/lib/stories";
+
+// llms.txt (https://llmstxt.org) — a plain-text map of the site for AI search and assistants.
+// Generated at build time so live stories are listed as soon as they're published.
+export const dynamic = "force-static";
+
+const BEFORE_STORIES = `# Kazi Manufacturing
 
 > Custom apparel manufacturing for UK clothing brands, crafted in Kathmandu, Nepal. Small-batch production from 50 units, in-house sampling and quality control, an in-house video editing studio, and worldwide delivery.
 
@@ -19,7 +27,9 @@ Kazi Manufacturing is a garment manufacturer based in Kathmandu, Nepal, serving 
 - [Lookbook](https://kazimanufacturing.com/lookbook): Fabric, fit and finish by category from the production floor.
 - [Stories](https://kazimanufacturing.com/stories): Notes on process, sourcing and behind-the-scenes updates.
 
-## Legal
+`;
+
+const AFTER_STORIES = `## Legal
 
 - [Privacy Policy](https://kazimanufacturing.com/privacy-policy)
 - [Terms & Conditions](https://kazimanufacturing.com/terms)
@@ -29,3 +39,18 @@ Kazi Manufacturing is a garment manufacturer based in Kathmandu, Nepal, serving 
 ## Optional
 
 - [Sitemap](https://kazimanufacturing.com/sitemap.xml): Full machine-readable list of indexable URLs.
+`;
+
+export async function GET() {
+  const stories = (await getLiveStories()).filter((story) => !story.noindex);
+  const storyLines = stories.map((story) => {
+    const summary = story.seo_description || story.excerpt;
+    const line = `- [${story.title}](${SITE_URL}${storyPath(story.slug)})`;
+    return summary ? `${line}: ${summary.replace(/\s+/g, " ").trim()}` : line;
+  });
+  const storiesSection = storyLines.length ? `## Stories\n\n${storyLines.join("\n")}\n\n` : "";
+
+  return new Response(BEFORE_STORIES + storiesSection + AFTER_STORIES, {
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
+}

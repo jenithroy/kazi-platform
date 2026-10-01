@@ -1,11 +1,9 @@
 import { TermsPage } from "@/components/TermsPage";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Terms & Conditions",
-  description: "The terms that govern your use of kazimanufacturing.com.",
-  alternates: { canonical: "/terms" },
-  openGraph: { url: "/terms" },
-};
+export function generateMetadata() {
+  return pageMetadata("/terms");
+}
 
 export default function TermsRoute() {
   return <TermsPage />;

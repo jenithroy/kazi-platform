@@ -1,12 +1,9 @@
 import { LookbookPage } from "@/components/LookbookPage";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Lookbook",
-  description:
-    "Fabric, fit and finish by category — knitwear, outerwear, denim, accessories and footwear from the Kazi production floor.",
-  alternates: { canonical: "/lookbook" },
-  openGraph: { url: "/lookbook" },
-};
+export function generateMetadata() {
+  return pageMetadata("/lookbook");
+}
 
 export default function LookbookRoute() {
   return <LookbookPage />;

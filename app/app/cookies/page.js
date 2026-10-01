@@ -1,11 +1,9 @@
 import { CookiePolicyPage } from "@/components/CookiePolicyPage";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Cookie Policy",
-  description: "What kazimanufacturing.com stores in your browser, and why.",
-  alternates: { canonical: "/cookies" },
-  openGraph: { url: "/cookies" },
-};
+export function generateMetadata() {
+  return pageMetadata("/cookies");
+}
 
 export default function CookiesRoute() {
   return <CookiePolicyPage />;
