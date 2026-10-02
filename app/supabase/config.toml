@@ -385,6 +385,15 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# Called by pg_cron, not a signed-in user; checks the OUTREACH_CRON_SECRET header instead.
+[functions.outreach-worker]
+verify_jwt = false
+
+# One-click unsubscribe links are opened by mail apps without a session; the signed token in
+# the link is the credential.
+[functions.outreach-unsubscribe]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327
