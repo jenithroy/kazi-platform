@@ -86,6 +86,9 @@ export function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Bag"
+        // Closed, it's only slid off-screen, so keep its buttons out of the Tab order and
+        // the accessibility tree.
+        inert={!isOpen}
         className={`fixed top-0 right-0 z-[71] flex h-full w-full flex-col bg-paper transition-[translate,box-shadow] duration-300 ease-out sm:w-[420px] sm:max-w-[90vw] ${
           isOpen ? "translate-x-0 shadow-2xl" : "translate-x-full shadow-none"
         }`}
