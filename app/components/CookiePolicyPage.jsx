@@ -29,7 +29,7 @@ const SECTIONS = [
   {
     heading: "Third-party requests",
     body: [
-      "Pages on this site load a webfont from Fontshare (api.fontshare.com), which means your browser makes a direct request to Fontshare's servers to fetch that font. Fontshare may see your IP address as part of serving that request, under their own privacy policy — we don't control this and don't receive any data from it.",
+      "The Atelier design tool loads a webfont from Fontshare (api.fontshare.com) so it can be used for text on your garment, which means your browser makes a direct request to Fontshare's servers to fetch that font. Fontshare may see your IP address as part of serving that request, under their own privacy policy — we don't control this and don't receive any data from it.",
     ],
   },
   {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
 const outlineButtonSmall =
-  "inline-flex items-center gap-2 justify-center h-9 px-4 rounded-sm border border-moss text-pine font-body text-xs font-semibold tracking-wide hover:bg-moss hover:text-pine transition-colors duration-150";
+  "inline-flex items-center gap-2 justify-center h-9 px-4 rounded-sm border border-moss text-pine font-body text-xs font-semibold tracking-wide hover:bg-moss-deep hover:text-bone transition-colors duration-150";
 
 // Editorial placeholders, shown only until the first story is published from /admin. They're
 // stand-ins written fresh for this project, not real posts, so they don't link anywhere.
@@ -96,7 +96,7 @@ function NewsletterStrip() {
 
         {subscribed ? (
           <div className="flex items-center gap-2.5 font-body text-sm text-pine">
-            <Check size={16} strokeWidth={2} className="shrink-0 text-moss" />
+            <Check size={16} strokeWidth={2} className="shrink-0 text-moss-deep" />
             You&rsquo;re subscribed.
           </div>
         ) : (
@@ -118,7 +118,7 @@ function NewsletterStrip() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex h-11 shrink-0 items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-11 shrink-0 items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? "Subscribing…" : "Subscribe"}
               </button>
@@ -134,7 +134,7 @@ function NewsletterStrip() {
               />
               I&rsquo;d like to receive occasional story updates by email. You can unsubscribe any
               time — see our{" "}
-              <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss">
+              <Link href="/privacy-policy" className="text-pine underline underline-offset-2 hover:text-moss-deep">
                 Privacy Policy
               </Link>
               .
@@ -178,7 +178,7 @@ function FeaturedStory({ story }) {
         )}
       </div>
       <div className="flex flex-col justify-center bg-bone p-8 md:p-12">
-        <span className="mb-4 font-body text-xs tracking-[0.12em] text-moss uppercase">
+        <span className="mb-4 font-body text-xs tracking-[0.12em] text-moss-deep uppercase">
           {story.category ? `Featured · ${story.category}` : "Featured"}
         </span>
         <h2 className="mb-4 font-display text-2xl leading-tight text-pine md:text-3xl">
@@ -212,7 +212,7 @@ function StoryCard({ story }) {
         />
       )}
       {story.category && (
-        <span className="mb-3 block font-body text-xs tracking-[0.12em] text-moss uppercase">{story.category}</span>
+        <span className="mb-3 block font-body text-xs tracking-[0.12em] text-moss-deep uppercase">{story.category}</span>
       )}
       <h3 className="mb-3 font-display text-xl leading-snug text-pine">
         <Link href={story.href} className="after:absolute after:inset-0 group-hover:text-moss-deep">
@@ -236,7 +236,7 @@ function PlaceholderStories() {
             <span className="font-body text-xs tracking-[0.18em] text-bone/70 uppercase">{FEATURED_POST.category}</span>
           </div>
           <div className="flex flex-col justify-center bg-bone p-8 md:p-12">
-            <span className="mb-4 font-body text-xs tracking-[0.12em] text-moss uppercase">Featured</span>
+            <span className="mb-4 font-body text-xs tracking-[0.12em] text-bone/70 uppercase">Featured</span>
             <h2 className="mb-4 font-display text-2xl leading-tight text-pine md:text-3xl">{FEATURED_POST.title}</h2>
             <p className="mb-6 max-w-md font-body leading-relaxed text-pine-soft">{FEATURED_POST.excerpt}</p>
             <p className="mb-6 font-body text-xs tracking-wide text-pine-soft">
@@ -253,7 +253,7 @@ function PlaceholderStories() {
         <div className="mx-auto grid max-w-[1440px] gap-8 sm:grid-cols-2 md:gap-10 lg:grid-cols-3">
           {POSTS.map((post) => (
             <article key={post.title}>
-              <span className="mb-3 block font-body text-xs tracking-[0.12em] text-moss uppercase">{post.category}</span>
+              <span className="mb-3 block font-body text-xs tracking-[0.12em] text-moss-deep uppercase">{post.category}</span>
               <h3 className="mb-3 font-display text-xl leading-snug text-pine">{post.title}</h3>
               <p className="mb-4 line-clamp-3 font-body text-sm leading-relaxed text-pine-soft">{post.excerpt}</p>
               <p className="font-body text-xs tracking-wide text-pine-soft">
@@ -276,7 +276,7 @@ export function StoriesPage({ stories = [] }) {
     <div className="bg-paper">
       <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Stories</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Stories</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Notes from the floor and the brands we work with.
           </h1>

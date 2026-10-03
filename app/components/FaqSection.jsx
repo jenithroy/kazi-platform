@@ -37,7 +37,7 @@ export function FaqSection() {
     <section className="bg-white px-6 py-24 md:px-8 md:py-32">
       <div className="mx-auto max-w-[760px]">
         <Reveal className="mb-14 text-center md:mb-20">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">FAQ</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">FAQ</span>
           <h2 className="m-0 font-display text-3xl leading-[1.2] text-pine md:text-4xl lg:text-[2.75rem]">
             Common questions, answered.
           </h2>
