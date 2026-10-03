@@ -11,8 +11,8 @@ const filledButton =
   "inline-flex h-11 items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
 
 // Sits above every other fixed/sticky layer on the site (TrustStripe and Nav top out at
-// z-50/z-40, DiscountPopup at z-50) — the bag has to win that stack regardless of which page
-// it's opened from.
+// z-50/z-40, z-[65] while Nav's mobile menu is open, DiscountPopup at z-50) — the bag has to
+// win that stack regardless of which page (or the mobile menu) it's opened from.
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -79,13 +79,18 @@ export function CartDrawer() {
         }`}
       />
 
+      {/* No shadow while closed: parked just off-screen, its blur would bleed back in as a
+          grey strip down the right edge of every page. */}
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Bag"
-        className={`fixed top-0 right-0 z-[71] flex h-full w-full flex-col bg-paper shadow-2xl transition-transform duration-300 ease-out sm:w-[420px] sm:max-w-[90vw] ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+        // Closed, it's only slid off-screen, so keep its buttons out of the Tab order and
+        // the accessibility tree.
+        inert={!isOpen}
+        className={`fixed top-0 right-0 z-[71] flex h-full w-full flex-col bg-paper transition-[translate,box-shadow] duration-300 ease-out sm:w-[420px] sm:max-w-[90vw] ${
+          isOpen ? "translate-x-0 shadow-2xl" : "translate-x-full shadow-none"
         }`}
       >
         <div className="flex h-[var(--nav-height)] shrink-0 items-center justify-between border-b border-pine/15 px-6">
