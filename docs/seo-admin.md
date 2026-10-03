@@ -8,6 +8,8 @@
 - **Settings** — business details for Organization structured data, social profiles, default description and share image, and Google/Bing verification codes.
 - **Publish site** — rebuilds the live site so the changes go out.
 
+The admin also holds **Outreach** (email sequences to brands, sent from Google Workspace) — see [outreach.md](outreach.md).
+
 ## How it works
 
 The site is a static export on Cloudflare Pages, so nothing on it runs on a server. Content edited in `/admin` is saved to Supabase, and the next build reads it and bakes it into plain HTML:

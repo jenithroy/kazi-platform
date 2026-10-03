@@ -20,6 +20,7 @@ const NAV = [
   { href: "/admin/pages", label: "Pages" },
   { href: "/admin/redirects", label: "Redirects" },
   { href: "/admin/settings", label: "Settings" },
+  { href: "/admin/outreach", label: "Outreach" },
 ];
 
 const STAFF_ROLES = new Set(["admin", "employee"]);
@@ -254,10 +255,10 @@ export function AdminShell({ children }) {
       <div className="min-h-dvh bg-paper">
         <header className="sticky top-0 z-40 border-b border-pine/10 bg-bone/95 backdrop-blur">
           <div className="mx-auto flex h-16 max-w-[1280px] items-center gap-4 px-4 md:px-6">
-            <Link href="/admin" className="flex items-center gap-3" aria-label="SEO admin home">
+            <Link href="/admin" className="flex items-center gap-3" aria-label="Admin home">
               <Logo />
               <span className="hidden font-body text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-pine-soft sm:inline">
-                SEO admin
+                Admin
               </span>
             </Link>
             <NavLinks pathname={pathname} className="ml-4 hidden items-center gap-1 md:flex" />
