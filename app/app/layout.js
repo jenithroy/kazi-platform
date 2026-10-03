@@ -22,17 +22,14 @@ export default async function RootLayout({ children }) {
   const site = resolveSiteSettings(await getSeoSettings());
 
   return (
-    <html lang="en" className="h-full">
+    <html lang="en-GB" className="h-full" suppressHydrationWarning>
       <head>
-        {/* General Sans is no longer the body face, but the Atelier text tool still offers it (lib/design-layers.js). */}
-        <link rel="preconnect" href="https://api.fontshare.com" />
-        <link
-          rel="stylesheet"
-          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
-        />
+        {/* Flags that JS is running before first paint, so Reveal's hidden-until-scrolled
+            state only applies when something will actually reveal it again (see globals.css). */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <JsonLd data={siteJsonLd(site)} />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body id="top" className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>

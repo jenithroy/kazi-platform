@@ -7,7 +7,7 @@ import { CATEGORIES, products } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 
 const filledButton =
-  "inline-flex h-11 items-center justify-center rounded-sm bg-moss px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-moss-deep";
+  "inline-flex h-11 items-center justify-center rounded-sm btn-gradient px-6 font-body text-sm font-semibold tracking-wide text-bone";
 const outlineButton =
   "inline-flex h-11 items-center justify-center rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
@@ -41,7 +41,7 @@ export function CollectionsPage() {
     <div className="bg-paper">
       <section className="px-6 pb-10 pt-16 md:px-8 md:pb-12 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss">Shop the Range</span>
+          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Shop the Range</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">The Collection</h1>
           <p className="mt-4 max-w-xl font-body leading-relaxed text-pine-soft">
             Ready-to-order styles across knitwear, outerwear, denim, accessories and footwear —
@@ -63,7 +63,7 @@ export function CollectionsPage() {
                 type="button"
                 onClick={() => selectCategory(category)}
                 className={`inline-flex h-9 shrink-0 items-center rounded-sm px-4 font-body text-xs font-semibold tracking-wide transition-colors duration-150 ${
-                  active ? "bg-moss text-pine" : "border border-pine text-pine hover:bg-bone"
+                  active ? "bg-moss-deep text-bone" : "border border-pine text-pine hover:bg-bone"
                 }`}
               >
                 {category}

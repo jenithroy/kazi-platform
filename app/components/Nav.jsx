@@ -200,10 +200,10 @@ export function Nav() {
           {scrolled && !menuOpen && (
             <Link
               href="/quote"
-              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold transition-all duration-200 hover:-translate-y-px ${
+              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold hover:-translate-y-px ${
                 isLight
-                  ? "border-transparent bg-pine text-bone shadow-[0_2px_12px_rgba(0,0,0,0.18)] hover:bg-pine-soft"
-                  : "border-white/30 bg-transparent text-white hover:bg-white hover:text-pine"
+                  ? "btn-gradient border-transparent text-bone shadow-[0_2px_12px_rgba(0,0,0,0.18)]"
+                  : "border-white/30 bg-transparent text-white transition-all duration-200 hover:bg-white hover:text-pine"
               }`}
             >
               Get a Quote
@@ -229,7 +229,7 @@ export function Nav() {
           >
             <BagIcon size={20} />
             {totalItems > 0 && (
-              <span className="absolute top-0.5 right-0.5 inline-flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-moss px-[3px] font-body text-[0.625rem] font-semibold leading-none text-pine">
+              <span className="absolute top-0.5 right-0.5 inline-flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-moss-deep px-[3px] font-body text-[0.625rem] font-semibold leading-none text-bone">
                 {totalItems}
               </span>
             )}
