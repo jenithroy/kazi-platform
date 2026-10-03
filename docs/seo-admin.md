@@ -39,7 +39,7 @@ What the build generates from Supabase:
 
 ### 1. Apply the database migration
 
-In the Supabase dashboard, open **SQL Editor** and run `app/supabase/migrations/007_seo_cms.sql`. Run 001–006 first if this project doesn't have them yet. With the Supabase CLI linked to the project, `supabase db push` does the same.
+In the Supabase dashboard, open **SQL Editor** and run `app/supabase/migrations/007_seo_cms.sql`. Run 001–006 first if this project doesn't have them yet. Also run `009_private_design_files.sql`: without it, anyone can download the files customers attach to quotes. With the Supabase CLI linked to the project, `supabase db push` does the same.
 
 007 also closes two holes in the existing account setup that the admin would otherwise inherit:
 
