@@ -7,7 +7,8 @@ import { Upload, X, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import QtyStepper from "@/components/Atelier/QtyStepper";
 import { GarmentMockup2D } from "@/components/Atelier/GarmentMockup2D";
 import { readQuoteDesigns, clearQuoteDesigns, describeQuoteDesigns } from "@/lib/quote-handoff";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { SITE_PHONE, SITE_PHONE_DIGITS } from "@/lib/site";
 
 // Slugs match the deep links Heritage's per-service CTAs use (`/quote?service=dtg`, etc).
 const SERVICES = [
@@ -58,6 +59,30 @@ const pillButton = (active) =>
     active ? "border-pine bg-pine text-bone" : "border-pine/15 text-pine hover:border-pine/40"
   }`;
 
+const CONTACT_EMAIL = "hello@kazimanufacturing.com";
+const WHATSAPP_URL = `https://wa.me/${SITE_PHONE_DIGITS}?text=${encodeURIComponent(
+  "Hi Kazi Manufacturing, I'd like to request a quote.",
+)}`;
+const contactLinkClass = "text-pine underline underline-offset-2 hover:text-moss";
+
+// Shown when the form can't reach Supabase (not configured in this build, or a submission
+// failed) so the visitor still has a way to reach us.
+function ContactFallback() {
+  return (
+    <>
+      email{" "}
+      <a href={`mailto:${CONTACT_EMAIL}`} className={contactLinkClass}>
+        {CONTACT_EMAIL}
+      </a>{" "}
+      or message us on{" "}
+      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={contactLinkClass}>
+        WhatsApp ({SITE_PHONE})
+      </a>
+      .
+    </>
+  );
+}
+
 function validate(form, isHandoff) {
   const errors = {};
   if (!form.name.trim()) errors.name = "Enter your name";
@@ -87,7 +112,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [firstName, setFirstName] = useState("");
-  const [submitError, setSubmitError] = useState(null);
+  const [submitFailed, setSubmitFailed] = useState(false);
 
   const isHandoff = designs !== null;
 
@@ -166,8 +191,10 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
+    if (!isSupabaseConfigured) return;
+
     setSubmitting(true);
-    setSubmitError(null);
+    setSubmitFailed(false);
 
     const includedDesigns = isHandoff && designs ? designs.filter((d) => !excludedDesignIds.has(d.id)) : [];
 
@@ -190,13 +217,18 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
           form.details,
         ];
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // The id is generated here rather than read back with `.select()`: that would make
+    // PostgREST use INSERT … RETURNING, which also needs the new row to pass a SELECT policy —
+    // and none matches a logged-out visitor's quote, so the insert would be rejected by RLS.
+    const quoteId = crypto.randomUUID();
 
-    const { data: quote, error } = await supabase
-      .from("quotes")
-      .insert({
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const { error } = await supabase.from("quotes").insert({
+        id: quoteId,
         customer_id: user?.id ?? null,
         contact_name: form.name,
         contact_email: form.email,
@@ -206,19 +238,18 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
         quantity,
         deadline: form.deadline || null,
         details: detailsParts.filter(Boolean).join("\n\n"),
-      })
-      .select()
-      .single();
+      });
+      if (error) throw error;
 
-    if (error) {
-      setSubmitError(error.message);
+      if (file) await uploadQuoteFile(quoteId, file);
+      for (let i = 0; i < additionalFiles.length; i++) {
+        await uploadQuoteFile(quoteId, additionalFiles[i], `additional-${i}-`);
+      }
+    } catch (err) {
+      console.error("Quote submission failed", err);
+      setSubmitFailed(true);
       setSubmitting(false);
       return;
-    }
-
-    if (file) await uploadQuoteFile(quote.id, file);
-    for (let i = 0; i < additionalFiles.length; i++) {
-      await uploadQuoteFile(quote.id, additionalFiles[i], `additional-${i}-`);
     }
 
     setSubmitting(false);
@@ -272,6 +303,11 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
       </section>
 
       <section className="px-6 pb-20 md:px-8">
+        {!isSupabaseConfigured && (
+          <div role="status" className="mx-auto mb-6 max-w-[1440px] rounded-sm border border-red-600/30 bg-red-600/5 p-5 font-body text-sm text-pine">
+            Online quote requests are temporarily unavailable — please <ContactFallback />
+          </div>
+        )}
         <form onSubmit={onSubmit} noValidate className="mx-auto max-w-[1440px] rounded-sm border border-pine/15">
           <div className="grid lg:grid-cols-2">
             {/* Your Details */}
@@ -541,7 +577,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                 I agree to Kazi&rsquo;s terms and conditions.
               </span>
             </label>
-            <button type="submit" disabled={submitting} className={filledButton}>
+            <button type="submit" disabled={submitting || !isSupabaseConfigured} className={filledButton}>
               {submitting ? "Sending…" : "Get a Quote"}
             </button>
             {errors.agreedToTerms && <p className={`${errorClass} w-full`}>{errors.agreedToTerms}</p>}
@@ -552,7 +588,11 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
               </Link>
               .
             </span>
-            {submitError && <p className={`${errorClass} w-full`}>{submitError}</p>}
+            {submitFailed && (
+              <p role="alert" className={`${errorClass} w-full`}>
+                Sorry, we couldn&rsquo;t send your request. Please try again, or <ContactFallback />
+              </p>
+            )}
           </div>
         </form>
       </section>
