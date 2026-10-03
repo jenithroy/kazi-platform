@@ -1,6 +1,7 @@
 import { ProductPage } from "@/components/ProductPage";
 import { categoryImage, products } from "@/lib/products";
 import { SITE_URL } from "@/lib/site";
+import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -11,16 +12,7 @@ export async function generateMetadata({ params }) {
   const product = products.find((p) => p.slug === slug);
   if (!product) return {};
 
-  return {
-    title: product.name,
-    description: product.description,
-    alternates: { canonical: `/products/${product.slug}` },
-    openGraph: {
-      url: `/products/${product.slug}`,
-      images: [{ url: categoryImage(product.category), width: 1200, height: 1200, alt: product.name }],
-    },
-    twitter: { images: [categoryImage(product.category)] },
-  };
+  return pageMetadata(`/products/${product.slug}`);
 }
 
 function productJsonLd(product) {

@@ -1,13 +1,10 @@
 import { Suspense } from "react";
 import { CollectionsPage } from "@/components/CollectionsPage";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "The Collection",
-  description:
-    "Ready-to-order styles across knitwear, outerwear, denim, accessories and footwear, built to the same spec as a custom manufacturing run.",
-  alternates: { canonical: "/collections" },
-  openGraph: { url: "/collections" },
-};
+export function generateMetadata() {
+  return pageMetadata("/collections");
+}
 
 function CollectionsFallback() {
   return (

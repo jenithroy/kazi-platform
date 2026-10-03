@@ -1,11 +1,9 @@
 import { AccessibilityStatementPage } from "@/components/AccessibilityStatementPage";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Accessibility Statement",
-  description: "Kazi Manufacturing's approach to an accessible website, and how to report a problem.",
-  alternates: { canonical: "/accessibility" },
-  openGraph: { url: "/accessibility" },
-};
+export function generateMetadata() {
+  return pageMetadata("/accessibility");
+}
 
 export default function AccessibilityRoute() {
   return <AccessibilityStatementPage />;

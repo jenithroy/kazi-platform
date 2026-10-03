@@ -28,7 +28,7 @@ export default function robots() {
     rules: {
       userAgent: ["*", ...AI_CRAWLERS],
       allow: "/",
-      disallow: ["/account/", "/atelier/quote"],
+      disallow: ["/account/", "/admin/", "/atelier/quote"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

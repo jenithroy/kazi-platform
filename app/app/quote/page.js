@@ -1,13 +1,10 @@
 import { Suspense } from "react";
 import { QuotePage } from "@/components/QuotePage";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Request a Quote",
-  description:
-    "Tell us what you're making and we'll reply within 24 hours with a clear, itemised manufacturing quote — no hidden costs.",
-  alternates: { canonical: "/quote" },
-  openGraph: { url: "/quote" },
-};
+export function generateMetadata() {
+  return pageMetadata("/quote");
+}
 
 export default function QuoteRoute() {
   return (
