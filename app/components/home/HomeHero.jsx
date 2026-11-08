@@ -29,7 +29,7 @@ export function HomeHero() {
         id="home-hero-title"
         className="m-0 max-w-[14ch] text-balance font-display text-[2.5rem] font-normal leading-[1.04] tracking-[-0.015em] text-white [text-shadow:0_2px_30px_rgba(2,18,50,0.5)] md:max-w-[20ch] md:text-[clamp(2.5rem,4vw+1rem,5rem)]"
       >
-        Design your merch. We make it by hand in <em className="italic">Nepal</em>.
+        Design your <em className="italic">merch</em>.
       </h1>
       <p className="m-0 mt-6 max-w-[38ch] text-balance font-body text-base text-white/90 [text-shadow:0_1px_12px_rgba(2,18,50,0.5)] md:text-lg">
         Tees, hoodies and totes, printed or embroidered with your artwork, from 100 pieces.
