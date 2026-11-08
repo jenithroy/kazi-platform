@@ -9,9 +9,9 @@ export const SEO_ROUTES = [
     path: "/",
     label: "Home",
     group: "Main pages",
-    title: "Custom Apparel Manufacturing in Nepal | Kazi Manufacturing",
+    title: "Custom Merch Manufacturing in Nepal | Kazi Manufacturing",
     description:
-      "Custom clothing manufacturing for UK brands, crafted in Kathmandu, Nepal. Small-batch runs from 50 units, in-house sampling, quality control and worldwide delivery.",
+      "Design your merch in the Kazi Atelier or send your artwork. Tees, hoodies and totes printed or embroidered in Kathmandu, Nepal, from 100 pieces, with a sample approved before every run.",
     changeFrequency: "weekly",
     priority: 1,
   },

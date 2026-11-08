@@ -1,13 +1,8 @@
 import { HomeHero } from "@/components/home/HomeHero";
-import { VideoPanel } from "@/components/home/VideoPanel";
-import { ChipsStatement } from "@/components/home/ChipsStatement";
-import { ProcessRows } from "@/components/home/ProcessRows";
+import { MerchSteps } from "@/components/home/MerchSteps";
 import { RangeGrid } from "@/components/home/RangeGrid";
-import { AudienceSplit } from "@/components/home/AudienceSplit";
-import { BrandsSection } from "@/components/BrandsSection";
-import { ReviewsSection } from "@/components/ReviewsSection";
-import { FaqSection } from "@/components/FaqSection";
-import { QuoteRequestSection } from "@/components/QuoteRequestSection";
+import { PrintMethods } from "@/components/home/PrintMethods";
+import { QuoteBand } from "@/components/home/QuoteBand";
 import { pageMetadata } from "@/lib/seo";
 
 export function generateMetadata() {
@@ -18,15 +13,10 @@ export default function Home() {
   return (
     <>
       <HomeHero />
-      <VideoPanel />
-      <ChipsStatement />
-      <ProcessRows />
+      <MerchSteps />
       <RangeGrid />
-      <BrandsSection tone="light" />
-      <AudienceSplit />
-      <ReviewsSection />
-      <FaqSection />
-      <QuoteRequestSection />
+      <PrintMethods />
+      <QuoteBand />
     </>
   );
 }

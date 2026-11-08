@@ -8,13 +8,13 @@ export const dynamic = "force-static";
 
 const BEFORE_STORIES = `# Kazi Manufacturing
 
-> Custom apparel manufacturing for UK clothing brands, crafted in Kathmandu, Nepal. Small-batch production from 50 units, in-house sampling and quality control, an in-house video editing studio, and worldwide delivery.
+> Custom merch and apparel manufacturing for UK brands, creators and teams, crafted in Kathmandu, Nepal. Design your merch in the online Atelier or send artwork. Small-batch production from 100 pieces, in-house sampling and quality control, an in-house video editing studio, and worldwide delivery.
 
 Kazi Manufacturing is a garment manufacturer based in Kathmandu, Nepal, serving UK-based clothing brands end to end: pattern and sample development, cutting and sewing, quality control, private-label packaging, and shipping. Also runs an in-house editing studio producing product video, campaign films and social cut-downs for the brands it manufactures for. Minimum order quantity is 50 units per style. Contact: hello@kazimanufacturing.com or +44 7442 435738.
 
 ## Core pages
 
-- [Home](https://kazimanufacturing.com/): Overview of services, process and the brand.
+- [Home](https://kazimanufacturing.com/): Design-your-merch overview: how it works, blanks, print methods and the quote.
 - [Manufacturing Services](https://kazimanufacturing.com/heritage): Full service catalogue — custom manufacturing, DTG, screen printing, embroidery, DTF and video editing.
 - [Design Your Garment](https://kazimanufacturing.com/atelier): Interactive tool to design a custom garment — silhouette, colour and print placement — before requesting a quote.
 - [Pricing](https://kazimanufacturing.com/pricing): Cost estimator by product, quantity and add-ons.

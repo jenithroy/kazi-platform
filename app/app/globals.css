@@ -21,7 +21,6 @@
   --animate-menu-out: menu-out 0.25s ease-in both;
   --animate-menu-item-out: menu-item-out 0.2s ease-in both;
   --animate-rise: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-marquee: marquee 90s linear infinite;
 
   @keyframes menu-in {
     from {
@@ -57,11 +56,6 @@
   }
 
   /* Moves one full copy of a duplicated track, so the loop restarts invisibly. */
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
-  }
 }
 
 /* Primary filled button. At rest it shows the first half of the gradient (#387a52 -> #24583a);
