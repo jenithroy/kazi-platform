@@ -1,6 +1,12 @@
 import Link from "next/link";
-import { CaretUp, FacebookLogo, InstagramLogo } from "@phosphor-icons/react/dist/ssr";
-import { SITE_FACEBOOK_URL, SITE_INSTAGRAM_URL, SITE_PHONE, SITE_PHONE_DIGITS } from "@/lib/site";
+import { CaretUp, FacebookLogo, InstagramLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
+import {
+  SITE_FACEBOOK_URL,
+  SITE_INSTAGRAM_URL,
+  SITE_LINKEDIN_URL,
+  SITE_PHONE,
+  SITE_PHONE_DIGITS,
+} from "@/lib/site";
 
 const EXPLORE_LINKS = [
   { href: "/atelier", label: "Design" },
@@ -21,6 +27,7 @@ const LEGAL_LINKS = [
 const SOCIAL_LINKS = [
   { href: SITE_INSTAGRAM_URL, label: "Instagram", Icon: InstagramLogo },
   { href: SITE_FACEBOOK_URL, label: "Facebook", Icon: FacebookLogo },
+  { href: SITE_LINKEDIN_URL, label: "LinkedIn", Icon: LinkedinLogo },
 ];
 
 const linkClass =
@@ -75,18 +82,21 @@ export function Footer() {
             <a href={`tel:+${SITE_PHONE_DIGITS}`} className={linkClass}>
               {SITE_PHONE}
             </a>
-            {SOCIAL_LINKS.map(({ href, label, Icon }) => (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${linkClass} inline-flex items-center gap-2`}
-              >
-                <Icon size={18} aria-hidden="true" />
-                {label}
-              </a>
-            ))}
+            <div className="-ml-[9px] flex items-center pt-1">
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  title={label}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full text-bone/80 transition-colors duration-200 hover:text-bone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
+                >
+                  <Icon size={22} aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col gap-3.5">
