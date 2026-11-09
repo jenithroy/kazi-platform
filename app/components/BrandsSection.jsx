@@ -49,7 +49,7 @@ export function BrandsSection({ tone = "dark" }) {
     <section
       id="brands"
       data-nav-theme={light ? undefined : "dark"}
-      className={light ? "bg-white px-6 pb-20 pt-4 md:px-8 md:pb-28 md:pt-8" : "bg-pine px-6 py-20 md:px-8 md:py-24"}
+      className={light ? "bg-white px-6 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24" : "bg-pine px-6 py-20 md:px-8 md:py-24"}
     >
       <div className="mx-auto w-full max-w-[1100px]">
         <Reveal

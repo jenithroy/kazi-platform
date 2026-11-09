@@ -51,7 +51,7 @@ const STEPS = [
 
 export function ProcessRows() {
   return (
-    <section aria-labelledby="process-title" className="bg-paper pb-24 md:pb-40">
+    <section aria-labelledby="process-title" className="bg-paper pb-24 pt-20 md:pb-40 md:pt-32">
       <div className="mx-auto max-w-[1440px] px-5 md:px-8">
         {/* No visible heading on purpose; this keeps the steps under an h2 in the page outline. */}
         <h2 id="process-title" className="sr-only">

@@ -20,8 +20,8 @@ export default function Home() {
       <HomeHero />
       <VideoPanel />
       <ChipsStatement />
-      <ProcessRows />
       <RangeGrid />
+      <ProcessRows />
       <BrandsSection tone="light" />
       <AudienceSplit />
       <ReviewsSection />
