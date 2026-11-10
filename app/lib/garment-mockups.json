@@ -1,0 +1,122 @@
+{
+  "vest": {
+    "front": {
+      "src": "/mockups/vest-front.png",
+      "width": 897,
+      "height": 1280,
+      "area": {
+        "x": 0.0468,
+        "y": 0.0328,
+        "width": 0.9064,
+        "height": 0.9344
+      }
+    },
+    "back": {
+      "src": "/mockups/vest-back.png",
+      "width": 897,
+      "height": 1280,
+      "area": {
+        "x": 0.0468,
+        "y": 0.0328,
+        "width": 0.9064,
+        "height": 0.9344
+      }
+    }
+  },
+  "long-sleeve": {
+    "front": {
+      "src": "/mockups/long-sleeve-front.png",
+      "width": 1159,
+      "height": 1280,
+      "area": {
+        "x": 0.0362,
+        "y": 0.0328,
+        "width": 0.9275,
+        "height": 0.9344
+      }
+    },
+    "back": {
+      "src": "/mockups/long-sleeve-back.png",
+      "width": 1159,
+      "height": 1280,
+      "area": {
+        "x": 0.0362,
+        "y": 0.0328,
+        "width": 0.9275,
+        "height": 0.9344
+      }
+    }
+  },
+  "sweatpants": {
+    "front": {
+      "src": "/mockups/sweatpants-front.png",
+      "width": 519,
+      "height": 1280,
+      "area": {
+        "x": 0.0809,
+        "y": 0.0328,
+        "width": 0.8382,
+        "height": 0.9344
+      }
+    },
+    "back": {
+      "src": "/mockups/sweatpants-back.png",
+      "width": 519,
+      "height": 1280,
+      "area": {
+        "x": 0.0809,
+        "y": 0.0328,
+        "width": 0.8382,
+        "height": 0.9344
+      }
+    }
+  },
+  "tote": {
+    "front": {
+      "src": "/mockups/tote-front.png",
+      "width": 920,
+      "height": 1280,
+      "area": {
+        "x": 0.0457,
+        "y": 0.0328,
+        "width": 0.9087,
+        "height": 0.9344
+      }
+    },
+    "back": {
+      "src": "/mockups/tote-back.png",
+      "width": 920,
+      "height": 1280,
+      "area": {
+        "x": 0.0457,
+        "y": 0.0328,
+        "width": 0.9087,
+        "height": 0.9344
+      }
+    }
+  },
+  "apron": {
+    "front": {
+      "src": "/mockups/apron-front.png",
+      "width": 961,
+      "height": 1280,
+      "area": {
+        "x": 0.0437,
+        "y": 0.0328,
+        "width": 0.9126,
+        "height": 0.9344
+      }
+    },
+    "back": {
+      "src": "/mockups/apron-back.png",
+      "width": 961,
+      "height": 1280,
+      "area": {
+        "x": 0.0437,
+        "y": 0.0328,
+        "width": 0.9126,
+        "height": 0.9344
+      }
+    }
+  }
+}

@@ -46,8 +46,9 @@ function resolveQuantity({
 const FILE_ACCEPT = ".png,.jpg,.jpeg,.pdf,.ai,.psd";
 const ADDITIONAL_FILE_ACCEPT = ".png,.jpg,.jpeg,.pdf,.ai,.psd,.zip,.doc,.docx,.xls,.xlsx,.csv,.txt";
 
+// text-base (16px) below `sm`: iOS Safari zooms the whole page in when a smaller field is focused.
 const inputClass =
-  "w-full rounded-sm border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-sm text-pine transition-colors focus:border-pine focus:outline-none";
+  "w-full rounded-sm border border-pine/15 bg-paper px-3.5 py-2.5 font-body text-base text-pine transition-colors focus:border-pine focus:outline-none sm:text-sm";
 const labelClass = "mb-1.5 block font-body text-xs tracking-[0.12em] text-pine-soft uppercase";
 const errorClass = "mt-1 font-body text-xs text-red-600";
 const filledButton =
@@ -289,12 +290,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
           {hideHeading ? (
             <h1 className="sr-only">Request a quote for your Atelier design</h1>
           ) : (
-            <>
-              <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
-                Request a Quote
-              </span>
-              <h1 className="mb-4 font-display text-4xl text-pine md:text-5xl">Tell us what you&rsquo;re making.</h1>
-            </>
+            <h1 className="mb-4 font-display text-4xl text-pine md:text-5xl">Tell us what you&rsquo;re making.</h1>
           )}
           {isHandoff && (
             <Link href="/atelier" className="mt-6 inline-flex items-center gap-2 font-body text-sm text-pine-soft transition-colors hover:text-moss-deep">
@@ -313,7 +309,9 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
         <form onSubmit={onSubmit} noValidate className="mx-auto max-w-[1440px] rounded-sm border border-pine/15">
           <div className="grid lg:grid-cols-2">
             {/* Your Details */}
-            <div className="p-6 md:p-12">
+            {/* min-w-0 on both halves: a grid item otherwise refuses to be narrower than its widest content, which on
+                a phone stretched the whole page when an Atelier design row was in the form. */}
+            <div className="min-w-0 p-6 md:p-12">
               <h2 className="mb-6 font-display text-xl text-pine">Your Details</h2>
               <div className="space-y-5">
                 <div>
@@ -345,7 +343,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
             </div>
 
             {/* Your Project */}
-            <div className="border-t border-pine/15 bg-bone p-6 md:p-12 lg:border-t-0 lg:border-l">
+            <div className="min-w-0 border-t border-pine/15 bg-bone p-6 md:p-12 lg:border-t-0 lg:border-l">
               <h2 className="mb-6 font-display text-xl text-pine">Your Project</h2>
 
               <div className="space-y-6">
@@ -358,7 +356,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                         return (
                           <div
                             key={d.id}
-                            className={`flex items-center gap-3 rounded-sm border border-pine/15 bg-paper p-3 transition-opacity ${included ? "" : "opacity-50"}`}
+                            className={`flex flex-wrap items-center gap-3 rounded-sm border border-pine/15 bg-paper p-3 transition-opacity ${included ? "" : "opacity-50"}`}
                           >
                             <button
                               type="button"
@@ -384,7 +382,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                                 <img src={d.assetThumb} alt="" className="pointer-events-none absolute inset-0 h-full w-full object-contain p-2.5" />
                               )}
                             </div>
-                            <div className="min-w-0 flex-1">
+                            <div className="min-w-[9rem] flex-1">
                               <p className="truncate font-body text-sm text-pine">
                                 {d.garmentLabel} · {d.fabricLabel} · {d.colourLabel}
                               </p>
@@ -393,7 +391,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                                 {d.layerCount > 0 ? `${d.layerCount} artwork element${d.layerCount > 1 ? "s" : ""}` : "No artwork yet"}
                               </p>
                             </div>
-                            <QtyStepper value={d.qty} onChange={(v) => updateDesignQty(d.id, v)} min={10} max={5000} step={10} disabled={!included} />
+                            <QtyStepper className="ml-auto" value={d.qty} onChange={(v) => updateDesignQty(d.id, v)} min={10} max={5000} step={10} disabled={!included} />
                           </div>
                         );
                       })}

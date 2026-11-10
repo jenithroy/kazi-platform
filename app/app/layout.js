@@ -42,9 +42,9 @@ export default async function RootLayout({ children }) {
           <CartProvider>
             <SiteChrome
               nav={<Nav />}
-              footer={
+              footer={<Footer />}
+              floating={
                 <>
-                  <Footer />
                   <WhatsAppButton />
                   <CartDrawer />
                 </>

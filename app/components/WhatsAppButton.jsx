@@ -14,7 +14,7 @@ const DESKTOP_QUERY = "(min-width: 640px)";
 
 export function WhatsAppButton() {
   // The Atelier has its own floating dock (with its own "Get a Quote" button) anchored near
-  // the bottom of the screen — sit just high enough there to clear it.
+  // the bottom of the screen — sit just high enough there to clear it (see `bottom` below).
   const isAtelier = usePathname().startsWith("/atelier");
   const { bannerVisible } = useCookieConsent();
   // Starts false on both the server-prerendered pass and the client's initial hydration pass
@@ -31,8 +31,13 @@ export function WhatsAppButton() {
     return () => query.removeEventListener("change", onChange);
   }, []);
 
-  let bottom = isAtelier ? 100 : 20;
-  if (bannerVisible) bottom += isDesktop ? 148 : 232;
+  const bannerOffset = bannerVisible ? (isDesktop ? 148 : 232) : 0;
+  // On the Atelier, sit a fixed gap above the floating dock. The Atelier publishes the dock's measured
+  // top edge as --atelier-dock-top (it is taller on a phone, where "Get a Quote" has a row of its own);
+  // that value already includes the safe-area inset, and the fallback is the one-row desktop dock.
+  const bottom = isAtelier
+    ? `calc(var(--atelier-dock-top, calc(76px + env(safe-area-inset-bottom))) + 24px + ${bannerOffset}px)`
+    : `calc(${20 + bannerOffset}px + env(safe-area-inset-bottom))`;
 
   return (
     <a
@@ -40,8 +45,8 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full btn-gradient text-bone shadow-lg hover:scale-105 sm:right-6"
-      style={{ bottom: `calc(${bottom}px + env(safe-area-inset-bottom))` }}
+      className="whatsapp-fab fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full btn-gradient text-bone shadow-lg hover:scale-105 sm:right-6"
+      style={{ bottom }}
     >
       <WhatsappLogo size={30} weight="fill" />
     </a>

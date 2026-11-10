@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "garments": "node scripts/garments/build.mjs && node scripts/garments/import-glb.mjs && node scripts/garments/render-mockups.mjs"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.3.0",

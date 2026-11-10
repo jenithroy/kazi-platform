@@ -39,9 +39,9 @@ export default function QtyStepper({
         disabled={disabled}
         onClick={() => onChange(clamp(value - step))}
         aria-label="Decrease quantity"
-        className="w-5 h-5 border border-pine/15 flex items-center justify-center hover:border-pine transition-colors shrink-0 disabled:pointer-events-none"
+        className="w-9 h-9 sm:w-5 sm:h-5 border border-pine/15 flex items-center justify-center hover:border-pine transition-colors shrink-0 disabled:pointer-events-none"
       >
-        <Minus size={9} strokeWidth={1.5} />
+        <Minus size={9} strokeWidth={1.5} className="w-3.5 h-3.5 sm:w-[9px] sm:h-[9px]" />
       </button>
       <input
         type="text"
@@ -58,16 +58,16 @@ export default function QtyStepper({
             e.target.blur();
           }
         }}
-        className="w-12 text-center font-body text-[11px] text-pine tabular-nums border border-pine/15 focus:outline-none focus:border-pine bg-bone py-0.5 disabled:pointer-events-none"
+        className="w-14 sm:w-12 text-center font-body text-base sm:text-[11px] text-pine tabular-nums border border-pine/15 focus:outline-none focus:border-pine bg-bone py-1.5 sm:py-0.5 disabled:pointer-events-none"
       />
       <button
         type="button"
         disabled={disabled}
         onClick={() => onChange(clamp(value + step))}
         aria-label="Increase quantity"
-        className="w-5 h-5 border border-pine/15 flex items-center justify-center hover:border-pine transition-colors shrink-0 disabled:pointer-events-none"
+        className="w-9 h-9 sm:w-5 sm:h-5 border border-pine/15 flex items-center justify-center hover:border-pine transition-colors shrink-0 disabled:pointer-events-none"
       >
-        <Plus size={9} strokeWidth={1.5} />
+        <Plus size={9} strokeWidth={1.5} className="w-3.5 h-3.5 sm:w-[9px] sm:h-[9px]" />
       </button>
     </div>
   );

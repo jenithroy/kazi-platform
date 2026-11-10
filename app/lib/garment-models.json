@@ -1,0 +1,50 @@
+{
+  "long-sleeve": {
+    "credit": {
+      "title": "Sweatshirt Raglan Sleeves Colorway 1",
+      "author": "benski77",
+      "authorUrl": "https://sketchfab.com/benski77",
+      "sourceUrl": "https://sketchfab.com/3d-models/sweatshirt-raglan-sleeves-colorway-1-8843727796bd4d7da801b092179eb1a2",
+      "license": "Creative Commons Attribution 4.0 International",
+      "licenseShort": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "dimInside": false
+  },
+  "vest": {
+    "credit": {
+      "title": "Winter Jacket",
+      "author": "Flow Studio",
+      "authorUrl": "https://sketchfab.com/flowstudio",
+      "sourceUrl": "https://sketchfab.com/3d-models/winter-jacket-f77f7f7c14854173a60544dee5f7de0f",
+      "license": "Creative Commons Attribution 4.0 International",
+      "licenseShort": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "dimInside": true
+  },
+  "sweatpants": {
+    "credit": {
+      "title": "The Pants",
+      "author": "ARize",
+      "authorUrl": "https://sketchfab.com/ARizegroup",
+      "sourceUrl": "https://sketchfab.com/3d-models/the-pants-8939b47916ab4b2486a3fa2613eac54c",
+      "license": "Creative Commons Attribution 4.0 International",
+      "licenseShort": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "dimInside": false
+  },
+  "tote": {
+    "credit": {
+      "title": "Rattan Tote Bag (EMP (SBH) 27E)",
+      "author": "eeelabvisual",
+      "authorUrl": "https://sketchfab.com/eeelabvisual",
+      "sourceUrl": "https://sketchfab.com/3d-models/rattan-tote-bag-emp-sbh-27e-961d44f110fb4aa8bc9b912edf32b176",
+      "license": "Creative Commons Attribution 4.0 International",
+      "licenseShort": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "dimInside": true
+  }
+}

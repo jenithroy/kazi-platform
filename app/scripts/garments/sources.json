@@ -1,0 +1,69 @@
+{
+  "long-sleeve": {
+    "title": "Sweatshirt Raglan Sleeves Colorway 1",
+    "author": "benski77",
+    "authorUrl": "https://sketchfab.com/benski77",
+    "sourceUrl": "https://sketchfab.com/3d-models/sweatshirt-raglan-sleeves-colorway-1-8843727796bd4d7da801b092179eb1a2",
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "download": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-059/8843727796bd4d7da801b092179eb1a2.glb",
+    "exclude": "^Object_(4|6|8|10|12|15|16|19|20|21|2[2-9]|3[0-4])$",
+    "adapted": "the inner-lining copy of each panel and loose seam strips removed",
+    "fit": {
+      "height": 0.71,
+      "maxWidth": 0.95
+    },
+    "licenseShort": "CC BY 4.0",
+    "dimInside": false
+  },
+  "vest": {
+    "title": "Winter Jacket",
+    "author": "Flow Studio",
+    "authorUrl": "https://sketchfab.com/flowstudio",
+    "sourceUrl": "https://sketchfab.com/3d-models/winter-jacket-f77f7f7c14854173a60544dee5f7de0f",
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "download": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-120/f77f7f7c14854173a60544dee5f7de0f.glb",
+    "exclude": "Pattern2D_(554838|554839|667014|667015|667016|667017)|converse_logo",
+    "adapted": "made into a vest: sleeves, cuffs and a brand logo removed, mesh simplified",
+    "simplify": {
+      "triangles": 90000
+    },
+    "fit": {
+      "height": 0.69,
+      "maxWidth": 0.95
+    },
+    "licenseShort": "CC BY 4.0",
+    "dimInside": true
+  },
+  "sweatpants": {
+    "title": "The Pants",
+    "author": "ARize",
+    "authorUrl": "https://sketchfab.com/ARizegroup",
+    "sourceUrl": "https://sketchfab.com/3d-models/the-pants-8939b47916ab4b2486a3fa2613eac54c",
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "download": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-023/8939b47916ab4b2486a3fa2613eac54c.glb",
+    "fit": {
+      "height": 0.8,
+      "maxWidth": 0.95
+    },
+    "licenseShort": "CC BY 4.0",
+    "dimInside": false
+  },
+  "tote": {
+    "title": "Rattan Tote Bag (EMP (SBH) 27E)",
+    "author": "eeelabvisual",
+    "authorUrl": "https://sketchfab.com/eeelabvisual",
+    "sourceUrl": "https://sketchfab.com/3d-models/rattan-tote-bag-emp-sbh-27e-961d44f110fb4aa8bc9b912edf32b176",
+    "license": "Creative Commons Attribution 4.0 International",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "download": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-115/961d44f110fb4aa8bc9b912edf32b176.glb",
+    "fit": {
+      "height": 0.68,
+      "maxWidth": 0.95
+    },
+    "licenseShort": "CC BY 4.0",
+    "dimInside": true
+  }
+}

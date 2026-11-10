@@ -213,7 +213,9 @@ export function Nav() {
           {!menuOpen && (
             <Link
               href="/quote"
-              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold hover:-translate-y-px ${
+              // Below 360px the logo, this button and the two icons don't fit in the bar and the menu button was
+              // pushed off-screen; the open menu has its own "Get a Quote", so the bar's one steps aside there.
+              className={`inline-flex h-10 items-center whitespace-nowrap rounded-sm border px-5 font-body text-[0.9rem] font-semibold hover:-translate-y-px max-[359px]:hidden ${
                 !scrolled
                   ? "btn-solid border-white/25 text-bone shadow-[0_6px_18px_-6px_rgba(2,18,50,0.65)]"
                   : isLight

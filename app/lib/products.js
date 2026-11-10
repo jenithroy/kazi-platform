@@ -3,11 +3,12 @@
 // before ship, same flag used for any other unverified
 // placeholder content. Don't quote these prices to a customer.
 //
-// `garmentModel` is only set where the Atelier's 3D viewer actually has a matching mesh
-// (t-shirt.glb / hoodie.glb, see GarmentViewer.tsx) — omitted for silhouettes it can't
-// render, so the product page never offers a 3D toggle that would show the wrong garment.
+// `garmentModel` names the product's garment in the Atelier (lib/garments.js), which has a
+// 3D model and a 2D mockup for each — so every product page offers "Customize in the Atelier".
+// Leave it out for a product the Atelier can't render, so no page offers a preview or a
+// customiser that would show the wrong garment.
 //
-// Colour hexes are drawn from the Atelier's own COLOURS palette (AtelierPage.tsx) rather
+// Colour hexes are drawn from the Atelier's own COLOURS palette (lib/garments.js) rather
 // than invented per product, so every "Customize in the Atelier" deep link resolves to a
 // real, selectable colour instead of snapping to the nearest one.
 //
@@ -64,6 +65,7 @@ export const products = [
     slug: "long-sleeve-tee",
     name: "Long-Sleeve Tee",
     category: "Knitwear",
+    garmentModel: "long-sleeve",
     image: whiteLabelPhoto("long-sleeve"),
     price: "From £4.80 / unit",
     moq: 100,
@@ -123,6 +125,7 @@ export const products = [
     slug: "utility-vest",
     name: "Utility Vest",
     category: "Outerwear",
+    garmentModel: "vest",
     image: whiteLabelPhoto("vest"),
     price: "From £14.50 / unit",
     moq: 100,
@@ -152,6 +155,7 @@ export const products = [
     slug: "sweatpants",
     name: "Sweatpants",
     category: "Bottoms",
+    garmentModel: "sweatpants",
     image: whiteLabelPhoto("pants"),
     price: "From £9.80 / unit",
     moq: 100,
@@ -181,6 +185,7 @@ export const products = [
     slug: "canvas-tote",
     name: "Canvas Tote",
     category: "Accessories",
+    garmentModel: "tote",
     image: whiteLabelPhoto("tote"),
     price: "From £3.80 / unit",
     moq: 100,
@@ -207,6 +212,7 @@ export const products = [
     slug: "work-apron",
     name: "Work Apron",
     category: "Accessories",
+    garmentModel: "apron",
     image: whiteLabelPhoto("apron"),
     price: "From £5.20 / unit",
     moq: 100,

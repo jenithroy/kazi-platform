@@ -14,6 +14,10 @@ import {
 import Garment2DEditor from './Garment2DEditor'
 import QtyStepper from './QtyStepper'
 import { saveQuoteDesigns } from '@/lib/quote-handoff'
+import {
+  COLOURS, DEFAULT_COLOUR, FABRICS, GARMENTS, MODEL_CREDITS, createPresetLayers, fabricsFor, getGarment,
+  isUntouchedPreset,
+} from '@/lib/garments'
 
 // react-three-fiber's <Canvas> creates a WebGL context on mount — loading it via next/dynamic
 // with ssr:false keeps that (and the GLTF/Three.js module graph) out of the static-export
@@ -28,32 +32,6 @@ const GarmentViewer = dynamic(() => import('./GarmentViewer'), {
     </div>
   ),
 })
-
-const GARMENT_TYPES = [
-  { id: 't-shirt', label: 'T-Shirt', code: 'GAR-001', desc: 'Classic crew neck' },
-  { id: 'hoodie', label: 'Hoodie', code: 'GAR-002', desc: 'Pullover with hood' },
-]
-
-const FABRICS = [
-  { id: 'cotton-180', label: 'Cotton Jersey', spec: '180 gsm', code: 'FAB-01', detail: 'GOTS certified · breathable · year-round' },
-  { id: 'fleece-380', label: 'Heavyweight Fleece', spec: '380 gsm', code: 'FAB-02', detail: 'Recycled polyester · insulating · winter weight' },
-  { id: 'terry-280', label: 'French Terry', spec: '280 gsm', code: 'FAB-03', detail: 'Loop-back · mid-weight · soft hand-feel' },
-]
-
-const COLOURS = [
-  { hex: '#FFFFFF', label: 'White' },
-  { hex: '#F5F3EE', label: 'Cream' },
-  { hex: '#E8E0D0', label: 'Oat' },
-  { hex: '#D4C5A9', label: 'Linen' },
-  { hex: '#B8A898', label: 'Sand' },
-  { hex: '#6B6560', label: 'Stone' },
-  { hex: '#3D2B1F', label: 'Espresso' },
-  { hex: '#1A1A1A', label: 'Black' },
-  { hex: '#1B3A2B', label: 'Pine' },
-  { hex: '#3F8F5C', label: 'Moss' },
-  { hex: '#8B4513', label: 'Rust' },
-  { hex: '#C4956A', label: 'Camel' },
-]
 
 const DOCK_ITEMS = [
   { id: 'garment', label: 'Garment', icon: Shirt },
@@ -76,8 +54,35 @@ function pricePerUnit(qty) {
 const PER_ASSET_PRINT_COST = 0.75
 const PATTERN_PRINT_COST = 1.5
 
+// The Kazi logo a design starts with is a placeholder for the customer's own artwork, so it is not
+// counted as print work (here, in the quote summary or in the collection).
+function artworkCount(layers) {
+  return layers.filter((l) => !l.isPreset).length
+}
+
 function estimateUnitPrice(entry) {
-  return pricePerUnit(entry.qty) + entry.layers.length * PER_ASSET_PRINT_COST + (entry.pattern ? PATTERN_PRINT_COST : 0)
+  return pricePerUnit(entry.qty) + artworkCount(entry.layers) * PER_ASSET_PRINT_COST + (entry.pattern ? PATTERN_PRINT_COST : 0)
+}
+
+// How big, and where, a new picture or text box starts on this garment (see createImageLayer). The tee
+// and hoodie keep their original sizing; the garments whose 2D and 3D shapes agree keep true proportions.
+// A garment with no fabric at its centre (trousers) says where to start instead (`layerAt`), mirrored
+// for the back.
+function newLayerOptions(garment, side) {
+  const at = garment?.layerAt
+  return {
+    scale: garment?.layerScale ?? 1,
+    areaAspect: garment?.exactAspect ? garment.areaAspect : null,
+    ...(at ? { at: { x: side === 'back' ? 1 - at.x : at.x, y: at.y } } : {}),
+  }
+}
+
+// Fetching a model when its button is hovered means it is already cached when it is picked.
+const warmed = new Set()
+function warmModel(url) {
+  if (warmed.has(url)) return
+  warmed.add(url)
+  fetch(url).catch(() => {})
 }
 
 async function fileToAspectRatio(url) {
@@ -109,19 +114,41 @@ async function cloneObjectUrl(url) {
   }
 }
 
+// --atelier-dock-top is the distance from the bottom of the stage to the top edge of the floating
+// dock. The page measures it (the dock is taller on a phone, where "Get a Quote" sits on its own
+// row) and publishes it on <html>, so the panels, the canvas, the rotate hint and the WhatsApp
+// button all sit relative to the dock wherever it ends up. Until it has been measured, the
+// stylesheet's per-layout default (globals.css) stands in, so nothing shifts when the page loads.
+const DOCK_TOP = 'var(--atelier-dock-top, var(--atelier-dock-top-default, 5rem))'
+// A bottom panel stops short of the top controls (--atelier-panel-reserve, see globals.css, leaves room for
+// the front/back switch above it); a top panel (the estimate) starts below the top bar and stops above the dock.
+const PANEL_GEOMETRY = {
+  bottom: { bottom: `calc(${DOCK_TOP} + 1rem)`, maxHeight: `min(540px, calc(100% - ${DOCK_TOP} - 1rem - var(--atelier-panel-reserve, 7.25rem)))` },
+  top: { maxHeight: `min(540px, calc(100% - ${DOCK_TOP} - 1rem - 5rem))` },
+}
+
 function ConfigPanel({ title, onClose, children, side = 'left', anchor = 'bottom', headerAction, footer, rootRef }) {
   return (
-    <div ref={rootRef} className={`absolute ${anchor === 'top' ? 'top-16 sm:top-20' : 'bottom-24'} ${side === 'left' ? 'left-4 sm:left-6' : 'right-4 sm:right-6'} w-[calc(100vw-2rem)] sm:w-[300px] max-h-[min(60vh,540px)] sm:max-h-[min(70vh,540px)] bg-bone border border-pine/15 rounded-xl shadow-xl flex flex-col overflow-hidden z-20`}>
+    <div
+      ref={rootRef}
+      style={PANEL_GEOMETRY[anchor === 'top' ? 'top' : 'bottom']}
+      className={`absolute ${anchor === 'top' ? 'top-16 sm:top-20' : ''} ${side === 'left' ? 'left-3 sm:left-6' : 'right-3 sm:right-6'} w-[calc(100%-1.5rem)] sm:w-[300px] bg-bone border border-pine/15 rounded-xl shadow-xl flex flex-col overflow-hidden z-20`}
+    >
       <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-pine/15 shrink-0">
         <span className="font-display text-sm text-pine">{title}</span>
         <div className="flex items-center gap-3 shrink-0">
           {headerAction}
-          <button onClick={onClose} aria-label="Close panel" className="text-pine-soft hover:text-pine transition-colors">
+          {/* The padding (cancelled by the negative margin) makes the tap target 32px, not the 15px icon. */}
+          <button onClick={onClose} aria-label="Close panel" className="-m-2 p-2 text-pine-soft hover:text-pine transition-colors">
             <X size={15} strokeWidth={1.5} />
           </button>
         </div>
       </div>
-      <div className="min-h-0 overflow-y-auto px-4 py-4 flex-1">{children}</div>
+      {/* data-lenis-prevent: the site's smooth-scroll library (Lenis) otherwise intercepts the mouse
+          wheel for the page — which doesn't scroll here — so this list could only be moved by
+          dragging its scrollbar. overscroll-contain stops a wheel at the end of the list from
+          chaining on to the page. */}
+      <div data-lenis-prevent className="min-h-0 overflow-y-auto overscroll-contain px-4 py-4 flex-1">{children}</div>
       {footer && <div className="shrink-0 border-t border-pine/15 px-4 py-3">{footer}</div>}
     </div>
   )
@@ -167,16 +194,19 @@ function AtelierPage() {
   const [activePanel, setActivePanel] = useState(null)
   const [garment, setGarment] = useState(() => {
     const requested = searchParams.get('garment')
-    return GARMENT_TYPES.some((g) => g.id === requested) ? requested : 't-shirt'
+    return GARMENTS.some((g) => g.id === requested) ? requested : 't-shirt'
   })
-  const [fabric, setFabric] = useState('cotton-180')
+  const [fabric, setFabric] = useState(() => getGarment(garment).defaultFabric)
   const [colour, setColour] = useState(() => {
     const requested = searchParams.get('colour')
-    return COLOURS.some((c) => c.hex.toLowerCase() === requested?.toLowerCase()) ? requested : '#E8E0D0'
+    return COLOURS.some((c) => c.hex.toLowerCase() === requested?.toLowerCase()) ? requested : DEFAULT_COLOUR
   })
   const [pattern, setPattern] = useState(null)
   const [patternOpacity, setPatternOpacity] = useState(1)
-  const [layers, setLayers] = useState([])
+  // A design opens with the Kazi logo placed on it (see createPresetLayers). It follows the garment
+  // and colour choices until the first edit to the artwork, and is replaced by whatever the
+  // customer adds.
+  const [layers, setLayers] = useState(() => createPresetLayers(garment, colour))
   const [activeSide, setActiveSide] = useState('front')
   const [selectedLayerId, setSelectedLayerId] = useState(null)
   const [qty, setQty] = useState(100)
@@ -190,7 +220,41 @@ function AtelierPage() {
   const [viewMode, setViewMode] = useState('2d')
   const canvasAreaRef = useRef(null)
   const leftPanelRef = useRef(null)
+  const dockRef = useRef(null)
   const [switchTop, setSwitchTop] = useState(null)
+
+  // Publishes where the top edge of the floating dock is (see DOCK_TOP) as --atelier-dock-top on
+  // <html>: the dock is taller on a phone, where "Get a Quote" gets a row of its own, and the
+  // WhatsApp button, which lives outside this page, reads the same value to stay clear of it.
+  // This writes a CSS variable straight to the DOM rather than into React state.
+  useEffect(() => {
+    const dock = dockRef.current
+    const area = canvasAreaRef.current
+    if (!dock || !area) return
+    const root = document.documentElement
+    function measure() {
+      const top = area.getBoundingClientRect().bottom - dock.getBoundingClientRect().top
+      root.style.setProperty('--atelier-dock-top', `${Math.round(top)}px`)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(dock)
+    ro.observe(area)
+    return () => {
+      ro.disconnect()
+      root.style.removeProperty('--atelier-dock-top')
+    }
+  }, [])
+
+  // The WhatsApp button, which lives outside this page, sits where the right-hand panels end up (and a
+  // phone's panels fill the width), so it steps aside while one is open (globals.css, "Atelier").
+  const openPanelSide = showCollection || showEstimate ? 'right' : activePanel ? 'left' : null
+  useEffect(() => {
+    const root = document.documentElement
+    if (openPanelSide) root.dataset.atelierPanel = openPanelSide
+    else delete root.dataset.atelierPanel
+    return () => { delete root.dataset.atelierPanel }
+  }, [openPanelSide])
 
   // Mobile browsers resize their chrome (address bar, etc.) without reliably firing a
   // `dvh` recompute on a page that never scrolls — measure the true visible height directly
@@ -255,8 +319,42 @@ function AtelierPage() {
     return () => ro.disconnect()
   }, [activePanel, viewportHeight])
 
+  // While the artwork is still the untouched Kazi logo preset, it follows the garment and colour.
+  function chooseGarment(id) {
+    setGarment(id)
+    const next = getGarment(id)
+    // Move to the new garment's usual fabric unless the customer picked one themselves (and it suits it).
+    if (!next.fabrics.includes(fabric) || fabric === getGarment(garment).defaultFabric) setFabric(next.defaultFabric)
+    if (isUntouchedPreset(layers, garment, colour)) setLayers(createPresetLayers(id, colour))
+  }
+
+  function chooseColour(hex) {
+    setColour(hex)
+    if (isUntouchedPreset(layers, garment, colour)) setLayers(createPresetLayers(garment, hex))
+  }
+
+  // On a phone the panels fill the width, so opening one closes the others; on a larger screen the
+  // left-hand panels and the collection/estimate panels on the right can be open together.
+  const isPhone = () => window.matchMedia('(max-width: 639px)').matches
+
   function togglePanel(id) {
     setActivePanel((p) => (p === id ? null : id))
+    if (isPhone()) {
+      setShowCollection(false)
+      setShowEstimate(false)
+    }
+  }
+
+  function toggleCollection() {
+    setShowCollection((v) => !v)
+    setShowEstimate(false)
+    if (isPhone()) setActivePanel(null)
+  }
+
+  function toggleEstimate() {
+    setShowEstimate((v) => !v)
+    setShowCollection(false)
+    if (isPhone()) setActivePanel(null)
   }
 
   function switchActiveSide(side) {
@@ -425,13 +523,13 @@ function AtelierPage() {
     if (!file) return
     const url = URL.createObjectURL(file)
     const aspect = await fileToAspectRatio(url)
-    const layer = createImageLayer(activeSide, url, file.name, aspect)
+    const layer = createImageLayer(activeSide, url, file.name, aspect, newLayerOptions(selectedGarment, activeSide))
     setLayers((prev) => [...prev, layer])
     setSelectedLayerId(layer.id)
   }
 
   function addTextLayer() {
-    const layer = createTextLayer(activeSide)
+    const layer = createTextLayer(activeSide, newLayerOptions(selectedGarment, activeSide))
     setLayers((prev) => [...prev, layer])
     setSelectedLayerId(layer.id)
   }
@@ -458,7 +556,7 @@ function AtelierPage() {
   function startNewDesign() {
     setLayers((prev) => {
       prev.forEach((l) => { if (l.type === 'image') URL.revokeObjectURL(l.url) })
-      return []
+      return createPresetLayers('t-shirt', DEFAULT_COLOUR)
     })
     setPattern((prev) => {
       if (prev) URL.revokeObjectURL(prev)
@@ -466,8 +564,8 @@ function AtelierPage() {
     })
     setPatternOpacity(1)
     setGarment('t-shirt')
-    setFabric('cotton-180')
-    setColour('#E8E0D0')
+    setFabric(getGarment('t-shirt').defaultFabric)
+    setColour(DEFAULT_COLOUR)
     setQty(100)
     setSelectedLayerId(null)
     setActiveSide('front')
@@ -545,9 +643,10 @@ function AtelierPage() {
 
   const selectedColour = COLOURS.find((c) => c.hex.toLowerCase() === colour.toLowerCase())
   const selectedFabric = FABRICS.find((f) => f.id === fabric)
-  const selectedGarment = GARMENT_TYPES.find((g) => g.id === garment)
+  const selectedGarment = getGarment(garment)
   const sideLayers = layers.filter((l) => l.side === activeSide)
   const currentThumb = layers.find((l) => l.type === 'image')
+  const garmentFabrics = fabricsFor(garment)
 
   const estimateEntries = collection.filter((entry) => !estimateExcluded.has(entry.id))
   const estimateTotalQty = estimateEntries.reduce((sum, entry) => sum + entry.qty, 0)
@@ -563,15 +662,15 @@ function AtelierPage() {
     const toQuoteDesign = (id, g, f, c, pat, patOpacity, dqty, dlayers) => ({
       id,
       garment: g,
-      garmentLabel: GARMENT_TYPES.find((x) => x.id === g)?.label ?? g,
+      garmentLabel: getGarment(g)?.label ?? g,
       fabricLabel: FABRICS.find((x) => x.id === f)?.label ?? f,
       colourLabel: COLOURS.find((x) => x.hex.toLowerCase() === c.toLowerCase())?.label ?? c,
       colourHex: c,
       hasPattern: !!pat,
       patternThumb: pat,
       patternOpacity: patOpacity,
-      assetThumb: dlayers.find((l) => l.type === 'image')?.url ?? null,
-      layerCount: dlayers.length,
+      assetThumb: dlayers.find((l) => l.type === 'image' && !l.isPreset)?.url ?? null,
+      layerCount: artworkCount(dlayers),
       qty: dqty,
     })
 
@@ -595,8 +694,11 @@ function AtelierPage() {
       <div className="absolute inset-0">
         <div ref={canvasAreaRef} className="relative w-full h-full bg-paper-raised/40 overflow-hidden">
 
-          {/* Canvas */}
-          <div className="absolute inset-0 bottom-28">
+          {/* Canvas — clear of the dock below and, on a compact layout (see globals.css), of the controls above */}
+          <div
+            className="absolute inset-x-0"
+            style={{ top: 'var(--atelier-canvas-top, 0px)', bottom: `calc(${DOCK_TOP} + var(--atelier-canvas-gap, 2rem))` }}
+          >
             {viewMode === '2d' ? (
               <Garment2DEditor
                 garment={garment}
@@ -642,7 +744,7 @@ function AtelierPage() {
           {/* Estimate — top right; expands into a per-design pricing breakdown for the
               collection instead of just quoting the current garment's per-unit price. */}
           <button
-            onClick={() => { setShowEstimate((v) => !v); setShowCollection(false) }}
+            onClick={toggleEstimate}
             title="Estimate pricing for your saved designs" aria-label="Estimate pricing"
             aria-pressed={showEstimate}
             className={`absolute top-4 right-4 sm:right-6 z-10 flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 border rounded-lg transition-colors duration-150 ${
@@ -661,10 +763,13 @@ function AtelierPage() {
               own (measured) top edge while one is open, instead of either getting buried
               underneath or jumping all the way to the top of the screen. */}
           <div
-            className={`absolute left-4 sm:left-6 z-10 transition-[top] duration-200 ease-out ${
-              switchTop === null ? 'top-1/2 -translate-y-1/2' : ''
+            className={`atelier-switch absolute left-4 sm:left-6 z-10 transition-[top] duration-200 ease-out ${
+              switchTop === null ? 'top-1/2 -translate-y-1/2' : 'top-[var(--switch-top)]'
             }`}
-            style={switchTop !== null ? { top: `${switchTop}px` } : undefined}
+            // On a compact layout (portrait phone, short screen) globals.css moves the switch into the top
+            // controls instead; the estimate panel opens over a portrait phone's switch row, hence the flag.
+            data-estimate-open={showEstimate ? '' : undefined}
+            style={switchTop !== null ? { '--switch-top': `${switchTop}px` } : undefined}
           >
             <div className="relative flex p-1 w-24 sm:w-28 bg-bone border border-pine/15 rounded-full shadow-xl" role="group" aria-label="Front or back">
               <span
@@ -686,7 +791,10 @@ function AtelierPage() {
 
           {/* Rotate hint */}
           {viewMode === '3d' && (
-            <div className="pointer-events-none absolute bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 border border-pine/15 bg-bone/85 backdrop-blur-sm rounded-full z-10">
+            <div
+              className="pointer-events-none absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 border border-pine/15 bg-bone/85 backdrop-blur-sm rounded-full z-10"
+              style={{ bottom: `calc(${DOCK_TOP} + 1rem)` }}
+            >
               <RotateCw size={11} className="text-pine-soft" strokeWidth={1.5} />
               <span className="font-body text-[9px] tracking-[0.18em] text-pine-soft uppercase">Drag to rotate</span>
             </div>
@@ -696,25 +804,54 @@ function AtelierPage() {
           {activePanel === 'garment' && (
             <ConfigPanel title="Garment" onClose={() => setActivePanel(null)} rootRef={leftPanelRef}>
               <div className="space-y-2.5">
-                {GARMENT_TYPES.map((g) => (
-                  <button key={g.id} onClick={() => setGarment(g.id)}
-                    className={`relative w-full text-left border px-4 py-3 transition-all duration-200 ${
+                {GARMENTS.map((g) => (
+                  <button key={g.id} onClick={() => chooseGarment(g.id)}
+                    onPointerEnter={() => warmModel(g.model)} onFocus={() => warmModel(g.model)}
+                    aria-pressed={garment === g.id}
+                    className={`relative flex w-full items-center gap-3 text-left border px-3 py-2.5 transition-all duration-200 ${
                       garment === g.id ? 'border-pine bg-pine text-bone' : 'border-pine/15 bg-bone hover:border-pine/40 text-pine'
                     }`}>
-                    <p className={`font-body text-[9px] tracking-[0.18em] uppercase mb-1 ${garment === g.id ? 'text-bone/70' : 'text-pine-soft'}`}>{g.code}</p>
-                    <p className="font-display text-sm mb-0.5">{g.label}</p>
-                    <p className={`font-body text-xs ${garment === g.id ? 'text-bone/60' : 'text-pine-soft'}`}>{g.desc}</p>
-                    {garment === g.id && <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-moss" />}
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded bg-paper-raised">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={g.thumb} alt="" width={48} height={48} loading="lazy" className="h-10 w-10 object-contain" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className={`block font-body text-[9px] tracking-[0.18em] uppercase mb-0.5 ${garment === g.id ? 'text-bone/70' : 'text-pine-soft'}`}>{g.code}</span>
+                      <span className="block font-display text-sm leading-tight">{g.label}</span>
+                      <span className={`block font-body text-xs leading-snug ${garment === g.id ? 'text-bone/60' : 'text-pine-soft'}`}>{g.desc}</span>
+                    </span>
+                    {garment === g.id && <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-moss" />}
                   </button>
                 ))}
               </div>
+
+              {/* Several of the 3D models are other artists' work, shared under CC BY, which asks for credit. */}
+              {MODEL_CREDITS.length > 0 && (
+                <details className="mt-4 border-t border-pine/15 pt-3">
+                  <summary className="cursor-pointer font-body text-[9px] tracking-[0.18em] text-pine-soft uppercase hover:text-pine">
+                    3D model credits
+                  </summary>
+                  <ul className="mt-2.5 space-y-2 font-body text-[10px] leading-snug text-pine-soft">
+                    {MODEL_CREDITS.map((c) => (
+                      <li key={c.garment}>
+                        <span className="text-pine">{c.garment}:</span> &ldquo;
+                        <a href={c.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-pine">{c.title}</a>
+                        &rdquo; by{' '}
+                        <a href={c.authorUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-pine">{c.author}</a>
+                        , <a href={c.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-pine">{c.licenseShort}</a>.
+                        Adapted for this site.
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
             </ConfigPanel>
           )}
 
           {activePanel === 'fabric' && (
             <ConfigPanel title="Fabric" onClose={() => setActivePanel(null)} rootRef={leftPanelRef}>
               <div className="space-y-2.5">
-                {FABRICS.map((f) => (
+                {garmentFabrics.map((f) => (
                   <button key={f.id} onClick={() => setFabric(f.id)}
                     className={`w-full text-left border px-4 py-3 transition-all duration-200 ${
                       fabric === f.id ? 'border-pine bg-pine text-bone' : 'border-pine/15 bg-bone hover:border-pine/40'
@@ -737,7 +874,7 @@ function AtelierPage() {
                 <input
                   type="color"
                   value={colour}
-                  onChange={(e) => setColour(e.target.value)}
+                  onChange={(e) => chooseColour(e.target.value)}
                   aria-label="Pick a custom colour"
                   className="w-11 h-11 border border-pine/15 cursor-pointer bg-bone p-0.5 shrink-0"
                 />
@@ -750,7 +887,7 @@ function AtelierPage() {
               <p className="font-body text-[9px] tracking-[0.18em] text-pine-soft uppercase mb-2.5">Quick picks</p>
               <div className="grid grid-cols-6 gap-2 mb-5">
                 {COLOURS.map((c) => (
-                  <button key={c.hex} onClick={() => setColour(c.hex)} title={c.label}
+                  <button key={c.hex} onClick={() => chooseColour(c.hex)} title={c.label}
                     className={`w-8 h-8 border-2 transition-all duration-200 ${
                       colour.toLowerCase() === c.hex.toLowerCase() ? 'border-pine scale-110 shadow-sm' : 'border-pine/15 hover:border-pine/40'
                     }`}
@@ -859,7 +996,8 @@ function AtelierPage() {
                                 value={layer.text}
                                 onChange={(e) => updateTextLayer(layer.id, { text: e.target.value })}
                                 placeholder="Your text"
-                                className="w-full border border-pine/15 px-2.5 py-1.5 font-body text-xs text-pine focus:outline-none focus:border-pine"
+                                // 16px on a phone: iOS Safari zooms the whole page in when a smaller text field is focused.
+                                className="w-full border border-pine/15 px-2.5 py-1.5 font-body text-base sm:text-xs text-pine focus:outline-none focus:border-pine"
                               />
                               <div className="flex items-center gap-2">
                                 {TEXT_FONTS.map((f) => (
@@ -939,7 +1077,7 @@ function AtelierPage() {
                       <p className="font-display text-xs text-pine truncate">{selectedGarment?.label ?? garment}</p>
                       <p className="font-body text-[10px] text-pine-soft truncate">
                         {selectedFabric?.label ?? fabric} · {selectedColour?.label ?? colour}
-                        {layers.length > 0 && ` · ${layers.length} el.`}
+                        {artworkCount(layers) > 0 && ` · ${artworkCount(layers)} el.`}
                       </p>
                     </div>
                   </div>
@@ -955,7 +1093,7 @@ function AtelierPage() {
                   <>
                     <p className="font-body text-[9px] tracking-[0.18em] text-pine-soft uppercase pt-1">Saved</p>
                     {collection.map((entry) => {
-                      const g = GARMENT_TYPES.find((x) => x.id === entry.garment)
+                      const g = getGarment(entry.garment)
                       const f = FABRICS.find((x) => x.id === entry.fabric)
                       const c = COLOURS.find((x) => x.hex.toLowerCase() === entry.colour.toLowerCase())
                       const thumb = entry.layers.find((l) => l.type === 'image')
@@ -981,7 +1119,7 @@ function AtelierPage() {
                             <p className="font-display text-xs text-pine truncate">{g?.label ?? entry.garment}</p>
                             <p className="font-body text-[10px] text-pine-soft truncate">
                               {f?.label ?? entry.fabric} · {c?.label ?? entry.colour}
-                              {entry.layers.length > 0 && ` · ${entry.layers.length} el.`}
+                              {artworkCount(entry.layers) > 0 && ` · ${artworkCount(entry.layers)} el.`}
                             </p>
                           </div>
                           <button onClick={(e) => { e.stopPropagation(); removeFromCollection(entry.id) }} aria-label="Remove from collection"
@@ -1027,7 +1165,7 @@ function AtelierPage() {
               ) : (
                 <div className="space-y-2.5">
                   {collection.map((entry) => {
-                    const g = GARMENT_TYPES.find((x) => x.id === entry.garment)
+                    const g = getGarment(entry.garment)
                     const c = COLOURS.find((x) => x.hex.toLowerCase() === entry.colour.toLowerCase())
                     const selected = !estimateExcluded.has(entry.id)
                     const unit = estimateUnitPrice(entry)
@@ -1048,9 +1186,9 @@ function AtelierPage() {
                           <button onClick={() => toggleEstimateEntry(entry.id)} className="flex-1 min-w-0 text-left">
                             <p className="font-display text-xs text-pine truncate">{g?.label ?? entry.garment} · {c?.label ?? entry.colour}</p>
                             <p className="font-body text-[10px] text-pine-soft truncate">
-                              {entry.layers.length > 0 && `${entry.layers.length} asset${entry.layers.length > 1 ? 's' : ''}`}
-                              {entry.pattern && (entry.layers.length > 0 ? ' · pattern' : 'Pattern')}
-                              {entry.layers.length === 0 && !entry.pattern && 'No custom artwork'}
+                              {artworkCount(entry.layers) > 0 && `${artworkCount(entry.layers)} asset${artworkCount(entry.layers) > 1 ? 's' : ''}`}
+                              {entry.pattern && (artworkCount(entry.layers) > 0 ? ' · pattern' : 'Pattern')}
+                              {artworkCount(entry.layers) === 0 && !entry.pattern && 'No custom artwork'}
                             </p>
                           </button>
                           <span className="font-body text-[11px] text-pine font-medium shrink-0">
@@ -1084,50 +1222,56 @@ function AtelierPage() {
             />
           )}
 
-          {/* ── Floating dock ── */}
+          {/* ── Floating dock ──
+              One row on anything wider than a portrait phone. On a portrait phone the one-row dock is
+              wider than the screen — it scrolled sideways and cut "Get a Quote" off — so it becomes two
+              rows: the tools, then a full-width "Get a Quote". Its measured height drives the layout
+              above it (see DOCK_TOP). */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 z-20 max-w-[calc(100vw-1.5rem)]"
-            style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+            ref={dockRef}
+            className="absolute left-1/2 -translate-x-1/2 z-20 max-w-[calc(100%-1.5rem)] max-sm:portrait:w-[calc(100%-1.5rem)] bottom-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:bottom-[calc(1.5rem_+_env(safe-area-inset-bottom))] [@media(max-height:520px)]:bottom-[calc(0.5rem_+_env(safe-area-inset-bottom))]"
           >
-            <div className="flex items-center gap-0.5 sm:gap-1 bg-pine rounded-2xl px-1.5 sm:px-2 py-2 shadow-xl overflow-x-auto">
-              <div className="flex items-center bg-bone/10 rounded-lg p-0.5 shrink-0" role="group" aria-label="Editing view">
-                {['3d', '2d'].map((mode) => (
-                  <button key={mode} onClick={() => setViewMode(mode)}
-                    title={mode === '3d' ? '3D model' : '2D mockup'} aria-pressed={viewMode === mode}
-                    className={`px-2.5 h-8 sm:h-9 rounded-md font-body text-[10px] tracking-[0.18em] uppercase transition-colors duration-150 ${
-                      viewMode === mode ? 'bg-bone text-pine' : 'text-bone/70 hover:text-bone'
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-pine rounded-2xl px-1.5 sm:px-2 py-2 shadow-xl overflow-x-auto max-sm:portrait:flex-col max-sm:portrait:items-stretch max-sm:portrait:gap-2 max-sm:portrait:p-2">
+              <div className="flex items-center gap-0.5 sm:gap-1 max-sm:portrait:justify-between">
+                <div className="flex items-center bg-bone/10 rounded-lg p-0.5 shrink-0" role="group" aria-label="Editing view">
+                  {['3d', '2d'].map((mode) => (
+                    <button key={mode} onClick={() => setViewMode(mode)}
+                      title={mode === '3d' ? '3D model' : '2D mockup'} aria-pressed={viewMode === mode}
+                      className={`px-2.5 h-8 sm:h-9 max-sm:portrait:h-9 rounded-md font-body text-[10px] tracking-[0.18em] uppercase transition-colors duration-150 ${
+                        viewMode === mode ? 'bg-bone text-pine' : 'text-bone/70 hover:text-bone'
+                      }`}>
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0 max-sm:portrait:hidden" />
+
+                {DOCK_ITEMS.map(({ id, label, icon: Icon }) => (
+                  <button key={id} onClick={() => togglePanel(id)} title={label} aria-label={label}
+                    aria-pressed={activePanel === id}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 max-sm:portrait:w-10 max-sm:portrait:h-10 shrink-0 flex items-center justify-center rounded-lg transition-colors duration-150 ${
+                      activePanel === id ? 'bg-bone text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
                     }`}>
-                    {mode}
+                    <Icon size={17} strokeWidth={1.5} />
                   </button>
                 ))}
+
+                <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0 max-sm:portrait:hidden" />
+
+                <button onClick={toggleCollection} title="Collection" aria-label="Collection"
+                  aria-pressed={showCollection}
+                  className={`w-9 h-9 sm:w-10 sm:h-10 max-sm:portrait:w-10 max-sm:portrait:h-10 shrink-0 flex items-center justify-center rounded-lg transition-colors duration-150 ${
+                    showCollection ? 'bg-bone text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
+                  }`}>
+                  <BookmarkPlus size={17} strokeWidth={1.5} />
+                </button>
               </div>
 
-              <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0" />
-
-              {DOCK_ITEMS.map(({ id, label, icon: Icon }) => (
-                <button key={id} onClick={() => togglePanel(id)} title={label} aria-label={label}
-                  aria-pressed={activePanel === id}
-                  className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center rounded-lg transition-colors duration-150 ${
-                    activePanel === id ? 'bg-bone text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
-                  }`}>
-                  <Icon size={17} strokeWidth={1.5} />
-                </button>
-              ))}
-
-              <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0" />
-
-              <button onClick={() => { setShowCollection((v) => !v); setShowEstimate(false) }} title="Collection" aria-label="Collection"
-                aria-pressed={showCollection}
-                className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center rounded-lg transition-colors duration-150 ${
-                  showCollection ? 'bg-bone text-pine' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
-                }`}>
-                <BookmarkPlus size={17} strokeWidth={1.5} />
-              </button>
-
-              <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0" />
+              <div className="w-px h-6 bg-bone/15 mx-1 sm:mx-1.5 shrink-0 max-sm:portrait:hidden" />
 
               <button onClick={handleQuoteClick} title="Request a Quote"
-                className="flex items-center gap-1.5 h-9 sm:h-10 pl-3.5 pr-3 sm:pl-4 sm:pr-3.5 rounded-lg btn-gradient text-bone font-body text-[11px] font-semibold tracking-[0.15em] uppercase whitespace-nowrap shrink-0">
+                className="flex items-center justify-center gap-1.5 h-9 sm:h-10 max-sm:portrait:h-11 pl-3.5 pr-3 sm:pl-4 sm:pr-3.5 rounded-lg btn-gradient text-bone font-body text-[11px] font-semibold tracking-[0.15em] uppercase whitespace-nowrap shrink-0">
                 Get a Quote <ArrowRight size={13} strokeWidth={1.5} />
               </button>
             </div>

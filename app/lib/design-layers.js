@@ -31,32 +31,55 @@ export function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
 }
 
-export function createImageLayer(side, url, fileName, aspect) {
-  const width = 0.42
+// Where a new picture or text box starts (centre of the print area) unless the garment says otherwise.
+const CENTRE = { x: 0.5, y: 0.5 }
+
+/**
+ * A layer's size is a fraction of the garment's printable area, so on an area that isn't square a
+ * picture of the same fraction both ways is stretched. Where the area's width-to-height ratio is
+ * known and trustworthy (`areaAspect`, e.g. 0.36 on a tall narrow pair of trousers) the height is
+ * derived from it, so the picture keeps its own proportions. `scale` shrinks or grows the default
+ * size for garments whose area is much bigger than the part you would print on.
+ */
+export function createImageLayer(side, url, fileName, aspect, { scale = 1, areaAspect = null, at = CENTRE } = {}) {
+  let width = 0.42 * scale
   const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 1
+  let height
+  if (areaAspect) {
+    height = (width * areaAspect) / safeAspect
+    if (height > 0.9) {
+      height = 0.9
+      width = (height * safeAspect) / areaAspect
+    }
+  } else {
+    height = clamp(width / safeAspect, MIN_LAYER_SIZE, 0.9)
+  }
   return {
     id: newId(),
     type: 'image',
     side,
-    x: 0.5,
-    y: 0.5,
+    x: at.x,
+    y: at.y,
     width,
-    height: clamp(width / safeAspect, MIN_LAYER_SIZE, 0.9),
+    height: Math.max(height, MIN_LAYER_SIZE),
     opacity: 1,
     url,
     fileName,
   }
 }
 
-export function createTextLayer(side) {
+export function createTextLayer(side, { scale = 1, areaAspect = null, at = CENTRE } = {}) {
+  const width = 0.55 * scale
+  // A text box about 4.5 times as wide as it is tall, whatever the shape of the area.
+  const height = areaAspect ? clamp((width * areaAspect) / 4.5, 0.03, 0.3) : 0.14 * scale
   return {
     id: newId(),
     type: 'text',
     side,
-    x: 0.5,
-    y: 0.5,
-    width: 0.55,
-    height: 0.14,
+    x: at.x,
+    y: at.y,
+    width,
+    height,
     opacity: 1,
     text: 'Your text',
     color: '#1B3A2B',

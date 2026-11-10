@@ -14,10 +14,33 @@ import {
   DESIGN_CANVAS_PX,
   RESIZE_HANDLES,
 } from '@/lib/design-layers'
+import { getGarment } from '@/lib/garments'
 
 function garmentUrl(garment) {
-  if (garment === 'hoodie') return '/models/hoodie.glb'
-  return '/models/tshirt.glb'
+  return (getGarment(garment) ?? getGarment('t-shirt')).model
+}
+
+/**
+ * Seen from inside — through a neckline, an armhole, a bag's mouth — cloth is in shadow, so the
+ * inner face of the garment is dimmed instead of being lit like the outside.
+ *
+ * A fragment counts as "inside" only if it is wound away from the viewer *and* its smoothed normal
+ * points away too. Winding alone is not enough: real cloth meshes are full of tiny wrinkles whose
+ * triangles wind away at the folds while the cloth there still faces the viewer, and dimming those
+ * speckles the silhouette and the creases.
+ *
+ * It is switched on per garment (dimInside in lib/garments.js), only for models that stay clean with
+ * it. The simulated tee, hoodie and sweatpants have layers of cloth that lie almost on top of each
+ * other, and dimming speckles those.
+ */
+function dimInsideFaces(material) {
+  material.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <dithering_fragment>',
+      'if (!gl_FrontFacing && dot(normalize(vNormal), normalize(vViewPosition)) < -0.05) gl_FragColor.rgb *= 0.6;\n#include <dithering_fragment>',
+    )
+  }
+  material.customProgramCacheKey = () => 'kazi-inside-dim-2'
 }
 
 function createBridge() {
@@ -114,7 +137,7 @@ function screenToLocal(bridge, side, clientX, clientY) {
   return { x: lx / anchor.width + 0.5, y: 0.5 - ly / anchor.height }
 }
 
-function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge }) {
+function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge, reach, dimInside }) {
   const { scene } = useGLTF(url)
   const cloned = useMemo(() => scene.clone(true), [scene])
   const groupRef = useRef(null)
@@ -152,6 +175,7 @@ function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge }) {
           mat.color.copy(tint)
           mat.roughness = 0.75
           mat.metalness = 0.0
+          if (dimInside) dimInsideFaces(mat)
           mat.needsUpdate = true
           mesh.material = mat
         }
@@ -213,7 +237,7 @@ function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge }) {
     return () => {
       cancelled = true
     }
-  }, [cloned, colour, pattern, patternOpacity])
+  }, [cloned, colour, pattern, patternOpacity, dimInside])
 
   // Dispose the pattern texture when this mesh instance goes away entirely (e.g. switching
   // between t-shirt and hoodie, which remounts GarmentMesh via its `key={url}`).
@@ -274,7 +298,7 @@ function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge }) {
     // curved shoulder/underarm transition and the opposite panel's surface
     // regardless of how the box itself is shaped.)
     const FRONT_MARGIN = halfDepth * 0.08
-    const MID_OVERLAP = halfDepth * 0.42
+    const MID_OVERLAP = halfDepth * reach
     const frontOuterZ = box.max.z + FRONT_MARGIN
     const frontInnerZ = midZ - MID_OVERLAP
     const backOuterZ = box.min.z - FRONT_MARGIN
@@ -753,6 +777,8 @@ export default function GarmentViewer({
   onLayerContextMenu, onFacingSideChange, rotateRequest, pattern = null, patternOpacity = 1,
 }) {
   const url = garmentUrl(garment)
+  const config = getGarment(garment) ?? getGarment('t-shirt')
+  const reach = config.decalReach ?? 0.42
   const bridge = useRef(createBridge())
   const lastRotateNonce = useRef(null)
   const onFacingSideChangeRef = useRef(onFacingSideChange)
@@ -805,7 +831,7 @@ export default function GarmentViewer({
         <directionalLight position={[4, 6, 4]} intensity={1.6} color="#FFFAF4" castShadow />
         <directionalLight position={[-3, 3, -2]} intensity={0.5} color="#F0EBE3" />
         <directionalLight position={[0, -2, 2]} intensity={0.2} color="#E8E4DC" />
-        <GarmentMesh key={url} url={url} colour={colour} pattern={pattern} patternOpacity={patternOpacity} layers={layers} bridge={bridge} />
+        <GarmentMesh key={url} url={url} colour={colour} pattern={pattern} patternOpacity={patternOpacity} layers={layers} bridge={bridge} reach={reach} dimInside={config.dimInside} />
         <ContactShadows position={[0, -0.55, 0]} opacity={0.18} blur={3} far={1} color="#1B3A2B" />
         <OrbitControls
           enablePan={false}

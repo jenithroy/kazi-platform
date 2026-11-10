@@ -1,10 +1,16 @@
 'use client'
 
 import { useId } from 'react'
+import { getGarment } from '@/lib/garments'
 
-// Real flat-lay photography (transparent background), recolored live via an SVG mask + a
-// multiply blend of the chosen colour — same technique real print-on-demand configurators
-// use, so the fabric's actual folds/shading carry through regardless of colour.
+// A recolourable flat picture of a garment, in two flavours (the garment list in lib/garments.js
+// says which each picture is):
+//
+//  - "photo": real flat-lay photography of a white garment (the tee and hoodie), recoloured live via
+//    an SVG mask + a multiply blend of the chosen colour — same technique real print-on-demand
+//    configurators use, so the fabric's actual folds/shading carry through regardless of colour.
+//  - "render": a studio render of a generated model (everything else). Its shading is already
+//    normalised, so it is simply multiplied over a fill of the chosen colour.
 //
 // `area` is the garment's own opaque bounding box within the image (shoulders/sleeves to
 // hem) — not a small centred print zone. Artwork can be dragged and resized across this
@@ -12,20 +18,10 @@ import { useId } from 'react'
 // the same image used as a CSS mask), so anything pushed past the fabric edge is cut off
 // rather than spilling onto the transparent background, matching how the 3D decal is
 // naturally bounded by the mesh it's projected onto.
-const GARMENT_IMAGES = {
-  't-shirt': {
-    front: { src: '/mockups/tshirt-front.png', width: 1280, height: 669, area: { x: 0.242, y: 0.161, width: 0.507, height: 0.743 } },
-    back: { src: '/mockups/tshirt-back.png', width: 1280, height: 669, area: { x: 0.248, y: 0.146, width: 0.5, height: 0.735 } },
-  },
-  hoodie: {
-    front: { src: '/mockups/hoodie-front.png', width: 1280, height: 698, area: { x: 0.113, y: 0.04, width: 0.776, height: 0.898 } },
-    back: { src: '/mockups/hoodie-back.png', width: 1280, height: 683, area: { x: 0.127, y: 0.047, width: 0.745, height: 0.887 } },
-  },
-}
 
 export function getImageMeta(garment, side) {
-  const g = garment === 'hoodie' ? 'hoodie' : 't-shirt'
-  return GARMENT_IMAGES[g][side]
+  const found = getGarment(garment) ?? getGarment('t-shirt')
+  return found.mockups[side]
 }
 
 /** Printable area for a garment/side, as a fraction (0..1) of the mockup image's own bounds. */
@@ -41,10 +37,43 @@ export function GarmentMockup2D({
   patternOpacity = 1,
 }) {
   const uid = useId()
-  const { src, width, height } = getImageMeta(garment, side)
+  const { src, width, height, kind } = getImageMeta(garment, side)
   const maskId = `garment-mask-${uid}`
   const patternId = `garment-pattern-${uid}`
   const tileSize = width / 5
+
+  if (kind === 'render') {
+    return (
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" style={{ isolation: 'isolate' }} aria-hidden>
+        <defs>
+          {/* The silhouette, from the picture's own alpha (not its brightness). */}
+          <mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width={width} height={height} mask-type="alpha" style={{ maskType: 'alpha' }}>
+            <image href={src} x="0" y="0" width={width} height={height} preserveAspectRatio="none" />
+          </mask>
+
+          {pattern && (
+            <pattern id={patternId} patternUnits="userSpaceOnUse" width={tileSize} height={tileSize}>
+              <image href={pattern} width={tileSize} height={tileSize} preserveAspectRatio="xMidYMid slice" />
+            </pattern>
+          )}
+        </defs>
+
+        {/* 1. The fabric colour, clipped to the garment. A pattern fades in over it (below) rather
+            than replacing it, so the chosen colour still tints the print. */}
+        <rect x="0" y="0" width={width} height={height} fill={colour} mask={`url(#${maskId})`} />
+        {pattern && (
+          <rect x="0" y="0" width={width} height={height} fill={`url(#${patternId})`} mask={`url(#${maskId})`} style={{ opacity: patternOpacity }} />
+        )}
+
+        {/* 2. The shading, multiplied on top so folds, pockets and edges read through any colour. */}
+        <image
+          href={src} x="0" y="0" width={width} height={height}
+          preserveAspectRatio="none"
+          style={{ mixBlendMode: 'multiply' }}
+        />
+      </svg>
+    )
+  }
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" aria-hidden>

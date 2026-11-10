@@ -118,7 +118,8 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto px-6 py-5">
+            {/* data-lenis-prevent: lets the mouse wheel scroll this list (the smooth-scroll library otherwise takes it for the page). */}
+            <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain px-6 py-5">
               <ul className="space-y-5">
                 {items.map((item) => (
                   <li key={item.id} className="flex gap-3 border-b border-pine/10 pb-5 last:border-b-0 last:pb-0">

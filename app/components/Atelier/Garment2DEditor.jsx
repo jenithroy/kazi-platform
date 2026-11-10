@@ -53,40 +53,57 @@ function AutoFitText({ layer }) {
   )
 }
 
+// Below this much usable width (px) — phones and portrait tablets — the stage zooms to the garment
+// itself; see the effect below.
+const NARROW_STAGE = 720
+const WHOLE_PICTURE = { x: 0, y: 0, width: 1, height: 1 }
+
 export default function Garment2DEditor({
   garment, colour, pattern = null, patternOpacity = 1, layers, activeSide, selectedLayerId,
   onSelectLayer, onUpdateLayer, onDeleteLayer, onLayerContextMenu,
 }) {
   const containerRef = useRef(null)
   const areaRef = useRef(null)
-  const [stageSize, setStageSize] = useState({ width: 0, height: 0 })
+  const [stageSize, setStageSize] = useState({ width: 0, height: 0, shiftX: 0, shiftY: 0 })
 
   const imageMeta = getImageMeta(garment, activeSide)
+  const area = getDesignArea(garment, activeSide)
 
   // Size the stage to exactly contain the mockup image within whatever space is available, in
   // pixels — sidesteps the letterboxing math that CSS aspect-ratio + max-width/height combos
   // get wrong when a flex parent's own aspect ratio doesn't match the artwork's. Re-runs on
   // garment/side change too since the tee and hoodie photos aren't quite the same aspect.
+  //
+  // On a narrow stage (a phone) the picture's empty margins would leave the garment small — the tee
+  // fills only half of its photo — so there it is the garment's own bounds (`area`) that have to fit,
+  // and the picture is shifted so that the garment, not the picture, sits in the middle. Wider stages
+  // keep fitting the whole picture, as before.
+  const { x: areaX, y: areaY, width: areaW, height: areaH } = area
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
     const ratio = imageMeta.width / imageMeta.height
     const ro = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect
-      let w = width
+      const fit = width < NARROW_STAGE ? { x: areaX, y: areaY, width: areaW, height: areaH } : WHOLE_PICTURE
+      let w = width / fit.width
       let h = w / ratio
-      if (h > height) {
-        h = height
+      if (h * fit.height > height) {
+        h = height / fit.height
         w = h * ratio
       }
-      setStageSize({ width: w, height: h })
+      setStageSize({
+        width: w,
+        height: h,
+        shiftX: (0.5 - fit.x - fit.width / 2) * w,
+        shiftY: (0.5 - fit.y - fit.height / 2) * h,
+      })
     })
     ro.observe(el)
     return () => ro.disconnect()
-  }, [imageMeta.width, imageMeta.height])
+  }, [imageMeta.width, imageMeta.height, areaX, areaY, areaW, areaH])
 
   const sideLayers = layers.filter((l) => l.side === activeSide)
-  const area = getDesignArea(garment, activeSide)
   const areaPct = {
     left: area.x * 100,
     top: area.y * 100,
@@ -170,13 +187,25 @@ export default function Garment2DEditor({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full flex items-center justify-center p-6 sm:p-10"
+      className="relative w-full h-full flex items-center justify-center p-6 sm:p-10 [@media(max-height:520px)]:p-3"
       onPointerDown={() => onSelectLayer(null)}
     >
-      <div className="relative" style={{ width: stageSize.width || undefined, height: stageSize.height || undefined }}>
+      {/* shrink-0: on a narrow stage the picture is deliberately wider than the space (only the garment in
+          it has to fit), and a flex item would otherwise be squeezed back to the container's width. */}
+      <div
+        className="relative shrink-0"
+        style={{
+          width: stageSize.width || undefined,
+          height: stageSize.height || undefined,
+          transform: stageSize.shiftX || stageSize.shiftY ? `translate(${stageSize.shiftX}px, ${stageSize.shiftY}px)` : undefined,
+        }}
+      >
         {stageSize.width > 0 && (
           <>
-            <GarmentMockup2D garment={garment} side={activeSide} colour={colour} pattern={pattern} patternOpacity={patternOpacity} />
+            {/* A soft shadow lifts the garment off the canvas, so pale colours (white, oat) stay visible. */}
+            <div className="absolute inset-0" style={{ filter: 'drop-shadow(0 10px 18px rgba(27, 58, 43, 0.2))' }}>
+              <GarmentMockup2D garment={garment} side={activeSide} colour={colour} pattern={pattern} patternOpacity={patternOpacity} />
+            </div>
 
             {/* Artwork layer — clipped to the garment's own silhouette (via its alpha), so
                 anything dragged or resized past the fabric edge is cut off instead of

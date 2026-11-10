@@ -157,6 +157,66 @@ img {
   top: 1rem;
 }
 
+/* Atelier (components/Atelier/AtelierPage.jsx) -------------------------------------------------------
+   The controls are laid out for a tall, wide screen: chips and the estimate along the top, the front/back
+   switch down the left edge (docking above an open panel), the garment in the middle, panels and the
+   floating dock below. Two kinds of screen cannot stack them that way, so they get a compact layout:
+     - a portrait phone: the switch gets its own row under the top bar and the garment stays clear of it;
+     - a short screen (a phone on its side): the switch joins the top bar and the spacing is tightened.
+   The page also publishes the dock's measured height as --atelier-dock-top on <html>. */
+:root {
+  --atelier-panel-reserve: 7.25rem; /* kept free above an open panel, for the switch that docks over it */
+  --atelier-canvas-top: 0px; /* kept free above the garment, for the controls along the top */
+  --atelier-canvas-gap: 2rem; /* between the garment's area and the dock */
+  --atelier-dock-top-default: 5rem; /* the dock's height + margin before the page has measured it */
+}
+
+@media (max-height: 520px) {
+  :root {
+    --atelier-panel-reserve: 3.75rem;
+    --atelier-canvas-top: 3.5rem;
+    --atelier-canvas-gap: 0.75rem;
+    --atelier-dock-top-default: 4rem;
+  }
+  .atelier-switch {
+    left: 50%;
+    top: 1rem;
+    translate: -50% 0;
+  }
+}
+
+/* After the short-screen block, so a short portrait phone still gets the phone layout. */
+@media (max-width: 639px) and (orientation: portrait) {
+  :root {
+    --atelier-panel-reserve: 7.25rem;
+    --atelier-canvas-top: 6.75rem;
+    --atelier-canvas-gap: 1rem;
+    --atelier-dock-top-default: 7.5rem; /* the two-row dock */
+  }
+  .atelier-switch {
+    left: 50%;
+    top: 3.75rem;
+    translate: -50% 0;
+  }
+  /* The estimate panel opens over the switch's row. */
+  .atelier-switch[data-estimate-open] {
+    display: none;
+  }
+}
+
+/* The WhatsApp button sits in the bottom-right corner, where the right-hand panels (collection,
+   estimate) end up; on a phone every panel is full width. The page sets data-atelier-panel on <html>
+   to "right" or "left" while a panel is open, and the button steps aside until it is closed. */
+html[data-atelier-panel="right"] .whatsapp-fab {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  html[data-atelier-panel] .whatsapp-fab {
+    display: none;
+  }
+}
+
 /* Reveal (components/Reveal.jsx): content is visible by default and only starts hidden once
    the inline script in layout.js has flagged that JS is running, so a failed or disabled
    script never leaves headings, CTAs or forms stuck at opacity 0. */
