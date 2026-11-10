@@ -276,7 +276,6 @@ export function StoriesPage({ stories = [] }) {
     <div className="bg-paper">
       <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Stories</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Notes from the floor and the brands we work with.
           </h1>

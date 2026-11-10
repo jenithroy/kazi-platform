@@ -130,14 +130,9 @@ export function PricingPage() {
     <div className="bg-paper">
       <section className="px-6 pb-8 pt-16 md:px-8 md:pb-10 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">Pricing</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Estimate your order, then get a firm quote.
           </h1>
-          <p className="mt-4 max-w-xl font-body leading-relaxed text-pine-soft">
-            Move the sliders to see roughly where your project lands, then send the details
-            through for a fixed price.
-          </p>
         </div>
       </section>
 
@@ -461,9 +456,6 @@ export function PricingPage() {
 
       <section className="border-t border-pine/15 px-6 py-16 md:px-8 md:py-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
-            Reference
-          </span>
           <h2 className="mb-10 max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Volume pricing, at a glance.
           </h2>

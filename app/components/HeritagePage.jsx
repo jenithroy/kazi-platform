@@ -109,14 +109,9 @@ export function HeritagePage() {
     <div className="bg-paper">
       <section className="border-b border-pine/15 px-6 pb-12 pt-16 md:px-8 md:pb-16 md:pt-20">
         <div className="mx-auto max-w-[1440px]">
-          <span className="mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep">What We Do</span>
           <h1 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
             Manufacturing and editing services, in one place.
           </h1>
-          <p className="mt-4 max-w-xl font-body leading-relaxed text-pine-soft">
-            From first sample to finished, packed collection — five production services and an
-            in-house editing studio, all run out of one Kathmandu atelier.
-          </p>
         </div>
       </section>
 
@@ -160,9 +155,6 @@ export function HeritagePage() {
       <section className="border-t border-pine/15 py-16 md:py-20">
         <div className="mx-auto max-w-[1440px] px-6 md:px-8">
           <div className="mb-12">
-            <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
-              How a Garment Moves
-            </span>
             <h2 className="max-w-2xl font-display text-3xl text-pine md:text-4xl">
               From raw fibre to finished, packed collection.
             </h2>
@@ -181,9 +173,6 @@ export function HeritagePage() {
 
       <section className="border-t border-pine/15 bg-bone py-16">
         <div className="mx-auto max-w-[1440px] px-6 text-center md:px-8">
-          <span className="mb-4 block font-body text-xs tracking-[0.18em] text-moss-deep uppercase">
-            How We Operate
-          </span>
           <p className="font-body text-sm tracking-wide text-pine-soft md:text-base">
             {OPERATING_PRINCIPLES.join("  ·  ")}
           </p>

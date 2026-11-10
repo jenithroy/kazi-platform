@@ -27,12 +27,9 @@ export function VideoPanel() {
             Atelier keeps its own panels on the left and the garment in the middle, so nothing
             the recording shows is covered). */}
         <div className="relative bg-bone p-6 text-pine md:p-8 xl:absolute xl:right-8 xl:top-1/2 xl:w-[25rem] xl:-translate-y-1/2 xl:rounded-[1.5rem] xl:bg-bone/95 xl:p-7 xl:shadow-[0_24px_60px_-20px_rgba(4,20,12,0.55)] xl:backdrop-blur-md">
-          <p className="m-0 font-body text-xs font-semibold uppercase tracking-[0.18em] text-moss-deep">
-            The Atelier
-          </p>
           <h2
             id="atelier-title"
-            className="m-0 mt-2 text-balance font-display text-[2rem] font-normal leading-[1.05] tracking-[-0.015em] md:text-[2.25rem]"
+            className="m-0 text-balance font-display text-[2rem] font-normal leading-[1.05] tracking-[-0.015em] md:text-[2.25rem]"
           >
             Design it before we sew it.
           </h2>

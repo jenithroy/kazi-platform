@@ -103,17 +103,12 @@ export function RangeGrid() {
     <section aria-labelledby="range-title" className="bg-white pb-16 pt-24 md:pb-20 md:pt-36">
       <div className="mx-auto max-w-[1440px] px-5 md:px-8">
         <Reveal className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
-          <div>
-            <span className="mb-3 block font-body text-xs font-semibold uppercase tracking-[0.18em] text-moss-deep">
-              The range
-            </span>
-            <h2
-              id="range-title"
-              className="m-0 max-w-[18ch] text-balance font-display text-[clamp(2.125rem,4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-pine"
-            >
-              A blank for every kind of label.
-            </h2>
-          </div>
+          <h2
+            id="range-title"
+            className="m-0 max-w-[18ch] text-balance font-display text-[clamp(2.125rem,4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-pine"
+          >
+            A blank for every kind of label.
+          </h2>
           <Link
             href="/collections"
             className="inline-flex h-12 w-fit items-center gap-2 whitespace-nowrap rounded-full bg-pine/[0.06] px-6 font-body text-base font-semibold text-pine transition-colors duration-200 hover:bg-pine/10"

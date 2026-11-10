@@ -8,7 +8,6 @@ const filledButton =
 const outlineButton =
   "inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-pine px-6 font-body text-sm font-semibold tracking-wide text-pine transition-colors hover:bg-pine hover:text-bone";
 
-const eyebrow = "mb-4 block font-body text-xs uppercase tracking-[0.18em] text-moss-deep";
 const sectionHeading = "m-0 font-display text-2xl text-pine md:text-3xl";
 
 // Copy here is plain on purpose — ordinary sentences, no em-dashes, no "not X, just Y"
@@ -178,7 +177,6 @@ export function VideoEditingPage() {
       <section className="px-6 pb-16 pt-16 md:px-8 md:pb-20 md:pt-20">
         <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
-            <span className={eyebrow}>Also from Kazi</span>
             <h1 className="m-0 font-display text-4xl leading-tight text-pine md:text-5xl">
               We edit video, too.
             </h1>
@@ -231,9 +229,6 @@ export function VideoEditingPage() {
             <h2 className="m-0 max-w-xl font-display text-2xl text-pine md:text-3xl">
               A few things we&rsquo;ve cut
             </h2>
-            <span className="font-body text-xs uppercase tracking-[0.12em] text-pine-soft">
-              Selected work
-            </span>
           </Reveal>
 
           <div className="grid gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
@@ -317,7 +312,6 @@ export function VideoEditingPage() {
       <section className="border-t border-pine/15 bg-bone px-6 py-20 md:px-8 md:py-24">
         <div className="mx-auto max-w-[1440px]">
           <Reveal className="mb-10 max-w-xl">
-            <span className={eyebrow}>Ways brands work with us</span>
             <h2 className="m-0 mb-4 font-display text-2xl text-pine md:text-3xl">
               Three common shapes
             </h2>
@@ -374,7 +368,6 @@ export function VideoEditingPage() {
           </Reveal>
 
           <Reveal delay={100} className="order-1 lg:order-2">
-            <span className={eyebrow}>If you have no footage</span>
             <h2 className="m-0 mb-4 font-display text-2xl text-pine md:text-3xl">
               We can film your order being made
             </h2>
@@ -410,7 +403,6 @@ export function VideoEditingPage() {
       <section className="px-6 py-20 md:px-8 md:py-24">
         <div className="mx-auto grid max-w-[1440px] items-start gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
-            <span className={eyebrow}>What helps us start</span>
             <h2 className="m-0 mb-6 font-display text-2xl text-pine md:text-3xl">
               Send these and we can quote properly
             </h2>
@@ -425,7 +417,6 @@ export function VideoEditingPage() {
           </Reveal>
 
           <Reveal delay={100}>
-            <span className={eyebrow}>What comes back</span>
             <h2 className="m-0 mb-6 font-display text-2xl text-pine md:text-3xl">
               Specifications we deliver to
             </h2>
