@@ -105,9 +105,9 @@ export function RangeGrid() {
         <Reveal className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
           <h2
             id="range-title"
-            className="m-0 max-w-[18ch] text-balance font-display text-[clamp(2.125rem,4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-pine"
+            className="m-0 text-balance font-display text-[clamp(2.125rem,4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-pine"
           >
-            A blank for every kind of label.
+            A blank for every label.
           </h2>
           <Link
             href="/collections"

@@ -1,30 +1,22 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowRight, ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { getProductBySlug, products } from "@/lib/products";
 import { priceLine } from "@/components/home/catalogue";
 
-// The white-label picker at the foot of the hero. MOQs and colourways come from the catalogue
-// (lib/products.js) so they can't drift from /collections; the two blank garments deep-link
-// into the Atelier with the chosen colour (?garment=&colour=, see AtelierPage). Whether prices
-// are printed is decided in catalogue.js.
+// The white-label picker at the foot of the hero. MOQs come from the catalogue (lib/products.js)
+// so they can't drift from /collections; the two blank garments deep-link into the Atelier on the
+// white blank (?garment=&colour=, see AtelierPage). Whether prices are printed is decided in
+// catalogue.js.
 
-const WHITE = { name: "White", hex: "#FFFFFF" };
-
-// A white-label blank starts white; the rest of the colourways are the product's own. Every
-// hex here is in the Atelier's palette, so the deep link lands on a real, selectable colour.
-function swatchesFor(product) {
-  return [WHITE, ...product.colors.filter((c) => c.hex.toUpperCase() !== WHITE.hex)].slice(0, 5);
-}
+// A white-label blank starts white, so the deep link opens the Atelier on white, matching the photo.
+const ATELIER_COLOUR = "#FFFFFF";
 
 const tee = getProductBySlug("organic-crew-tee");
 const hoodie = getProductBySlug("essential-hoodie");
 
 // Each shows its product's white-label photo from /collections, cropped like the picture cards
-// below. The swatches only pick the colour the Atelier opens with; the photo is always the white blank.
+// below.
 //
 // Every photo is a 3:4 portrait shown here as a 5:4 crop, so only ~60% of its height is visible:
 // `position` picks that band and is set so the product sits in the middle of it. A product that sits
@@ -35,14 +27,12 @@ const GARMENT_CARDS = [
     garment: "t-shirt",
     title: "Tees",
     product: tee,
-    swatches: swatchesFor(tee),
     position: "50% 44%",
   },
   {
     garment: "hoodie",
     title: "Hoodies",
     product: hoodie,
-    swatches: swatchesFor(hoodie),
     position: "50% 61%",
     zoom: 1.12,
     origin: "0% 50%",
@@ -103,8 +93,8 @@ function CardText({ title, href, meta, srSuffix }) {
 }
 
 // The card's picture. The static zoom sits on a wrapper, so the hover zoom on the image itself
-// still scales about the picture's own centre; `children` (the swatch pill) sit above both.
-function CardPhoto({ card, children }) {
+// still scales about the picture's own centre.
+function CardPhoto({ card }) {
   const { zoom = 1, origin = "50% 50%" } = card;
   return (
     <div className="relative aspect-[5/4] overflow-hidden">
@@ -118,20 +108,16 @@ function CardPhoto({ card, children }) {
           style={{ objectPosition: card.position }}
         />
       </div>
-      {children}
     </div>
   );
 }
 
 function GarmentCard({ card, index }) {
-  const [colour, setColour] = useState(card.swatches[0]);
-  const href = `/atelier?garment=${card.garment}&colour=${encodeURIComponent(colour.hex)}`;
+  const href = `/atelier?garment=${card.garment}&colour=${encodeURIComponent(ATELIER_COLOUR)}`;
 
   return (
     <li className={`${cardShell} ${mobileSlot}`} style={{ animationDelay: `${index * 90 + 150}ms` }}>
-      <CardPhoto card={card}>
-        <SwatchPill card={card} colour={colour} onPick={setColour} />
-      </CardPhoto>
+      <CardPhoto card={card} />
       <div className="flex flex-1 flex-col px-4 pb-3.5 pt-3.5">
         <CardText
           title={card.title}
@@ -141,38 +127,6 @@ function GarmentCard({ card, index }) {
         />
       </div>
     </li>
-  );
-}
-
-// Sits on the image, above the card's stretched link, so the swatches stay clickable.
-function SwatchPill({ card, colour, onPick }) {
-  return (
-    <div
-      role="group"
-      aria-label={`${card.title} colour`}
-      className="absolute bottom-2 left-2 z-10 flex items-center rounded-full bg-white/85 px-1 shadow-[0_1px_6px_rgba(60,40,10,0.18)] backdrop-blur-sm"
-    >
-      {card.swatches.map((swatch) => {
-        const selected = swatch.hex === colour.hex;
-        return (
-          <button
-            key={swatch.hex}
-            type="button"
-            onClick={() => onPick(swatch)}
-            aria-label={swatch.name}
-            aria-pressed={selected}
-            className="grid size-6 place-items-center rounded-full"
-          >
-            <span
-              className={`size-3.5 rounded-full border border-pine/25 transition-transform duration-150 ${
-                selected ? "scale-110 ring-2 ring-pine ring-offset-1 ring-offset-white" : ""
-              }`}
-              style={{ backgroundColor: swatch.hex }}
-            />
-          </button>
-        );
-      })}
-    </div>
   );
 }
 
