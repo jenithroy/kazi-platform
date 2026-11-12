@@ -192,7 +192,9 @@
   .dz-tracebar-msg { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 /* flex + `margin: auto` centres the card when there is room and lets it scroll from its top when there is not (a centred grid would cut its top off) */
-.dz-empty-stage { position: absolute; inset: 0; display: flex; padding: 16px; overflow-y: auto; pointer-events: none; }
+.dz-empty-stage { position: absolute; inset: 0; display: flex; padding: 16px; overflow-y: auto; pointer-events: none; transition: opacity 0.12s; }
+/* While a file is dragged over the empty canvas the "Start with a picture" card steps back, so "Drop to open" is not printed over its text. */
+.dz-stage.is-drop .dz-empty-stage { opacity: 0.1; }
 .dz-card {
   margin: auto; pointer-events: auto; max-width: 460px; padding: 26px 28px 24px; border-radius: var(--dz-r); text-align: center;
   background: var(--kb-surface); border: 1px solid var(--dz-edge); box-shadow: var(--kb-shadow);
