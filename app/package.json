@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "garments": "node scripts/garments/build.mjs && node scripts/garments/import-glb.mjs && node scripts/garments/render-mockups.mjs"
+    "garments": "node scripts/garments/build.mjs && node scripts/garments/derive-long-sleeve.mjs && node scripts/garments/import-glb.mjs && node scripts/garments/cutout.mjs && node scripts/garments/convert-photos.mjs"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.3.0",

@@ -202,8 +202,9 @@ export default function Garment2DEditor({
       >
         {stageSize.width > 0 && (
           <>
-            {/* A soft shadow lifts the garment off the canvas, so pale colours (white, oat) stay visible. */}
-            <div className="absolute inset-0" style={{ filter: 'drop-shadow(0 10px 18px rgba(27, 58, 43, 0.2))' }}>
+            {/* The mockup carries its own hairline outline and soft shadow (GarmentMockup2D `lift`), so pale
+                colours (white, oat) keep their edge on the stage. */}
+            <div className="absolute inset-0">
               <GarmentMockup2D garment={garment} side={activeSide} colour={colour} pattern={pattern} patternOpacity={patternOpacity} />
             </div>
 

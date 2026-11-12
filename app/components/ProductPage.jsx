@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { ArrowLeft, ArrowRight, Box, Check, ChevronDown, ChevronUp, Image as ImageIcon, ShoppingBag } from "lucide-react";
 import QtyStepper from "@/components/Atelier/QtyStepper";
 import { getProductBySlug, getRelatedProducts } from "@/lib/products";
+import { stageBackground } from "@/lib/garments";
 import { ProductCard } from "@/components/ProductCard";
 import { useCart } from "@/lib/cart-context";
 
@@ -107,7 +108,16 @@ export function ProductPage({ slug }) {
       <section className="px-6 pb-20 md:px-8">
         <div className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Media */}
-          <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-paper-raised">
+          {/* Behind the garment mockup the card deepens for a pale colour (white, cream, oat), so it keeps
+              its edge instead of disappearing into the card. The product photo keeps the plain card. */}
+          <div
+            className="relative aspect-[4/5] overflow-hidden rounded-sm bg-paper-raised transition-colors duration-300"
+            style={
+              viewMode !== "image" && product.garmentModel && activeColor
+                ? { backgroundColor: stageBackground(activeColor.hex, [234, 237, 228]) }
+                : undefined
+            }
+          >
             {product.garmentModel && (
               <button
                 type="button"

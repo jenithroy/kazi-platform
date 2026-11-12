@@ -2,14 +2,18 @@
 // product in lib/products.js: add a garment here (plus a 3D model and a 2D mockup) and it appears
 // in the garment picker, the deep links and the quote hand-off.
 //
-// The tee and hoodie are hand-made: photographed flat-lay mockups (public/mockups) and Blender
-// models (public/models). The long-sleeve tee, vest, sweatpants and tote are Creative Commons
-// (CC BY) models by other artists, imported by scripts/garments/import-glb.mjs — their credits
-// are in lib/garment-models.json and are shown in the garment picker. The apron is generated
-// (scripts/garments/models.mjs). `npm run garments` rebuilds all of it and writes
-// lib/garment-mockups.json, the 2D mockups' sizes, which is read below.
+// The tee and hoodie are hand-made Blender models (public/models). The long-sleeve tee is the tee's model with its
+// sleeves extended (derive-long-sleeve.mjs), the vest is generated from a shape description
+// (scripts/garments/models.mjs), and the sweatpants, apron and tote are Creative Commons (CC BY) models by other
+// artists, imported by import-glb.mjs — their credits are in lib/garment-models.json and are shown in the
+// garment picker.
+// Every 2D mockup is made from a photograph of the garment, never a render of its 3D model: the tee and hoodie from
+// studio flat-lays, the rest cut out of the collection page's product photographs (scripts/garments/cutout.mjs). Each
+// is a greyscale shading map with an alpha silhouette (public/mockups, prepared by convert-photos.mjs and shade.mjs)
+// that the Atelier colours in the browser; `npm run garments` rebuilds all of it and writes
+// lib/garment-mockups.json, the mockups' sizes and bounds, which is read below.
 
-import generated from "./garment-mockups.json";
+import mockups from "./garment-mockups.json";
 import models from "./garment-models.json";
 
 export const FABRICS = [
@@ -39,36 +43,6 @@ export const COLOURS = [
 // old default, Oat, was almost the same colour as the page).
 export const DEFAULT_COLOUR = "#1B3A2B";
 
-// --- mockups ----------------------------------------------------------------------------------
-
-// Flat-lay photographs of white garments, recoloured in the browser. `area` is the garment's own
-// bounding box inside the image, as fractions of its width and height.
-const PHOTO_MOCKUPS = {
-  "t-shirt": {
-    front: { src: "/mockups/tshirt-front.png", width: 1280, height: 669, area: { x: 0.242, y: 0.161, width: 0.507, height: 0.743 } },
-    back: { src: "/mockups/tshirt-back.png", width: 1280, height: 669, area: { x: 0.248, y: 0.146, width: 0.5, height: 0.735 } },
-  },
-  hoodie: {
-    front: { src: "/mockups/hoodie-front.png", width: 1280, height: 698, area: { x: 0.113, y: 0.04, width: 0.776, height: 0.898 } },
-    back: { src: "/mockups/hoodie-back.png", width: 1280, height: 683, area: { x: 0.127, y: 0.047, width: 0.745, height: 0.887 } },
-  },
-};
-
-/** `kind` tells the mockup component how the picture is meant to be recoloured (see GarmentMockup2D). */
-function mockupsFor(id) {
-  if (PHOTO_MOCKUPS[id]) {
-    return Object.fromEntries(Object.entries(PHOTO_MOCKUPS[id]).map(([side, meta]) => [side, { ...meta, kind: "photo" }]));
-  }
-  const rendered = generated[id];
-  return Object.fromEntries(Object.entries(rendered).map(([side, meta]) => [side, { ...meta, kind: "render" }]));
-}
-
-// --- the Kazi logo preset ---------------------------------------------------------------------
-
-const LOGO_ASPECT = 1200 / 875;
-const LOGO_LIGHT = "/images/logo/kazi-logo-light.png"; // for dark garments
-const LOGO_DARK = "/images/logo/kazi-logo-dark.png"; // for light garments
-
 function luminance(hex) {
   const n = parseInt(hex.slice(1), 16);
   const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
@@ -77,6 +51,27 @@ function luminance(hex) {
   });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
+
+// --- the page behind the garment -----------------------------------------------------------------
+
+const STAGE_PALE = [241, 243, 236]; // the Atelier's own page colour
+const STAGE_DEEP = [212, 216, 205]; // a soft sage grey, where a pale garment needs something to stand against
+
+/**
+ * The colour of the stage behind a garment of this colour. A white, cream or oat garment disappears into the
+ * pale page, so the stage deepens smoothly as the garment gets lighter; a mid or dark garment keeps the page.
+ */
+export function stageBackground(hex, pale = STAGE_PALE) {
+  const t = Math.min(1, Math.max(0, (luminance(hex) - 0.3) / 0.55));
+  const eased = t * t * (3 - 2 * t);
+  return `rgb(${pale.map((p, i) => Math.round(p + (STAGE_DEEP[i] - p) * eased)).join(", ")})`;
+}
+
+// --- the Kazi logo preset ---------------------------------------------------------------------
+
+const LOGO_ASPECT = 1200 / 875;
+const LOGO_LIGHT = "/images/logo/kazi-logo-light.png"; // for dark garments
+const LOGO_DARK = "/images/logo/kazi-logo-dark.png"; // for light garments
 
 /**
  * A new garment opens with the Kazi logo already on it, so the page never starts as a blank
@@ -140,12 +135,14 @@ const GARMENT_LIST = [
     id: "long-sleeve",
     label: "Long-Sleeve Tee",
     code: "GAR-002",
-    desc: "Crew neck, ribbed cuffs and hem",
+    desc: "Relaxed crew neck, plain cuffs and hem",
     product: "long-sleeve-tee",
     model: "/models/long-sleeve.glb",
     fabrics: ["cotton-180", "terry-280"],
-    layerScale: 0.55,
-    logo: { x: 0.5, y: 0.32, width: 0.2 },
+    // The picture includes the long sleeves, so it is wider than the body: new artwork and the logo are sized
+    // against the chest, as on the tee.
+    layerScale: 0.8,
+    logo: { x: 0.5, y: 0.34, width: 0.24 },
   },
   {
     id: "hoodie",
@@ -162,23 +159,27 @@ const GARMENT_LIST = [
     id: "vest",
     label: "Utility Vest",
     code: "GAR-004",
-    desc: "Quilted vest, stand collar, zip front",
+    desc: "Mesh utility vest, V-neck, four flap pockets",
     product: "utility-vest",
     model: "/models/vest.glb",
     fabrics: ["canvas-12oz", "twill-240", "cotton-180"],
     layerScale: 0.7,
-    logo: { x: 0.7, y: 0.29, width: 0.18 },
+    // As in the collection photograph: on the lower-left pocket, below its flap.
+    logo: { x: 0.25, y: 0.86, width: 0.18 },
   },
   {
     id: "sweatpants",
     label: "Sweatpants",
     code: "GAR-005",
-    desc: "Elastic waist, ribbed cuffs",
+    desc: "Wide straight leg, elastic waist",
     product: "sweatpants",
     model: "/models/sweatpants.glb",
     fabrics: ["terry-280", "fleece-380"],
-    layerScale: 0.5,
-    logo: { x: 0.72, y: 0.3, width: 0.28 },
+    layerScale: 0.55,
+    // On the upper thigh, at the hip, as in the collection photograph. The spot is picked to sit well inside the leg
+    // in both views: the photographed pair is wide and lies a little askew, the model's legs are slimmer, and the
+    // seam of its side pocket is close to the outer edge, so the logo is small and not far from the middle of the leg.
+    logo: { x: 0.665, y: 0.3, width: 0.2 },
     // New artwork starts on the same thigh, below the logo (the centre of a pair of trousers is the gap
     // between the legs, where there is no fabric to print on); the back mirrors it.
     layerAt: { x: 0.72, y: 0.55 },
@@ -192,7 +193,11 @@ const GARMENT_LIST = [
     model: "/models/tote.glb",
     fabrics: ["canvas-12oz"],
     decalReach: 1,
-    logo: { x: 0.5, y: 0.68, width: 0.5 },
+    // Centred on the bag, in the lower half of the panel: the 3D model's straps are sewn down its front to about
+    // 60% of the way down, and a logo that starts above that would sit on them.
+    logo: { x: 0.5, y: 0.735, width: 0.42 },
+    // New artwork starts where the logo is.
+    layerAt: { x: 0.5, y: 0.735 },
   },
   {
     id: "apron",
@@ -204,7 +209,11 @@ const GARMENT_LIST = [
     fabrics: ["twill-240", "canvas-12oz"],
     layerScale: 0.55,
     decalReach: 1,
-    logo: { x: 0.5, y: 0.45, width: 0.34 },
+    // As in the collection photograph: on the patch pocket, small enough to sit inside it (the pocket is about
+    // 36% x 20% of the apron's area, in the photograph and in the model).
+    logo: { x: 0.51, y: 0.58, width: 0.25 },
+    // New artwork starts there too (mirrored on the back, which has no pocket).
+    layerAt: { x: 0.51, y: 0.58 },
   },
 ];
 
@@ -214,15 +223,18 @@ function areaAspectOf(mockup) {
 }
 
 export const GARMENTS = GARMENT_LIST.map((garment) => {
-  const mockups = mockupsFor(garment.id);
-  const flat = areaAspectOf(mockups.front);
+  // { front, back }, each { src, width, height, area }: `area` is the garment's own bounding box inside
+  // the picture, as fractions of its width and height.
+  const pictures = mockups[garment.id];
+  const flat = areaAspectOf(pictures.front);
   return {
     ...garment,
-    mockups,
+    mockups: pictures,
     // The tee and hoodie are a photograph in 2D and a differently proportioned model in 3D, so no
     // single ratio is right for both; the logo preset takes the middle (new artwork there keeps its
-    // old sizing). For every other garment the 2D picture is a render of the 3D model, so the two
-    // agree and `exactAspect` lets new artwork keep its proportions.
+    // old sizing). For every other garment the 2D picture is the garment's photograph and the 3D
+    // viewer gives its design area the picture's proportions (GarmentViewer, `areaAspect`), so the
+    // two agree and `exactAspect` lets new artwork keep its proportions.
     areaAspect: garment.areaAspect3d ? Math.sqrt(flat * garment.areaAspect3d) : flat,
     exactAspect: !garment.areaAspect3d,
     thumb: `/mockups/thumbs/${garment.id}.webp`,

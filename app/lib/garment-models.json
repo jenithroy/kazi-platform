@@ -1,40 +1,4 @@
 {
-  "long-sleeve": {
-    "credit": {
-      "title": "Sweatshirt Raglan Sleeves Colorway 1",
-      "author": "benski77",
-      "authorUrl": "https://sketchfab.com/benski77",
-      "sourceUrl": "https://sketchfab.com/3d-models/sweatshirt-raglan-sleeves-colorway-1-8843727796bd4d7da801b092179eb1a2",
-      "license": "Creative Commons Attribution 4.0 International",
-      "licenseShort": "CC BY 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
-    },
-    "dimInside": false
-  },
-  "vest": {
-    "credit": {
-      "title": "Winter Jacket",
-      "author": "Flow Studio",
-      "authorUrl": "https://sketchfab.com/flowstudio",
-      "sourceUrl": "https://sketchfab.com/3d-models/winter-jacket-f77f7f7c14854173a60544dee5f7de0f",
-      "license": "Creative Commons Attribution 4.0 International",
-      "licenseShort": "CC BY 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
-    },
-    "dimInside": true
-  },
-  "sweatpants": {
-    "credit": {
-      "title": "The Pants",
-      "author": "ARize",
-      "authorUrl": "https://sketchfab.com/ARizegroup",
-      "sourceUrl": "https://sketchfab.com/3d-models/the-pants-8939b47916ab4b2486a3fa2613eac54c",
-      "license": "Creative Commons Attribution 4.0 International",
-      "licenseShort": "CC BY 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
-    },
-    "dimInside": false
-  },
   "tote": {
     "credit": {
       "title": "Rattan Tote Bag (EMP (SBH) 27E)",
@@ -46,5 +10,29 @@
       "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
     },
     "dimInside": true
+  },
+  "sweatpants": {
+    "credit": {
+      "title": "Baggy Pants FREE",
+      "author": "artemlevandovskiy24",
+      "authorUrl": "https://sketchfab.com/artemlevandovskiy24",
+      "sourceUrl": "https://sketchfab.com/3d-models/baggy-pants-free-5a9b5a0ce4944cad97fc9e2d6ddfc6a4",
+      "license": "Creative Commons Attribution 4.0 International",
+      "licenseShort": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "dimInside": false
+  },
+  "apron": {
+    "credit": {
+      "title": "Caçador de Ents - Avental",
+      "author": "Pedro Vaz",
+      "authorUrl": "https://sketchfab.com/pedrovaz",
+      "sourceUrl": "https://sketchfab.com/3d-models/cacador-de-ents-avental-faa4e8a0221d48f4837b863ed7805acd",
+      "license": "Creative Commons Attribution 4.0 International",
+      "licenseShort": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "dimInside": false
   }
 }
