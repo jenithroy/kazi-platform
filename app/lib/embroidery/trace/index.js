@@ -1,0 +1,1030 @@
+/**
+ * Picture to clean vector regions (the "tracer" of the embroidery engine).
+ *
+ *   traceImage(image, opts)  -> { width, height, palette, shapes, order, stats }   (and `details` when opts.details: the fine lines and dots, see fine.js)
+ *   renderTrace(result, scale)  paint a result back to RGBA pixels (how tests compare it with the source)
+ *   quantize(image, opts)    -> { palette, labels, width, height, ... } fast colour preview on a small grid
+ *   detectBackground(image | quantizeResult, opts)
+ *
+ * UNITS AND CONVENTIONS (read this before using the result)
+ *  - Coordinates are in pixels of the ORIGINAL picture, floats, origin at the top-left corner of the picture,
+ *    +x right, +y DOWN. Pixel (i, j) covers [i, i + 1) x [j, j + 1), so a shape that fills the whole picture has the
+ *    corners (0, 0), (width, 0), (width, height), (0, height).
+ *  - A shape is one connected piece of one colour. shape.contours[0] is its outer boundary, the rest are its holes.
+ *    WINDING: the outer boundary runs CLOCKWISE on the screen (y down), which is a POSITIVE signed area by the shoelace
+ *    formula sum(x[i] * y[i+1] - x[i+1] * y[i]) / 2 in these coordinates. Holes run COUNTER-CLOCKWISE (negative area).
+ *    Contours are closed without repeating the first point. Fill rule: a point is inside when it is inside the outer
+ *    contour and outside every hole (even-odd and non-zero give the same answer, there is no overlap).
+ *    An island inside a hole is its own shape.
+ *  - Two regions of different colours that touch share exactly the same boundary points (the points of the shared
+ *    line are identical numbers in both contours, one traversed backwards), so there are no gaps and no overlaps.
+ *  - The background colour is in the palette (background: true) but is never returned as a shape.
+ *  - Everything physical (minFeatureMm, minAreaMm2, simplifyMm) is converted with mmPerPx, the size of one pixel of
+ *    the ORIGINAL picture once stitched.
+ *
+ * BACKGROUND RULE ("auto")
+ *  - If the picture has real transparency (at least 0.05 % of the pixels have alpha under 40 %), the see-through pixels
+ *    are the background and nothing else is: a colour patch inside the transparent area is stitched.
+ *  - Otherwise the palette colour (with colours within backgroundTolerance of it) that covers at least 55 % of the
+ *    picture's outer ring of pixels is the background. If no colour does, nothing is background (everything is stitched).
+ *    So a logo on a coloured square patch keeps the patch as a shape when the patch does not touch the picture edge
+ *    (the margin colour is the background), and loses the patch when it fills the picture (it IS the border colour).
+ *  - background: [r, g, b] names the background colour yourself; background: "none" stitches everything.
+ *  - Background is only the part of that colour that is CONNECTED to the picture edge (flood fill from the edge over
+ *    background-coloured pixels; every fully see-through pixel counts as background too, wherever it is). Pixels of the
+ *    same colour that other colours enclose (white letters inside a navy disc on a white page; the counter of an O) are
+ *    NOT background: they come back as ordinary shapes. Their colour is a second palette entry with the same r, g, b,
+ *    background: false and enclosedBackground: true, and shape.color is that entry's index, so palette[shape.color] is
+ *    always the colour to sew. A page that does not want to sew them can switch that colour off like any other.
+ *
+ * Pure ES module: no DOM, no Node-only calls. Everything is deterministic (same input and options, same output).
+ */
+import { prepare, denoise, ALPHA_CUT } from "./prep.js";
+import { buildPalette, missingColours, missingNeutral, classifyPixels, flatMask, softMembership, clusterMeans, transitionalEntries, HARD_MAX_COLORS } from "./quantize.js";
+import { cleanLabels, connectedComponents, OUT } from "./labels.js";
+import { buildChains, chainRawPoints, traceLoops } from "./contours.js";
+import { processChains } from "./simplify.js";
+import { findCrossing, pullBack } from "./repair.js";
+import { renderTrace } from "./render.js";
+import { detectKind, kuwahara, restoreThin, thinLines } from "./photo.js";
+import { validRegions, cutOutPerson, resampleClasses, importanceMap, DEFAULT_REGION_WEIGHTS } from "./regions.js";
+import { buildRegionalPalette, classifyByRegion } from "./regionPalette.js";
+import { rgbToLab, rgbFloatToLab, toHex, now } from "./color.js";
+import { limitsFor } from "./detail.js";
+import { findFineDetails } from "./fine.js";
+import { removeFrame } from "./frame.js";
+import { HAIRLINE } from "./hairlines.js";
+
+export { renderTrace };
+
+/** Internal: the first half of tracing (labels, palette, background). Exposed only so tests can look inside. */
+export const _internals = { analyse: (image, opts, maxSide) => analyse(image, normalizeOptions(opts), maxSide || normalizeOptions(opts).maxSide) };
+
+/** The defaults of every option (see the README of this folder for what they mean). */
+export const DEFAULT_OPTIONS = Object.freeze({
+  colors: "auto",
+  maxColors: 8,
+  mmPerPx: 0.1,
+  background: "auto",
+  backgroundTolerance: 12,
+  minFeatureMm: 0.5,
+  minAreaMm2: 0.5,
+  smooth: 0.5,
+  simplifyMm: 0.04,
+  cornerAngleDeg: 40,
+  seed: 1,
+  maxSide: 1600,
+  // the kind of picture decides how its colours are found: "logo" (a few flat colours, the default), "art" (drawn or painted,
+  // soft shading), "photo" (smoothed into paint-like patches first), or "auto" (look at the picture and choose)
+  mode: "logo",
+  mergeDE: 0, // colours closer than this (delta-E) are one colour; 0 = the kind's own (logo 11, art 8, photo 6)
+  workMm: 0.15, // a photograph is traced on a grid this many millimetres a pixel (a coarser one lost twigs, lashes and small petals; a finer one only added noise)
+  smoothR: 2, // the Kuwahara radius (pixels) a photograph is flattened with
+  thicken: false, // keep long thin strokes (lettering, hairlines) of the minor colours and widen them, instead of removing them
+  thickenMm: 0, // how wide such a stroke becomes (0 = a line of thread, or a little wider for a simpler design: see targetMm in analyse)
+  detail: null, // the page's Detail slider (0 to 1), when it has one: once the kind of picture is known the size limits below are taken from it (a portrait gets more detail than a logo at the same setting, see detail.js). null = use the limits as given
+  strokeMm: 1.5, // a thin piece must be this long to count as a stroke
+  bgSpread: 7, // a background of artwork or a photograph must be this even (delta-E spread around its colour)
+  maxShapes: 2500, // about how many pieces a picture may come to (0 = no limit): above it the size limits are raised until it does (0 would take minutes at 250 mm)
+  keepThin: 18, // photographs: where the flattening changed a pixel by more than this (luminance 0 to 255) the picture's own pixel is kept (lashes, whiskers, hairs, twigs), at most the strongest 3.5 % of the picture; 0 = off
+  lines: true, // artwork and photographs: thin lines (lashes, hairs, whiskers, twigs, creases) are found from the luminance and kept as lines
+  lineTau: 40, // how much darker (or lighter) than its surroundings a line must be (luminance, 0 to 255)
+  lineMm: 1.2, // how long a line must be (mm)
+  hatched: 0.5, // "auto" kind: a picture of a few colours that has strong local contrast at this share of its pixels (on a 0.15 mm grid) is an engraving or a woodcut, made of tone: it is sewn as a photograph; 0 = never
+  hatchedMaxMm: 120, // ... when the design is no wider than this (a bigger one can follow the lines)
+  strongMm: 0, // a thin feature found by its contrast (a vein, a twig, a lash) is widened to this (mm); 0 = by the size of the design: 0.5 at 60 mm and less, 0.3 from 100 mm (a bean line is wider than the thread anyway, and a bigger design has bigger lines, which a wide painting overdraws) ...
+  gapMm: 0.7, // ... a gap or a dot to this (never wider than the strokes' own width, see thickenMm)
+  lineShare: 0.03, // all lines together are held to the strongest of this share of the picture (a picture that is all texture keeps only its strongest lines)
+  contrast: true, // how much a small piece stands out decides whether it stays: a petal on dark leaves is kept small, a patch of sky a shade off is not
+  hairlines: true, // the thin lines of artwork and photographs (a whisker, a hair, a twig: a pixel or two across) are taken out as centre lines, to be sewn as one line of thread each, see hairlines.js; needs `details`
+  trimFrame: true, // a thin frame round the picture (a chart's border, a screenshot's outline) is painted over with the margin inside it, see frame.js
+  fineParams: null, // (for tuning) overrides of the fine-detail finder's numbers, see detailParams in details.js
+  fineDetail: 0.75, // the Detail slider (0 to 1) as the fine-detail finder sees it (details.js): how many and how faint the lines and dots it keeps
+  regions: null, // a map of what each pixel is (background, hair, skin, clothes ...), see regions.js: the background is cut out and the person's colours are weighted by class
+  regionPalette: true, // with a region map: every region (hair, skin, clothes ...) gets colours of its own and its pixels keep to them (regionPalette.js); false: one palette for the person, only weighted
+  regionWeights: null, // how hard each class pulls on the palette (by class number); null = DEFAULT_REGION_WEIGHTS
+  reserveColors: 1, // a person cut out of a photograph, fine details on: this many of the colours are kept back for the details' own threads (a dark brown for lids and lashes), see convert.js fineObjects
+  details: false, // photographs and artwork: also find the fine lines (veins, twigs, lids, lashes) and small dots from the picture itself, to be sewn on top of the colours (details.js, fine.js); the colour layer is not changed
+});
+
+const num = (v, d, lo, hi) => (typeof v === "number" && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d);
+
+/** Fill in defaults and clamp every option to a sane range. */
+export function normalizeOptions(opts = {}) {
+  const maxColors = Math.round(num(opts.maxColors, DEFAULT_OPTIONS.maxColors, 1, HARD_MAX_COLORS));
+  const colors =
+    opts.colors === undefined || opts.colors === null || opts.colors === "auto"
+      ? maxColors
+      : Math.round(num(opts.colors, maxColors, 1, HARD_MAX_COLORS));
+  let background = "auto";
+  if (opts.background === "none") background = "none";
+  else if (Array.isArray(opts.background) && opts.background.length >= 3) {
+    background = [0, 1, 2].map((i) => Math.round(num(opts.background[i], 0, 0, 255)));
+  }
+  return {
+    colors,
+    maxColors,
+    mmPerPx: num(opts.mmPerPx, DEFAULT_OPTIONS.mmPerPx, 1e-4, 100),
+    background,
+    backgroundTolerance: num(opts.backgroundTolerance, DEFAULT_OPTIONS.backgroundTolerance, 0, 60),
+    minFeatureMm: num(opts.minFeatureMm, DEFAULT_OPTIONS.minFeatureMm, 0, 100),
+    minAreaMm2: num(opts.minAreaMm2, DEFAULT_OPTIONS.minAreaMm2, 0, 1e6),
+    smooth: num(opts.smooth, DEFAULT_OPTIONS.smooth, 0, 1),
+    simplifyMm: num(opts.simplifyMm, DEFAULT_OPTIONS.simplifyMm, 0, 100),
+    cornerAngleDeg: num(opts.cornerAngleDeg, DEFAULT_OPTIONS.cornerAngleDeg, 10, 170),
+    seed: Math.round(num(opts.seed, DEFAULT_OPTIONS.seed, 0, 2147483647)),
+    maxSide: Math.round(num(opts.maxSide, DEFAULT_OPTIONS.maxSide, 64, 8192)),
+    mode: ["logo", "art", "photo", "auto"].includes(opts.mode) ? opts.mode : DEFAULT_OPTIONS.mode,
+    mergeDE: num(opts.mergeDE, DEFAULT_OPTIONS.mergeDE, 0, 40),
+    workMm: num(opts.workMm, DEFAULT_OPTIONS.workMm, 0.05, 5),
+    smoothR: Math.round(num(opts.smoothR, DEFAULT_OPTIONS.smoothR, 0, 8)),
+    thicken: !!opts.thicken,
+    thickenMm: num(opts.thickenMm, DEFAULT_OPTIONS.thickenMm, 0, 5),
+    detail: typeof opts.detail === "number" && Number.isFinite(opts.detail) ? Math.min(1, Math.max(0, opts.detail)) : null,
+    strokeMm: num(opts.strokeMm, DEFAULT_OPTIONS.strokeMm, 0.2, 20),
+    bgSpread: num(opts.bgSpread, DEFAULT_OPTIONS.bgSpread, 1, 40),
+    contrast: opts.contrast === undefined ? DEFAULT_OPTIONS.contrast : !!opts.contrast,
+    details: opts.details === undefined ? DEFAULT_OPTIONS.details : !!opts.details,
+    fineDetail: num(opts.fineDetail, DEFAULT_OPTIONS.fineDetail, 0, 1),
+    trimFrame: opts.trimFrame === undefined ? DEFAULT_OPTIONS.trimFrame : !!opts.trimFrame,
+    hairlines: opts.hairlines === undefined ? DEFAULT_OPTIONS.hairlines : !!opts.hairlines,
+    fineParams: opts.fineParams && typeof opts.fineParams === "object" ? opts.fineParams : null,
+    lines: opts.lines === undefined ? DEFAULT_OPTIONS.lines : !!opts.lines,
+    lineTau: num(opts.lineTau, DEFAULT_OPTIONS.lineTau, 5, 255),
+    lineMm: num(opts.lineMm, DEFAULT_OPTIONS.lineMm, 0.2, 20),
+    hatched: num(opts.hatched, DEFAULT_OPTIONS.hatched, 0, 1),
+    hatchedMaxMm: num(opts.hatchedMaxMm, DEFAULT_OPTIONS.hatchedMaxMm, 10, 2000),
+    strongMm: num(opts.strongMm, DEFAULT_OPTIONS.strongMm, 0, 3),
+    gapMm: num(opts.gapMm, DEFAULT_OPTIONS.gapMm, 0.2, 3),
+    lineShare: num(opts.lineShare, DEFAULT_OPTIONS.lineShare, 0.001, 1),
+    keepThin: num(opts.keepThin, DEFAULT_OPTIONS.keepThin, 0, 255),
+    maxShapes: Math.round(num(opts.maxShapes, DEFAULT_OPTIONS.maxShapes, 0, 1e6)),
+    reserveColors: Math.round(num(opts.reserveColors, DEFAULT_OPTIONS.reserveColors, 0, 4)),
+    regions: validRegions(opts.regions) ? opts.regions : null,
+    regionWeights: Array.isArray(opts.regionWeights) ? opts.regionWeights : null,
+    regionPalette: opts.regionPalette === undefined ? true : !!opts.regionPalette,
+  };
+}
+
+function checkImage(image) {
+  if (!image || !Number.isFinite(image.width) || !Number.isFinite(image.height) || !image.data) {
+    throw new TypeError("traceImage needs { width, height, data } with RGBA bytes");
+  }
+  if (image.width < 1 || image.height < 1 || image.data.length < image.width * image.height * 4) {
+    throw new TypeError("the picture data is smaller than width x height x 4");
+  }
+}
+
+/** The options with the kind of picture settled: for a page's Detail slider the size limits depend on the kind (see detail.js). */
+function withKind(o0, kind) {
+  const o = { ...o0, kind };
+  if (o0.detail !== null) Object.assign(o, limitsFor(kind, o0.detail));
+  return o;
+}
+
+/** The kind of picture to trace as: the asked-for mode, or, for "auto", what the picture looks like (see photo.js). */
+function resolveKind(image, o) {
+  if (o.mode !== "auto") return { kind: o.mode, info: null };
+  const wk = prepare(image, 256);
+  const info = detectKind(wk.rgb, wk.w, wk.h);
+  let kind = info.kind;
+  // An engraving, a woodcut: black ink on paper, so a few flat colours describe it, but its lines lie closer than a thread can follow and the picture is made of the tone
+  // they add up to. Seen on a grid of 0.15 mm (what a photograph is traced on), a design that size has strong local contrast almost everywhere: it is sewn as a photograph.
+  const longMm = Math.max(image.width, image.height) * o.mmPerPx;
+  if (kind !== "photo" && o.hatched > 0 && longMm <= o.hatchedMaxMm && Math.max(image.width, image.height) >= 500) {
+    const g = prepare(image, Math.max(64, Math.round(longMm / 0.15)));
+    const L = new Float32Array(g.w * g.h);
+    for (let i = 0; i < g.w * g.h; i++) L[i] = 0.299 * g.rgb[i * 3] + 0.587 * g.rgb[i * 3 + 1] + 0.114 * g.rgb[i * 3 + 2];
+    let hit = 0, n = 0;
+    for (let y = 1; y < g.h - 1; y++) {
+      for (let x = 1; x < g.w - 1; x++) {
+        n++; // (the see-through part of a picture counts as plain: a small logo on a clear page is no engraving)
+        if (g.hasAlpha && g.cov[y * g.w + x] < 128) continue;
+        let lo = 1e9, hi = -1e9;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const v = L[(y + dy) * g.w + x + dx]; if (v < lo) lo = v; if (v > hi) hi = v; }
+        if (hi - lo > 60) hit++;
+      }
+    }
+    if (n > 0 && hit / n >= o.hatched) kind = "photo";
+  }
+  return { kind, info };
+}
+
+/** How many pixels on the long side the working copy has. */
+function workSide(image, o) {
+  // A machine places a stitch to 0.1 mm: a grid finer than 0.06 mm a pixel only costs time (widening a thin stroke grows with the
+  // cube of the pixels a millimetre), so a small design is traced on a coarser copy of a big picture.
+  const longMm = Math.max(image.width, image.height) * o.mmPerPx;
+  const grid = o.kind === "photo" ? o.workMm : 0.06; // a photograph needs no finer grid than `workMm`
+  return Math.max(240, Math.min(o.maxSide, Math.round(longMm / grid)));
+}
+
+/**
+ * The shared first half of tracing and previewing: working copy, denoise, palette, one label per pixel, cleaning,
+ * background. Returns everything the second half needs.
+ */
+function analyse(image, o, maxSide) {
+  const stages = {};
+  let t = now();
+  // a picture whose pixels are bigger than 0.4 mm once stitched (a 64 pixel icon in a 100 mm patch) is enlarged smoothly first, to about 0.2 mm a pixel
+  const longPx = Math.max(image.width, image.height);
+  const wk = prepare(image, maxSide, o.mmPerPx > 0.4 ? Math.min(longPx * 8, (longPx * o.mmPerPx) / 0.2) : 0);
+  const { w, h, hasAlpha, cov } = wk;
+  const N = w * h;
+  // the person's classes on the work grid: each pulls on the palette by its weight (the face over the clothes), see regions.js
+  let imp = null, regionCls = null;
+  if (o.personClasses) {
+    regionCls = resampleClasses({ width: o.personSize[0], height: o.personSize[1], data: o.personClasses }, w, h);
+    imp = importanceMap(regionCls, o.regionWeights || DEFAULT_REGION_WEIGHTS);
+  }
+  stages.prepare = now() - t;
+  t = now();
+  const dn = denoise(wk.rgb, w, h);
+  const kind = o.kind || "logo";
+  // a photograph is first painted in flat patches that keep their edges, so its colours can be found and its regions are calm
+  let rgbD = kind === "photo" && o.smoothR >= 1 ? kuwahara(dn.rgb, w, h, o.smoothR) : dn.rgb;
+  if (kind === "photo" && o.smoothR >= 1 && o.keepThin > 0) rgbD = restoreThin(dn.rgb, rgbD, w, h, o.keepThin);
+  stages.denoise = now() - t;
+  t = now();
+  const scale = Math.sqrt(wk.sx * wk.sy);
+  const minFeaturePx = o.minFeatureMm / o.mmPerPx / scale;
+  const minAreaPx = o.minAreaMm2 / (o.mmPerPx * o.mmPerPx) / (scale * scale);
+  const cut = Math.round(255 * ALPHA_CUT);
+  const bgColor = Array.isArray(o.background) ? o.background : null;
+
+  // palette of the picture's own colours
+  let skip = null;
+  if (hasAlpha) {
+    skip = new Uint8Array(N);
+    for (let i = 0; i < N; i++) skip[i] = cov[i] < cut ? 1 : 0;
+  }
+  const excludeLab = bgColor ? new Float64Array(3) : null;
+  if (bgColor) rgbToLab(bgColor[0], bgColor[1], bgColor[2], excludeLab, 0);
+  // Colours kept back for the details' own threads: only for a person cut out of a photograph, where the details are a face's lids, lashes and brows and need a dark thread
+  // of their own (for other photographs the colour layer keeps all the colours, as measured on 42 pictures). A small palette is the person's own choice: nothing is taken from it.
+  const reserve = kind !== "logo" && o.details && o.colors >= 8 && o.personClasses ? o.reserveColors : 0;
+  // (a person cut out of a photograph leaves a see-through label, which is no thread: only a logo's own transparency takes one of the colours)
+  const maxFg = Math.max(1, o.colors - (hasAlpha && !o.personClasses ? 1 : 0) - (bgColor ? 1 : 0) - reserve);
+  // a person cut out of a photograph: each region gets the colours it earns, and its pixels keep to them (regionPalette.js)
+  const regional = regionCls && kind === "photo" && o.regionPalette
+    ? buildRegionalPalette(rgbD, w, h, regionCls, { maxColors: maxFg, seed: o.seed, mergeDE: o.mergeDE || 6, crumbs: "strict", noiseTol: dn.tol, weightPower: 0.5, weights: o.regionWeights || DEFAULT_REGION_WEIGHTS, skip })
+    : null;
+  // The colours of a picture are its own, whatever size it is sewn at. When the picture is enlarged for tracing (above), its colours are still found on its own
+  // pixels. On the enlarged copy the k-means centres shift a little with every change of size (the copy's size changes with it), so two colours near the merge
+  // distance (delta-E 11) were merged at one size and kept apart at the next: the sun picture gave 5 colours and 46,584 stitches at 238.6 mm and 6 colours and
+  // 53,084 at 239.0 mm, a tan split in two with 238 slivers, and the rabbit 6 colours up to 0.4 mm a pixel and 8 above it. Found on the picture's own pixels the
+  // palette is the one every smaller size gets, so it does not move with the size (a picture that is not enlarged, and so any size up to 0.4 mm a pixel, is unchanged).
+  let own = null;
+  if (wk.sx < 0.99 && kind !== "photo" && !imp) {
+    const nat = prepare(image, maxSide, 0);
+    const dnN = denoise(nat.rgb, nat.w, nat.h);
+    let skipN = null;
+    if (nat.hasAlpha) {
+      skipN = new Uint8Array(nat.w * nat.h);
+      for (let i = 0; i < skipN.length; i++) skipN[i] = nat.cov[i] < cut ? 1 : 0;
+    }
+    own = { rgb: dnN.rgb, w: nat.w, h: nat.h, tol: dnN.tol, skip: skipN, minFeaturePx: o.minFeatureMm / o.mmPerPx / Math.sqrt(nat.sx * nat.sy) };
+  }
+  const paletteOf = (maxColors) => {
+    const opts = {
+      maxColors,
+      seed: o.seed,
+      mergeDE: o.mergeDE || (kind === "photo" ? 6 : kind === "art" ? 8 : 11),
+      allPixels: kind === "photo",
+      weightPower: kind === "photo" ? 0.5 : 1,
+      crumbs: kind === "logo" ? "loose" : "strict",
+      excludeLab,
+      excludeDist: o.backgroundTolerance,
+      imp,
+    };
+    const p = buildPalette(rgbD, w, h, { ...opts, minFeaturePx, noiseTol: dn.tol, skip });
+    if (!own) return p;
+    const q = buildPalette(own.rgb, own.w, own.h, { ...opts, minFeaturePx: own.minFeaturePx, noiseTol: own.tol, skip: own.skip });
+    if (!q.n) return p;
+    q.tFlat = p.tFlat; // the flatness limit belongs to the copy the pixels are labelled on
+    q.flatSamples = p.flatSamples;
+    return q;
+  };
+  let pal = regional || paletteOf(maxFg);
+  // Artwork: a grey, a silver, the shade of a muzzle that k-means gave no colour (it spends them on the big areas) is a colour of its own, and its slot is made by
+  // asking for one colour fewer (the other colours are then found again, so the one that goes is the one that costs least), see missingNeutral.
+  let neutral = null;
+  if (kind === "art" && !regional && maxFg >= 4) {
+    const have = (p) => { const a = Array.from(p.rgb).slice(0, p.n * 3); return bgColor ? [...a, bgColor[0], bgColor[1], bgColor[2]] : a; };
+    neutral = missingNeutral(rgbD, w, h, have(pal), have(pal).length / 3, { skip });
+    if (neutral && pal.n >= maxFg) {
+      // (if the grey is not missing from the smaller palette after all, that palette is not used: nothing is given up for it)
+      const fewer = paletteOf(maxFg - 1);
+      const again = missingNeutral(rgbD, w, h, have(fewer), have(fewer).length / 3, { skip });
+      if (again) { pal = fewer; neutral = again; } else neutral = null;
+    }
+  }
+  let Kfg = pal.n;
+  let fgRgb = Array.from(pal.rgb).slice(0, Kfg * 3);
+  if (neutral && Kfg < maxFg) { fgRgb.push(neutral.rgb[0], neutral.rgb[1], neutral.rgb[2]); Kfg++; }
+  // ink that is only thin lines has no flat pixel, so the palette misses it: look for colours nothing explains (not in photographs)
+  if (kind !== "photo" && Kfg < maxFg) {
+    const have = bgColor ? [...fgRgb, bgColor[0], bgColor[1], bgColor[2]] : fgRgb;
+    const extra = missingColours(rgbD, w, h, have, have.length / 3, { skip, most: Math.min(2, maxFg - Kfg), minPixels: Math.max(20, Math.round(N * 0.0004)) });
+    for (const c of extra) { fgRgb.push(c[0], c[1], c[2]); Kfg++; }
+  }
+  const fgLab = new Float64Array(Math.max(1, Kfg) * 3);
+  for (let k = 0; k < Kfg; k++) rgbFloatToLab(fgRgb[k * 3], fgRgb[k * 3 + 1], fgRgb[k * 3 + 2], fgLab, k * 3);
+  // colours that are only the soft edge between two others (anti-aliasing, JPEG halos) are not colours of their own
+  let preLabels = null;
+  if (Kfg >= 3 && !regional) {
+    const pre = classifyPixels(rgbD, N, fgLab, Kfg);
+    const drop = transitionalEntries(pre, w, h, Float64Array.from(fgRgb), Kfg);
+    let dropped = 0;
+    for (let k = 0; k < Kfg; k++) dropped += drop[k];
+    if (dropped) {
+      const rgbKeep = [];
+      for (let k = 0; k < Kfg; k++) if (!drop[k]) rgbKeep.push(fgRgb[k * 3], fgRgb[k * 3 + 1], fgRgb[k * 3 + 2]);
+      fgRgb = rgbKeep;
+      Kfg -= dropped;
+    } else preLabels = pre;
+  }
+  if (Kfg === 0) {
+    // nothing flat to learn from (a one-pixel-wide picture, say): use the mean colour
+    let r = 0, g = 0, b = 0;
+    for (let i = 0; i < N; i++) { r += rgbD[i * 3]; g += rgbD[i * 3 + 1]; b += rgbD[i * 3 + 2]; }
+    fgRgb.push(r / N, g / N, b / N);
+    Kfg = 1;
+  }
+  const bgColorIndex = bgColor ? Kfg : -1;
+  if (bgColor) fgRgb.push(bgColor[0], bgColor[1], bgColor[2]);
+  const Kc = Kfg + (bgColor ? 1 : 0); // entries that are real colours
+  const transIndex = hasAlpha ? Kc : -1;
+  const K = Kc + (hasAlpha ? 1 : 0);
+  const palRgb = new Float64Array(K * 3);
+  const palLab = new Float64Array(K * 3);
+  for (let k = 0; k < Kc; k++) {
+    for (let j = 0; j < 3; j++) palRgb[k * 3 + j] = fgRgb[k * 3 + j];
+    rgbFloatToLab(palRgb[k * 3], palRgb[k * 3 + 1], palRgb[k * 3 + 2], palLab, k * 3);
+  }
+  if (hasAlpha) {
+    palRgb[transIndex * 3] = palRgb[transIndex * 3 + 1] = palRgb[transIndex * 3 + 2] = 255;
+    palLab[transIndex * 3] = 50;
+  }
+  stages.palette = now() - t;
+  t = now();
+
+  // one label per pixel, with how much of each colour an edge pixel holds
+  const labels0 = regional
+    ? classifyByRegion(rgbD, N, w, h, palLab, Kc, regionCls, regional, Math.max(2, Math.round(REGION_BORDER_MM / (o.mmPerPx * scale))))
+    : preLabels && !bgColor ? preLabels : classifyPixels(rgbD, N, palLab, Kc);
+  const flat = flatMask(rgbD, w, h, pal.tFlat);
+  const sm = softMembership(rgbD, w, h, labels0, flat, palRgb, Kc);
+  const labels = sm.labels;
+  const lab2 = sm.lab2;
+  const soft = sm.soft;
+  stages.classify = now() - t;
+  t = now();
+  if (hasAlpha) applyAlpha(labels, lab2, soft, cov, w, h, cut, transIndex);
+  // strokes (lettering, hairlines) of the minor colours are kept and widened to a sewable width instead of being cleaned away
+  let strokes = null;
+  if (o.thicken) {
+    const early = decideBackground(labels, w, h, K, palLab, o, hasAlpha, transIndex, bgColorIndex, rgbD);
+    const share = new Float64Array(256);
+    for (let i = 0; i < N; i++) share[labels[i]]++;
+    const accent = new Uint8Array(256);
+    for (let k = 0; k < K; k++) accent[k] = k === transIndex || early.indices.includes(k) || share[k] / N >= 0.25 ? 0 : 1;
+    // Thin lettering of any other colour is kept too (a logo whose lettering is in its main colour, or white lettering on a
+    // dark badge); in a photograph only the background's colours, or thin crumbs of every colour would be kept.
+    const solo = new Uint8Array(256);
+    for (let k = 0; k < K; k++) solo[k] = k === transIndex ? 0 : o.kind !== "photo" || early.indices.includes(k) ? 1 : 0;
+    // How wide a thin stroke is made: a needle sews about half a millimetre as a line, and anything wider (0.9 mm was the rule once) fills the counters of small lettering and
+    // makes a hairline of an engraving a heavy bar. The Detail slider widens it again for a simpler design (0.8 mm at the simplest, 0.6 at Balanced, 0.5 at the default,
+    // 0.45 at the finest); a stroke already this wide is left as it is.
+    const targetMm = o.thickenMm || Math.max(0.45, Math.min(0.9, 0.5 + 0.4 * (o.minFeatureMm - 0.55)));
+    // In a photograph or artwork the patches of colour are blobs: only long thin pieces (twigs, outlines, hairlines) are strokes.
+    const photo = o.kind === "photo";
+    const strokeMm = photo ? Math.max(o.strokeMm, 3) : o.strokeMm;
+    const pxMm = 1 / (o.mmPerPx * scale); // work pixels in a millimetre
+    const designMm = Math.max(image.width, image.height) * o.mmPerPx; // how wide the design is
+    const strongMm = o.strongMm || Math.max(0.3, Math.min(0.5, 0.5 - (0.2 * (designMm - 60)) / 40));
+    // thin lines of artwork and photographs, found from the luminance of the unflattened picture and given the label of the palette colour they are drawn in
+    let lines = null, lineOf = null, lineInk = null;
+    if (o.lines && kind !== "logo") {
+      const rr = Math.max(2, Math.min(8, Math.ceil(0.42 * pxMm + 0.3)));
+      // (the bigger the design, the more of a picture's texture reaches the size of a line: its share of lines falls with the size, to 0.4 of it at 250 mm)
+      const share = o.lineShare * Math.min(1, Math.pow(100 / Math.max(1, designMm), 0.75));
+      const tl = thinLines(dn.rgb, w, h, rr, o.lineTau, Math.max(3, o.lineMm * pxMm), 2.2, share, skip);
+      if (tl.pieces.length) {
+        lines = new Uint8Array(N);
+        lineOf = new Int32Array(N); // which piece (1, 2 ...) a pixel of a line is of, and the colour of that piece (its darkest or lightest half): hairlines.js sews it in that colour
+        lineInk = [null];
+        const lab = new Float64Array(3);
+        for (const pc of tl.pieces) {
+          // the darkest (or lightest) half of its pixels give its colour
+          const ps = Array.from(pc.pixels).map((i) => ({ i, l: 0.299 * dn.rgb[i * 3] + 0.587 * dn.rgb[i * 3 + 1] + 0.114 * dn.rgb[i * 3 + 2] })).sort((a, b) => (pc.bright ? b.l - a.l : a.l - b.l));
+          const half = ps.slice(0, Math.max(1, ps.length >> 1));
+          let sr = 0, sg = 0, sb = 0;
+          for (const p of half) { sr += dn.rgb[p.i * 3]; sg += dn.rgb[p.i * 3 + 1]; sb += dn.rgb[p.i * 3 + 2]; }
+          rgbFloatToLab(sr / half.length, sg / half.length, sb / half.length, lab, 0);
+          // a palette colour it can be drawn in: near its own colour, and not lighter (a dark line) or darker (a light one) than the line itself
+          let best = -1, bd = 28 * 28;
+          for (let k = 0; k < K; k++) {
+            if (k === transIndex || early.indices.includes(k)) continue;
+            if (pc.bright ? palLab[k * 3] < lab[0] - 10 : palLab[k * 3] > lab[0] + 10) continue;
+            if ((lab[1] - palLab[k * 3 + 1]) ** 2 + (lab[2] - palLab[k * 3 + 2]) ** 2 > 16 * 16) continue; // and of the same hue ...
+            if (Math.hypot(palLab[k * 3 + 1], palLab[k * 3 + 2]) > Math.hypot(lab[1], lab[2]) + 6) continue; // ... and no more colourful: a grey whisker is not drawn in pink
+            const d = (lab[0] - palLab[k * 3]) ** 2 + (lab[1] - palLab[k * 3 + 1]) ** 2 + (lab[2] - palLab[k * 3 + 2]) ** 2;
+            if (d < bd) { bd = d; best = k; }
+          }
+          if (best < 0) continue;
+          lineInk.push([sr / half.length, sg / half.length, sb / half.length]);
+          for (const p of pc.pixels) { lines[p] = best + 1; lineOf[p] = lineInk.length - 1; }
+        }
+      }
+    }
+    const bgSet = new Uint8Array(256);
+    for (const k of early.indices) bgSet[k] = 1;
+    // Hairlines (hairlines.js): a pixel of work grid is this many millimetres across, so a line of at most HAIRLINE.maxWidthMm is this many pixels (a coarse grid still sees a one pixel line)
+    const areaCm2 = (image.width * o.mmPerPx * image.height * o.mmPerPx) / 100;
+    strokes = {
+      lines, lineOf, lineInk, bgSet,
+      hairlines: o.hairlines && o.details && kind !== "logo" ? { maxWidthPx: Math.max(1.6, HAIRLINE.maxWidthMm * pxMm), minLenPx: HAIRLINE.minLenMm * pxMm, minChainPx: HAIRLINE.minChainMm * pxMm, budgetPx: HAIRLINE.budgetMmPerCm2 * areaCm2 * pxMm, maxChains: HAIRLINE.maxChains } : null,
+      accent, solo, minExtent: Math.max(3, (strokeMm / o.mmPerPx) / scale), minAspect: photo ? 5 : o.kind === "art" ? 2.5 : 0, targetPx: targetMm / o.mmPerPx / scale,
+      // delta-E at which a piece counts as standing out (ref), the most the usual size limit grows for a piece that hardly shows (areaMax), what a thin piece
+      // must differ from its surroundings by to be kept (keepContrast; dotContrast for a small round one), and the smallest a needle can sew
+      contrast: o.contrast ? { ref: 24, areaMax: 3, keepContrast: 26, dotContrast: 40, strongPx: strongMm * pxMm, gapPx: o.gapMm * pxMm, floorPx: Math.max(6, 0.3 * pxMm * pxMm), lineExtent: Math.max(3, (photo ? 2 : 1.2) * pxMm), dotExtent: Math.max(2, 0.55 * pxMm) } : null,
+    };
+  }
+  const cleanCtx = { rgb: rgbD, palLab, K, soft, lab2 };
+  const cleaned = cleanLabels(labels, w, h, cleanCtx, minAreaPx, minFeaturePx, strokes);
+  // A picture that is still thousands of pieces (feathers, foliage, bark, a fine engraving at full detail) is more than a machine can sew sensibly and
+  // more than the stitch engine can work out in a minute: the size limits are raised in steps until it comes to about `maxShapes` pieces (the smallest, least
+  // striking ones go first).
+  if (o.maxShapes > 0) {
+    // (a big design can take more pieces: `maxShapes` up to 100 mm across, up to 2.4 times as many from 240 mm: the extra ones are the small leaves, petals and lashes of a big picture)
+    const budget = o.maxShapes * Math.min(2.4, Math.max(1, (Math.max(image.width, image.height) * o.mmPerPx) / 100));
+    for (let round = 0, k = 1; round < 4; round++) {
+      const count = connectedComponents(labels, w, h).count;
+      if (count <= budget) break;
+      k *= Math.min(2.2, 1.25 * Math.sqrt(count / budget));
+      const more = cleanLabels(labels, w, h, cleanCtx, minAreaPx * k, minFeaturePx * Math.min(1.6, Math.sqrt(k)), strokes);
+      cleaned.specks += more.specks;
+      cleaned.slivers += more.slivers;
+    }
+  }
+  stages.clean = now() - t;
+  t = now();
+
+  // which entries are the background colours
+  const bg = new Uint8Array(256);
+  const bgInfo = decideBackground(labels, w, h, K, palLab, o, hasAlpha, transIndex, bgColorIndex, rgbD);
+  for (const k of bgInfo.indices) bg[k] = 1;
+  // "background" is only the part connected to the picture edge (or to see-through pixels): pixels of a background
+  // colour that are enclosed by other colours (white letters inside a navy disc on a white page) become a new palette
+  // entry with the same colour and background: false, so they come back as ordinary shapes
+  const parent = new Uint8Array(256);
+  for (let k = 0; k < 256; k++) parent[k] = k;
+  const Kn = splitEnclosedBackground(labels, w, h, bg, K, transIndex, parent);
+  const palRgbN = new Float64Array(Kn * 3);
+  const palLabN = new Float64Array(Kn * 3);
+  palRgbN.set(palRgb);
+  palLabN.set(palLab);
+  for (let k = K; k < Kn; k++) {
+    for (let j = 0; j < 3; j++) { palRgbN[k * 3 + j] = palRgb[parent[k] * 3 + j]; palLabN[k * 3 + j] = palLab[parent[k] * 3 + j]; }
+  }
+  stages.background = now() - t;
+
+  // drop entries that no pixel uses any more, and renumber
+  const count = new Float64Array(Kn);
+  for (let i = 0; i < N; i++) count[labels[i]]++;
+  const remap = new Int16Array(256).fill(-1);
+  let K2 = 0;
+  for (let k = 0; k < Kn; k++) if (count[k] > 0) remap[k] = K2++;
+  if (K2 === 0) { remap[0] = 0; K2 = 1; count[0] = N; }
+  if (K2 !== Kn) {
+    for (let i = 0; i < N; i++) {
+      labels[i] = remap[labels[i]];
+      if (lab2[i] !== 255) lab2[i] = remap[lab2[i]] < 0 ? 255 : remap[lab2[i]];
+    }
+  }
+  const pal2 = {
+    rgb: new Float64Array(K2 * 3),
+    lab: new Float64Array(K2 * 3),
+    count: new Float64Array(K2),
+    bg: new Uint8Array(K2),
+    transparent: new Uint8Array(K2),
+    enclosed: new Uint8Array(K2),
+  };
+  // colour class of every entry: an enclosed copy of a background colour and its parent are the same colour
+  const cls = new Uint8Array(256);
+  for (let k = 0; k < 256; k++) cls[k] = k;
+  for (let k = 0; k < Kn; k++) {
+    const m = remap[k];
+    if (m < 0) continue;
+    for (let j = 0; j < 3; j++) { pal2.rgb[m * 3 + j] = palRgbN[k * 3 + j]; pal2.lab[m * 3 + j] = palLabN[k * 3 + j]; }
+    pal2.count[m] = count[k];
+    pal2.bg[m] = bg[k];
+    pal2.transparent[m] = k === transIndex ? 1 : 0;
+    if (k >= K) {
+      pal2.enclosed[m] = 1;
+      if (remap[parent[k]] >= 0) cls[m] = remap[parent[k]];
+    }
+  }
+  // the real colours: mean of the pixels deep inside each region (the explicit background colour stays as given)
+  const transNew = hasAlpha ? remap[transIndex] : -1;
+  const means = clusterMeans(wk.rgb, w, h, labels, soft, K2, pal2.rgb, transNew);
+  for (let k = 0; k < K2; k++) {
+    if (k === transNew) continue;
+    const fixedBg = bgColor && pal2.bg[k] && Math.abs(pal2.rgb[k * 3] - bgColor[0]) + Math.abs(pal2.rgb[k * 3 + 1] - bgColor[1]) + Math.abs(pal2.rgb[k * 3 + 2] - bgColor[2]) < 1e-6;
+    if (fixedBg) continue;
+    for (let j = 0; j < 3; j++) pal2.rgb[k * 3 + j] = means[k * 3 + j];
+  }
+  // an enclosed copy has exactly the colour of the background entry it came from
+  for (let k = 0; k < K2; k++) {
+    if (cls[k] !== k) for (let j = 0; j < 3; j++) pal2.rgb[k * 3 + j] = pal2.rgb[cls[k] * 3 + j];
+  }
+  for (let k = 0; k < K2; k++) rgbFloatToLab(pal2.rgb[k * 3], pal2.rgb[k * 3 + 1], pal2.rgb[k * 3 + 2], pal2.lab, k * 3);
+  return { wk, w, h, N, labels, lab2, soft, cls, pal: pal2, K: K2, scale, minFeaturePx, minAreaPx, noise: dn, cleaned, stages, bgInfo, regionAlloc: regional ? regional.alloc : null, regionCls };
+}
+
+/**
+ * Keep as background only the pixels of background colours that are connected (4 neighbours) to the picture edge or to
+ * see-through pixels. The other pixels of those colours (enclosed by other colours) get a new label, one per background
+ * colour that has such pixels, appended after the `K` existing ones; `parent[new]` says which colour it copies.
+ * Returns the number of labels now in use. `labels` is changed in place.
+ */
+function splitEnclosedBackground(labels, w, h, bg, K, transIndex, parent) {
+  let any = false;
+  for (let k = 0; k < K; k++) if (bg[k]) any = true;
+  if (!any) return K;
+  const N = w * h;
+  const outside = new Uint8Array(N);
+  const stack = new Int32Array(N);
+  let sp = 0;
+  const push = (i) => {
+    if (!outside[i] && bg[labels[i]]) {
+      outside[i] = 1;
+      stack[sp++] = i;
+    }
+  };
+  for (let x = 0; x < w; x++) { push(x); push((h - 1) * w + x); }
+  for (let y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
+  if (transIndex >= 0) for (let i = 0; i < N; i++) if (labels[i] === transIndex) push(i);
+  while (sp > 0) {
+    const i = stack[--sp];
+    const x = i % w;
+    if (x > 0) push(i - 1);
+    if (x < w - 1) push(i + 1);
+    if (i >= w) push(i - w);
+    if (i < N - w) push(i + w);
+  }
+  const added = new Int16Array(256).fill(-1);
+  let next = K;
+  for (let i = 0; i < N; i++) {
+    const l = labels[i];
+    if (!bg[l] || outside[i]) continue;
+    if (added[l] < 0) {
+      added[l] = next;
+      parent[next] = l;
+      next++;
+    }
+    labels[i] = added[l];
+  }
+  return next;
+}
+
+/** Pixels that are see-through become the transparent label; edge pixels get their share from the alpha. */
+function applyAlpha(labels, lab2, soft, cov, w, h, cut, transIndex) {
+  const n = w * h;
+  const full = cut * 2;
+  const isClear = (i) => cov[i] < cut;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      const clear = isClear(i);
+      let edge = false;
+      if (x > 0 && isClear(i - 1) !== clear) edge = true;
+      else if (x < w - 1 && isClear(i + 1) !== clear) edge = true;
+      else if (y > 0 && isClear(i - w) !== clear) edge = true;
+      else if (y < h - 1 && isClear(i + w) !== clear) edge = true;
+      if (clear) {
+        const colorLabel = labels[i];
+        labels[i] = transIndex;
+        if (edge && cov[i] > 0) {
+          const m = cov[i] / full; // share of the colour, under one half
+          lab2[i] = colorLabel;
+          soft[i] = Math.max(128, Math.min(254, Math.round(255 * (1 - m))));
+        } else {
+          lab2[i] = 255;
+          soft[i] = 255;
+        }
+      } else if (edge && cov[i] < full) {
+        const m = cov[i] / full; // one half or more
+        lab2[i] = transIndex;
+        soft[i] = Math.max(128, Math.min(254, Math.round(255 * m)));
+      }
+    }
+  }
+  void n;
+}
+
+/** How far (mm) from the border of another region a pixel may also take that region's colours: the map is only a guess at the edge, the picture's own colours say where it really is. */
+const REGION_BORDER_MM = 0.5;
+
+/** In a photograph a colour near the backdrop's belongs to it only when at least this share of the picture's border ring is that colour. */
+const BG_RING_MIN = 0.01;
+
+/**
+ * Decide which palette entries are the background. Returns { type: "transparent" | "color" | "none", indices, share }.
+ */
+function decideBackground(labels, w, h, K, palLab, o, hasAlpha, transIndex, bgColorIndex, rgb = null) {
+  const indices = [];
+  const near = (a, tol) => {
+    const out = [];
+    for (let k = 0; k < K; k++) {
+      if (k === transIndex) continue;
+      const dl = palLab[k * 3] - palLab[a * 3];
+      const da = palLab[k * 3 + 1] - palLab[a * 3 + 1];
+      const db = palLab[k * 3 + 2] - palLab[a * 3 + 2];
+      if (Math.sqrt(dl * dl + da * da + db * db) <= tol) out.push(k);
+    }
+    return out;
+  };
+  if (o.background === "none") return { type: "none", indices, share: 0 };
+  if (hasAlpha) {
+    indices.push(transIndex);
+    if (bgColorIndex >= 0) for (const k of near(bgColorIndex, o.backgroundTolerance)) indices.push(k);
+    return { type: "transparent", indices, share: 1 };
+  }
+  if (bgColorIndex >= 0) {
+    for (const k of near(bgColorIndex, o.backgroundTolerance)) indices.push(k);
+    return { type: "color", indices, share: 1 };
+  }
+  // auto: the colour that covers most of the picture's outer ring
+  const counts = new Float64Array(K);
+  let ring = 0;
+  const tally = (i) => { counts[labels[i]]++; ring++; };
+  for (let x = 0; x < w; x++) tally(x);
+  if (h > 1) for (let x = 0; x < w; x++) tally((h - 1) * w + x);
+  for (let y = 1; y < h - 1; y++) { tally(y * w); if (w > 1) tally(y * w + w - 1); }
+  let top = 0;
+  for (let k = 1; k < K; k++) if (counts[k] > counts[top]) top = k;
+  let group = near(top, o.backgroundTolerance);
+  // A photograph's palette holds colours that are near the backdrop's without being the backdrop: grey or white hair against a grey wall is within
+  // the tolerance of it, and was swallowed into the background and never sewn. The backdrop is on the picture's edge, the hair is not: a colour of
+  // the group counts only when it makes up a share of the border ring itself.
+  if (o.kind === "photo") group = group.filter((k) => k === top || counts[k] >= BG_RING_MIN * ring);
+  let share = 0;
+  for (const k of group) share += counts[k];
+  share /= ring;
+  // artwork and photographs: a sky or a studio gradient is part of the picture, only an even backdrop is a background
+  if (rgb && o.kind && o.kind !== "logo" && share >= 0.55 && group.length < K) {
+    const inGroup = new Uint8Array(K);
+    for (const k of group) inGroup[k] = 1;
+    const lab = new Float64Array(3);
+    let n = 0, s0 = 0, s1 = 0, s2 = 0, q0 = 0, q1 = 0, q2 = 0;
+    const visit = (i) => {
+      if (!inGroup[labels[i]]) return;
+      rgbToLab(rgb[i * 3], rgb[i * 3 + 1], rgb[i * 3 + 2], lab, 0);
+      n++; s0 += lab[0]; s1 += lab[1]; s2 += lab[2]; q0 += lab[0] * lab[0]; q1 += lab[1] * lab[1]; q2 += lab[2] * lab[2];
+    };
+    for (let x = 0; x < w; x++) { visit(x); if (h > 1) visit((h - 1) * w + x); }
+    for (let y = 1; y < h - 1; y++) { visit(y * w); if (w > 1) visit(y * w + w - 1); }
+    if (n > 0) {
+      const spread = Math.sqrt(Math.max(0, q0 / n - (s0 / n) ** 2) + Math.max(0, q1 / n - (s1 / n) ** 2) + Math.max(0, q2 / n - (s2 / n) ** 2));
+      if (spread > o.bgSpread) return { type: "none", indices, share, spread };
+    }
+  }
+  if (share >= 0.55 && group.length < K) {
+    for (const k of group) indices.push(k);
+    return { type: "color", indices, share };
+  }
+  return { type: "none", indices, share };
+}
+
+/** Palette entries as the public objects. */
+function publicPalette(a, srcPixels) {
+  const out = [];
+  for (let k = 0; k < a.K; k++) {
+    const r = Math.max(0, Math.min(255, Math.round(a.pal.rgb[k * 3])));
+    const g = Math.max(0, Math.min(255, Math.round(a.pal.rgb[k * 3 + 1])));
+    const b = Math.max(0, Math.min(255, Math.round(a.pal.rgb[k * 3 + 2])));
+    const e = {
+      r, g, b,
+      hex: toHex(r, g, b),
+      pixels: Math.round((a.pal.count[k] / a.N) * srcPixels),
+      fraction: a.pal.count[k] / a.N,
+      background: !!a.pal.bg[k],
+    };
+    if (a.pal.transparent[k]) e.transparent = true;
+    if (a.pal.enclosed[k]) e.enclosedBackground = true;
+    out.push(e);
+  }
+  return out;
+}
+
+/**
+ * Fast colour preview for the screen: the picture is shrunk to `opts.previewSide` (default 480) pixels on the long side
+ * and reduced to its palette. Returns { palette, labels, width, height, scaleX, scaleY, background } where labels hold
+ * one palette index per pixel of the small grid (background colours included) and palette entries look like the ones
+ * traceImage returns.
+ */
+export function quantize(image, opts = {}) {
+  checkImage(image);
+  const o0 = normalizeOptions(opts);
+  const o = withKind(o0, resolveKind(image, o0).kind);
+  const side = Math.round(num(opts.previewSide, 480, 32, o.maxSide));
+  const a = analyse(image, o, side);
+  return {
+    palette: publicPalette(a, image.width * image.height),
+    labels: a.labels,
+    width: a.w,
+    height: a.h,
+    scaleX: a.wk.sx,
+    scaleY: a.wk.sy,
+    background: { type: a.bgInfo.type, indices: Array.from(a.pal.bg).map((v, k) => (v ? k : -1)).filter((k) => k >= 0), share: a.bgInfo.share },
+  };
+}
+
+/**
+ * Which colour is the background? Takes a picture, or the result of quantize(). Returns
+ * { type: "transparent" | "color" | "none", index (palette index or -1), color ([r, g, b] or null), share }.
+ */
+export function detectBackground(imageOrQuantized, opts = {}) {
+  const q = imageOrQuantized && imageOrQuantized.labels && imageOrQuantized.palette ? imageOrQuantized : quantize(imageOrQuantized, { ...opts, previewSide: 256 });
+  const idx = q.palette.findIndex((p) => p.background);
+  if (idx < 0) return { type: "none", index: -1, color: null, share: q.background ? q.background.share : 0 };
+  const p = q.palette[idx];
+  const type = p.transparent ? "transparent" : "color";
+  return { type, index: idx, color: type === "color" ? [p.r, p.g, p.b] : null, share: q.background ? q.background.share : 1 };
+}
+
+/**
+ * Make sure no outline crosses itself: look at every loop and, where two of its segments cross, pull the sharpest
+ * point that is not a junction back until they do not (see repair.js). Changes the shared chain points, so both
+ * regions that use a line still agree. Returns how many points were moved.
+ */
+function repairCrossings(loops, chains, pts) {
+  let moved = 0;
+  // every chain end that sits on a junction, by junction: moving a junction means moving all of them
+  let nodeRefs = null;
+  const nodes = () => {
+    if (nodeRefs) return nodeRefs;
+    nodeRefs = new Map();
+    for (let c = 0; c < chains.length; c++) {
+      const p = pts[c];
+      if (!p || chains[c].closed) continue;
+      const add = (v, idx) => {
+        let a = nodeRefs.get(v);
+        if (!a) { a = []; nodeRefs.set(v, a); }
+        a.push([c, idx]);
+      };
+      add(chains[c].v0, 0);
+      add(chains[c].vEnd, p.length / 2 - 1);
+    }
+    return nodeRefs;
+  };
+  for (let pass = 0; pass < 4; pass++) {
+    const before = moved;
+    for (const lp of loops) {
+      // the points of the loop in order: [chain, index in chain]
+      const refC = [];
+      const refI = [];
+      for (const hc of lp.halves) {
+        const c = hc >> 1;
+        const rev = hc & 1;
+        const p = pts[c];
+        if (!p) continue;
+        const n = p.length / 2;
+        if (chains[c].closed) {
+          if (!rev) for (let i = 0; i < n; i++) { refC.push(c); refI.push(i); }
+          else for (let i = n - 1; i >= 0; i--) { refC.push(c); refI.push(i); }
+        } else if (!rev) {
+          for (let i = 0; i < n - 1; i++) { refC.push(c); refI.push(i); }
+        } else {
+          for (let i = n - 1; i >= 1; i--) { refC.push(c); refI.push(i); }
+        }
+      }
+      const n = refC.length;
+      if (n < 4) continue;
+      const xy = new Float64Array(n * 2);
+      for (let k = 0; k < n; k++) { xy[k * 2] = pts[refC[k]][refI[k] * 2]; xy[k * 2 + 1] = pts[refC[k]][refI[k] * 2 + 1]; }
+      const isNode = (k) => !chains[refC[k]].closed && (refI[k] === 0 || refI[k] === pts[refC[k]].length / 2 - 1);
+      for (let round = 0; round < 16; round++) {
+        const cr = findCrossing(xy, n);
+        if (!cr) break;
+        // first try points that are not junctions, then junctions too
+        let k = pullBack(xy, n, cr[0], cr[1], isNode);
+        if (k < 0) k = pullBack(xy, n, cr[0], cr[1], () => false);
+        if (k < 0) break;
+        if (isNode(k)) {
+          const c = refC[k];
+          const v = refI[k] === 0 ? chains[c].v0 : chains[c].vEnd;
+          for (const [cc, idx] of nodes().get(v) || []) { pts[cc][idx * 2] = xy[k * 2]; pts[cc][idx * 2 + 1] = xy[k * 2 + 1]; }
+          // the same junction may appear again in this loop
+          for (let m = 0; m < n; m++) {
+            if (m !== k && isNode(m) && (refI[m] === 0 ? chains[refC[m]].v0 : chains[refC[m]].vEnd) === v) { xy[m * 2] = xy[k * 2]; xy[m * 2 + 1] = xy[k * 2 + 1]; }
+          }
+        } else {
+          pts[refC[k]][refI[k] * 2] = xy[k * 2];
+          pts[refC[k]][refI[k] * 2 + 1] = xy[k * 2 + 1];
+        }
+        moved++;
+      }
+    }
+    if (moved === before) break; // a move can undo the repair of another loop that shares the point: go round again
+  }
+  return moved;
+}
+
+/**
+ * Trace a picture into clean vector regions. See the top of this file for the result and the conventions.
+ * image = { width, height, data: Uint8ClampedArray RGBA (straight alpha) }. All options are optional.
+ */
+export function traceImage(image, opts = {}) {
+  const tStart = now();
+  checkImage(image);
+  const o0 = normalizeOptions(opts);
+  // a thin frame round the picture would be taken for its background (and the cloth made the colour of the frame): paint it over first
+  const unframed = o0.trimFrame ? removeFrame(image) : null;
+  if (unframed) image = unframed.image;
+  // a person found in the picture: its background is made see-through, and the colours are found from the person alone
+  const cut = o0.regions ? cutOutPerson(image, o0.regions) : null;
+  const pic = cut ? cut.image : image;
+  const { kind, info } = cut && o0.mode === "auto" ? { kind: "photo", info: null } : resolveKind(pic, o0);
+  // (a person's small shapes are the eyes, brows and wrinkles: read half a step higher up the Detail slider than a logo, as detail.js does for a portrait; measured on 8
+  // portraits with the person cut out: 24 % more shapes, 3 % more stitches, the face's structure match 0.691 to 0.698, colour error 8.40 to 8.35)
+  const o = { ...withKind(cut && o0.detail === null ? { ...o0, detail: o0.fineDetail } : o0, kind), personClasses: cut ? cut.classes : null, personSize: cut ? [pic.width, pic.height] : null };
+  const a = analyse(pic, o, workSide(pic, o));
+  const { w, h, labels, lab2, soft, K } = a;
+  let t = now();
+
+  // outlines
+  const graph = buildChains(labels, w, h);
+  const isShape = (l) => l < K && !a.pal.bg[l];
+  const loops = traceLoops(graph, labels, w, h, isShape);
+  const chains = graph.chains;
+  const usedChain = new Uint8Array(chains.length);
+  for (const lp of loops) for (const hc of lp.halves) usedChain[hc >> 1] = 1;
+  for (let c = 0; c < chains.length; c++) chains[c].skip = !usedChain[c];
+  a.stages.chains = now() - t;
+  t = now();
+  const simplifyPx = o.simplifyMm / o.mmPerPx / a.scale;
+  // a noisy source (JPEG) cannot be trusted to better than a fraction of a pixel: a piece of outline that stays within
+  // that of a straight line is drawn as one, instead of following the block wobble
+  const straightPx = simplifyPx + Math.min(1, a.noise.noise.fraction / 0.15) * 0.3;
+  const pts = processChains(
+    chains,
+    (c) => chainRawPoints(chains[c], graph.W1, labels, lab2, soft, w, h, a.cls),
+    graph.W1,
+    w,
+    h,
+    {
+      smooth: o.smooth,
+      cornerRad: (o.cornerAngleDeg * Math.PI) / 180,
+      epsR: Math.max(0.02, simplifyPx),
+      epsF: Math.max(0.02, simplifyPx / 5),
+      epsStraight: Math.max(0.02, straightPx),
+    },
+  );
+  a.stages.curves = now() - t;
+  t = now();
+  const repairs = repairCrossings(loops, chains, pts);
+  a.stages.repair = now() - t;
+  t = now();
+
+  // loops -> contours in the original pixel grid
+  const sx = a.wk.sx;
+  const sy = a.wk.sy;
+  const W0 = image.width;
+  const H0 = image.height;
+  const loopContour = (lp) => {
+    const out = [];
+    for (const hc of lp.halves) {
+      const c = hc >> 1;
+      const rev = hc & 1;
+      const p = pts[c];
+      if (!p) continue;
+      const n = p.length / 2;
+      if (chains[c].closed) {
+        if (!rev) for (let i = 0; i < n; i++) out.push(p[i * 2], p[i * 2 + 1]);
+        else for (let i = n - 1; i >= 0; i--) out.push(p[i * 2], p[i * 2 + 1]);
+      } else if (!rev) {
+        for (let i = 0; i < n - 1; i++) out.push(p[i * 2], p[i * 2 + 1]);
+      } else {
+        for (let i = n - 1; i >= 1; i--) out.push(p[i * 2], p[i * 2 + 1]);
+      }
+    }
+    const poly = [];
+    for (let i = 0; i < out.length; i += 2) {
+      let x = out[i] * sx;
+      let y = out[i + 1] * sy;
+      if (x < 0) x = 0; else if (x > W0) x = W0;
+      if (y < 0) y = 0; else if (y > H0) y = H0;
+      const last = poly[poly.length - 1];
+      if (last && Math.abs(last[0] - x) < 1e-9 && Math.abs(last[1] - y) < 1e-9) continue;
+      poly.push([x, y]);
+    }
+    if (poly.length > 1) {
+      const f = poly[0];
+      const l = poly[poly.length - 1];
+      if (Math.abs(f[0] - l[0]) < 1e-9 && Math.abs(f[1] - l[1]) < 1e-9) poly.pop();
+    }
+    return poly;
+  };
+  const areaOf = (poly) => {
+    let s = 0;
+    for (let i = 0; i < poly.length; i++) {
+      const p = poly[i];
+      const q = poly[(i + 1) % poly.length];
+      s += p[0] * q[1] - q[0] * p[1];
+    }
+    return s / 2;
+  };
+  const cc = connectedComponents(labels, w, h);
+  const byComp = new Map();
+  for (const lp of loops) {
+    const comp = lp.pix >= 0 ? cc.comp[lp.pix] : -1;
+    if (comp < 0) continue;
+    let e = byComp.get(comp);
+    if (!e) { e = { outer: null, holes: [] }; byComp.set(comp, e); }
+    if (lp.area2 > 0) e.outer = lp;
+    else e.holes.push(lp);
+  }
+  const shapes = [];
+  const minArea = 1e-6;
+  const comps = [...byComp.keys()].sort((p, q) => p - q);
+  let vertices = 0;
+  for (const comp of comps) {
+    const e = byComp.get(comp);
+    if (!e.outer) continue;
+    const outer = loopContour(e.outer);
+    if (outer.length < 3) continue;
+    const outerArea = areaOf(outer);
+    if (Math.abs(outerArea) < minArea) continue;
+    const contours = [outer];
+    let area = Math.abs(outerArea);
+    for (const hl of e.holes) {
+      const hole = loopContour(hl);
+      if (hole.length < 3) continue;
+      const ha = areaOf(hole);
+      if (Math.abs(ha) < minArea) continue;
+      contours.push(hole);
+      area -= Math.abs(ha);
+    }
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of outer) {
+      if (p[0] < x0) x0 = p[0];
+      if (p[0] > x1) x1 = p[0];
+      if (p[1] < y0) y0 = p[1];
+      if (p[1] > y1) y1 = p[1];
+    }
+    for (const c of contours) vertices += c.length;
+    shapes.push({ id: shapes.length, color: cc.label[comp], contours, area, bbox: [x0, y0, x1, y1] });
+  }
+  a.stages.assemble = now() - t;
+
+  const palette = publicPalette(a, W0 * H0);
+  // sewing order, bottom to top: the biggest colour first, small detail colours last
+  const areaByColor = new Float64Array(K);
+  for (const s of shapes) areaByColor[s.color] += s.area;
+  const order = [];
+  for (let k = 0; k < K; k++) if (areaByColor[k] > 0) order.push(k);
+  order.sort((p, q) => areaByColor[q] - areaByColor[p] || p - q);
+
+  // fine lines and dots found on the picture itself, to be sewn on top of these shapes (logos have none)
+  const tFine = now();
+  // the thin lines taken out of the colour layer (hairlines.js), in the picture's pixels, each with its colour and the palette entry under it
+  const hairlines = (a.cleaned.hairlines || []).map((c) => ({ color: c.label, under: c.under, rgb: c.rgb.map(Math.round), pts: c.pts.map((p) => [p[0] * a.wk.sx, p[1] * a.wk.sy]), lengthMm: +(c.lenPx * a.scale * o.mmPerPx).toFixed(2) }));
+  const details = o.details && kind !== "logo" ? findFineDetails(pic, o, kind, a, shapes, hairlines) : null;
+  const fineMs = now() - tFine;
+
+  return {
+    width: W0,
+    height: H0,
+    palette,
+    shapes,
+    order,
+    look: opts.look || null, // how the shapes are to be sewn (rows' angles, edge lines): carried along for the digitizer's converter, not used here
+    ...(o.details ? { details, hairlines } : {}),
+    stats: {
+      ms: now() - tStart,
+      fineMs,
+      colors: palette.filter((p) => !p.background).length,
+      shapes: shapes.length,
+      vertices,
+      work: [w, h],
+      scale: a.scale,
+      background: a.bgInfo.type,
+      noise: { fraction: a.noise.noise.fraction, mean: a.noise.noise.mean, passes: a.noise.passes },
+      repairs,
+      removedSpeckPixels: a.cleaned.specks,
+      removedSliverPixels: a.cleaned.slivers,
+      widenedPixels: a.cleaned.widened || 0,
+      strokeCount: a.cleaned.strokeCount || 0,
+      strokeMedianMm: (a.cleaned.strokeMedian || 0) * a.scale * o.mmPerPx,
+      kind,
+      frame: unframed ? unframed.px : 0, // the thickness (pixels) of a frame that was painted over, else 0
+      kindInfo: info,
+      regionColours: a.regionAlloc || null, // [class, colours asked for] for each region that got colours of its own (regionPalette.js)
+      person: cut ? +cut.share.toFixed(3) : null, // the share of the picture that is a person, when a region map cut one out (regions.js)
+      stages: a.stages,
+    },
+  };
+}

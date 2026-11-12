@@ -30,8 +30,8 @@ function garmentUrl(garment) {
  * speckles the silhouette and the creases.
  *
  * It is switched on per garment (dimInside in lib/garments.js), only for models that stay clean with
- * it. The simulated tee, hoodie and sweatpants have layers of cloth that lie almost on top of each
- * other, and dimming speckles those.
+ * it. The simulated tee and hoodie have layers of cloth that lie almost on top of each other, and
+ * dimming speckles those.
  */
 function dimInsideFaces(material) {
   material.onBeforeCompile = (shader) => {
@@ -137,7 +137,7 @@ function screenToLocal(bridge, side, clientX, clientY) {
   return { x: lx / anchor.width + 0.5, y: 0.5 - ly / anchor.height }
 }
 
-function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge, reach, dimInside }) {
+function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge, reach, dimInside, areaAspect = null }) {
   const { scene } = useGLTF(url)
   const cloned = useMemo(() => scene.clone(true), [scene])
   const groupRef = useRef(null)
@@ -282,8 +282,16 @@ function GarmentMesh({ url, colour, pattern, patternOpacity, layers, bridge, rea
 
     // Cover the whole front/back panel — shoulders, chest/back and sleeves —
     // instead of a small centred square.
-    const areaW = shirtWidth * 0.94
-    const areaH = shirtHeight * 0.95
+    let areaW = shirtWidth * 0.94
+    let areaH = shirtHeight * 0.95
+    // Artwork is placed as fractions of this area, and the 2D view's area is the garment's photograph. Where the
+    // model is a differently proportioned shape (the sweatpants, tote and apron: slimmer than their photographs),
+    // the same fractions would stretch a picture and move it off the part of the garment it was put on. So the area
+    // takes the photograph's proportions, growing whichever side is short and never cutting the garment off.
+    if (areaAspect) {
+      if (areaW / areaH < areaAspect) areaW = areaH * areaAspect
+      else areaH = areaW / areaAspect
+    }
     shirtWidthRef.current = shirtWidth
 
     // A box centred exactly on the surface wastes half its depth in the empty
@@ -831,7 +839,7 @@ export default function GarmentViewer({
         <directionalLight position={[4, 6, 4]} intensity={1.6} color="#FFFAF4" castShadow />
         <directionalLight position={[-3, 3, -2]} intensity={0.5} color="#F0EBE3" />
         <directionalLight position={[0, -2, 2]} intensity={0.2} color="#E8E4DC" />
-        <GarmentMesh key={url} url={url} colour={colour} pattern={pattern} patternOpacity={patternOpacity} layers={layers} bridge={bridge} reach={reach} dimInside={config.dimInside} />
+        <GarmentMesh key={url} url={url} colour={colour} pattern={pattern} patternOpacity={patternOpacity} layers={layers} bridge={bridge} reach={reach} dimInside={config.dimInside} areaAspect={config.exactAspect ? config.areaAspect : null} />
         <ContactShadows position={[0, -0.55, 0]} opacity={0.18} blur={3} far={1} color="#1B3A2B" />
         <OrbitControls
           enablePan={false}

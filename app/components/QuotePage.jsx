@@ -376,6 +376,7 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
                                 colour={d.colourHex}
                                 pattern={d.patternThumb}
                                 patternOpacity={d.patternOpacity}
+                                lift="outline"
                               />
                               {d.assetThumb && (
                                 // eslint-disable-next-line @next/next/no-img-element -- transient blob: URL from the Atelier session, next/image can't optimize it

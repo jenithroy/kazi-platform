@@ -3,6 +3,7 @@ import { VideoPanel } from "@/components/home/VideoPanel";
 import { ChipsStatement } from "@/components/home/ChipsStatement";
 import { ProcessRows } from "@/components/home/ProcessRows";
 import { RangeGrid } from "@/components/home/RangeGrid";
+import { DigitizerPromo } from "@/components/home/DigitizerPromo";
 import { AudienceSplit } from "@/components/home/AudienceSplit";
 import { BrandsSection } from "@/components/BrandsSection";
 import { ReviewsSection } from "@/components/ReviewsSection";
@@ -21,6 +22,7 @@ export default function Home() {
       <VideoPanel />
       <ChipsStatement />
       <RangeGrid />
+      <DigitizerPromo />
       <ProcessRows />
       <BrandsSection tone="light" />
       <AudienceSplit />

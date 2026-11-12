@@ -31,9 +31,9 @@ export function AudienceSplit() {
         <Reveal className="mb-10 md:mb-16">
           <h2
             id="audience-title"
-            className="m-0 max-w-[18ch] text-balance font-display text-[clamp(2.125rem,4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-pine"
+            className="m-0 text-balance font-display text-[clamp(2.125rem,4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-pine"
           >
-            Whatever stage your label is at.
+            Whatever stage you&rsquo;re at.
           </h2>
         </Reveal>
 

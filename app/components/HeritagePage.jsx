@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 const filledButton =
   "inline-flex h-11 items-center justify-center rounded-sm btn-solid px-6 font-body text-sm font-semibold tracking-wide text-bone";
@@ -47,6 +47,8 @@ const SERVICES = [
     description:
       "Stitched logos and wordmarks for a finish that reads as premium the moment someone touches the garment.",
     specs: ["Small and large formats", "Digitising included", "Metallic threads available", "Priced per unit"],
+    // A second, plainer link under the button: the free browser tool on /digitizer (a link from the most relevant page on the site).
+    extraLink: { href: "/digitizer", label: "Try the embroidery digitizer" },
   },
   {
     title: "Direct-to-Film (DTF)",
@@ -132,9 +134,20 @@ export function HeritagePage() {
                 <p className="mb-6 max-w-md font-body leading-relaxed text-pine-soft">
                   {service.description}
                 </p>
-                <Link href={service.href ?? `/quote?service=${service.slug}`} className={filledButtonSmall}>
-                  {service.ctaLabel}
-                </Link>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link href={service.href ?? `/quote?service=${service.slug}`} className={filledButtonSmall}>
+                    {service.ctaLabel}
+                  </Link>
+                  {service.extraLink && (
+                    <Link
+                      href={service.extraLink.href}
+                      className="inline-flex items-center gap-1.5 font-body text-sm font-semibold text-pine underline-offset-4 hover:underline"
+                    >
+                      {service.extraLink.label}
+                      <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
+                    </Link>
+                  )}
+                </div>
               </div>
 
               <div className="self-start border border-pine/10 bg-bone p-6 md:p-8">

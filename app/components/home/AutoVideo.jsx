@@ -11,8 +11,13 @@ import { Pause, Play } from "@phosphor-icons/react";
  * Fills its parent, which must be `position: relative`. The button sits bottom-LEFT: the
  * site's floating WhatsApp button lives in the bottom-right corner of the screen and would
  * cover a control placed there at some scroll positions.
+ *
+ * `placement="above"` puts a small button just ABOVE the clip instead, for a clip framed like a
+ * window whose title bar (44px tall) sits directly over it: used where the recording itself has
+ * buttons in its corners that a round button on top of it would hide (DigitizerPromo).
  */
-export function AutoVideo({ mp4, webm, poster, buttonClassName = "" }) {
+export function AutoVideo({ mp4, webm, poster, buttonClassName = "", placement = "corner" }) {
+  const above = placement === "above";
   const videoRef = useRef(null);
   // Set once the visitor has paused (or motion is reduced), so scrolling back into view
   // doesn't override their choice.
@@ -79,9 +84,11 @@ export function AutoVideo({ mp4, webm, poster, buttonClassName = "" }) {
         type="button"
         onClick={toggle}
         aria-label={playing ? "Pause video" : "Play video"}
-        className={`absolute bottom-4 left-4 z-10 grid size-12 place-items-center rounded-full bg-black/70 text-white backdrop-blur-sm transition-colors hover:bg-black/85 md:bottom-6 md:left-6 ${buttonClassName}`}
+        className={`absolute z-10 grid place-items-center rounded-full bg-black/70 text-white backdrop-blur-sm transition-colors hover:bg-black/85 ${
+          above ? "right-3 top-[-38px] size-8 md:right-4" : "bottom-4 left-4 size-12 md:bottom-6 md:left-6"
+        } ${buttonClassName}`}
       >
-        {playing ? <Pause size={18} weight="fill" aria-hidden="true" /> : <Play size={18} weight="fill" aria-hidden="true" />}
+        {playing ? <Pause size={above ? 14 : 18} weight="fill" aria-hidden="true" /> : <Play size={above ? 14 : 18} weight="fill" aria-hidden="true" />}
       </button>
     </>
   );

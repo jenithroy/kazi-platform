@@ -1,72 +1,23 @@
-// The one garment the Atelier generates itself: the work apron.
+// The garments the Atelier generates itself: today that is the utility vest (vest.mjs).
 //
-// The other garments are real models — the tee and hoodie are hand-made, and the long-sleeve tee,
-// vest, sweatpants and tote are Creative Commons models by other artists (see sources.json and
-// import-glb.mjs). No suitably licensed bib apron could be found, so this one is built from a
-// shape description instead: a signed-distance function (sdf.mjs) turned into a mesh by marching
-// cubes (mesher.mjs). It is a placeholder for a proper model: when one is available, add it to
-// sources.json and delete this file's apron.
+// The other garments are real models. The tee and hoodie are hand-made, the long-sleeve tee is the tee with its
+// sleeves extended (derive-long-sleeve.mjs), and the sweatpants, work apron and tote are Creative Commons models by
+// other artists (see sources.json and import-glb.mjs). No suitably licensed mesh utility vest could be found, so the
+// vest is built from a shape description instead: a signed-distance function (sdf.mjs) turned into a mesh by marching
+// cubes (mesher.mjs). The apron and the sweatpants were generated this way too until real models replaced them
+// (Nov 2026); sweatpants.mjs is kept, unregistered, in case that is ever wanted again.
 //
-// Units are roughly metres, front is +z, up is +y. Run `node scripts/garments/build.mjs` to
-// regenerate public/models/apron.glb after changing anything.
+// Units are roughly metres, front is +z, up is +y. Run `node scripts/garments/build.mjs` to regenerate
+// public/models/vest.glb after changing anything.
 
-import { noise3, sdPolygon, sdRoundRect, sdSegment2, smin, smoothstep } from "./sdf.mjs";
 import { bakeOcclusion, clipByField, finishMesh, polygonise } from "./mesher.mjs";
-
-// --- work apron ---------------------------------------------------------------------------------
-
-function apron() {
-  // The skirt is an inset trapezoid grown back out by its corner radius, so its corners are round.
-  const skirtInset = [[-0.243, -0.405], [0.243, -0.405], [0.19, 0.01], [-0.19, 0.01]];
-  const straps = [
-    [[-0.125, 0.285], [-0.064, 0.44]],
-    [[-0.064, 0.44], [-0.03, 0.488]],
-    [[-0.03, 0.488], [0.03, 0.488]],
-    [[0.03, 0.488], [0.064, 0.44]],
-    [[0.064, 0.44], [0.125, 0.285]],
-  ];
-  const tie = (s) => [[s * 0.205, -0.03], [s * 0.262, -0.05], [s * 0.305, -0.1], [s * 0.325, -0.17], [s * 0.328, -0.26], [s * 0.319, -0.36]];
-  const tieSegs = [1, -1].flatMap((s) => {
-    const p = tie(s);
-    return p.slice(0, -1).map((a, i) => [a, p[i + 1]]);
-  });
-
-  // The flat outline of the apron (2D signed distance in x, y).
-  function outline(x, y) {
-    const sk = sdPolygon(x, y, skirtInset) - 0.025;
-    const bib = sdRoundRect(x, y - 0.15, 0.148, 0.15, 0.02);
-    const body = smin(sk, bib, 0.05);
-    let band = Infinity;
-    for (const [a, b] of straps) band = Math.min(band, sdSegment2(x, y, a[0], a[1], b[0], b[1]) - 0.0145);
-    for (const [a, b] of tieSegs) band = Math.min(band, sdSegment2(x, y, a[0], a[1], b[0], b[1]) - 0.0135);
-    return smin(body, band, 0.025);
-  }
-
-  const half = 0.0035; // half thickness before the edge rounding below
-  function field(x, y, z) {
-    const flat = outline(x, y);
-    // The cloth wraps round the body, so its sides curve back; the pocket is a raised patch on the front.
-    const bend = -0.55 * x * x;
-    const pocket = 0.0075 * smoothstep(0.008, -0.004, sdRoundRect(x, y + 0.185, 0.118, 0.078, 0.022));
-    const thick = half + pocket / 2;
-    const w1 = flat;
-    const w2 = Math.abs(z - (bend + pocket / 2)) - thick;
-    const d = Math.min(Math.max(w1, w2), 0) + Math.hypot(Math.max(w1, 0), Math.max(w2, 0)) - 0.0035;
-    return d + 0.0012 * noise3(x * 14, y * 14, z * 14);
-  }
-
-  return {
-    id: "apron",
-    field,
-    clips: [],
-    scale: 0.86,
-    bounds: { min: [-0.4, -0.46, -0.09], max: [0.4, 0.53, 0.07], step: 0.0058 },
-  };
-}
+import { vest } from "./vest.mjs";
 
 // --- registry -----------------------------------------------------------------------------------
 
-export const GARMENT_BUILDERS = { apron };
+// A builder returns { id, field, clips, scale, bounds, simplify? } (see vest.mjs): `simplify`
+// ({ triangles, error }) reduces the dense marching-cubes mesh when build.mjs writes the .glb.
+export const GARMENT_BUILDERS = { vest };
 
 /** Builds a garment's mesh: polygonise, open it up, size and place it, add UVs. `ao` adds vertex occlusion. */
 export function buildGarment(id, { ao = false } = {}) {

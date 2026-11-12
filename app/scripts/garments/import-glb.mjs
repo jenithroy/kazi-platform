@@ -22,6 +22,8 @@
 //   adapted    text                  what was changed, added to the credit stored in the .glb
 //   simplify   { triangles, error }  reduce to about this many triangles (meshoptimizer's quadric edge
 //                                    collapse; borders such as hems and armholes stay where they are)
+//   postprocess  "./file.mjs"        a finishing step for this garment (default export: (mesh, { floor }) => mesh,
+//                                    run on the merged mesh: see apron-finish.mjs)
 //   rotateY, creaseDegrees, dimInside  see below / the viewer
 
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
@@ -30,6 +32,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { launchChrome, serve } from "./browser.mjs";
 import { finishMesh } from "./mesher.mjs";
+import { simplify } from "./simplify.mjs";
 import { writeGlb } from "./glb.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -173,32 +176,16 @@ window.processModel = async (url, opts) => {
 window.ready = true;
 </script>`;
 
-/**
- * Reduces a welded triangle mesh to about `triangles` triangles. Cloth-simulation exports are far
- * denser than a web page needs (hundreds of thousands of triangles), and most of that is flat cloth.
- * Normals travel with the vertices so the shading of the quilting, folds and seams survives; the
- * vertices on open borders (hems, armholes, collars) are locked so the silhouette does not shrink.
- */
-async function simplify(mesh, { triangles, error = 0.02, normalWeight = 1 }) {
-  let MeshoptSimplifier;
-  try {
-    ({ MeshoptSimplifier } = await import("meshoptimizer"));
-  } catch {
-    throw new Error('"simplify" needs the meshoptimizer package (it comes with three.js\'s tooling; otherwise `npm i -D meshoptimizer`)');
+/** How far the front-most surface faces +z and the back-most -z (the same measure the browser step reports): about +0.8 for a sound garment. */
+function outwardness({ positions, normals }) {
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 2; i < positions.length; i += 3) { lo = Math.min(lo, positions[i]); hi = Math.max(hi, positions[i]); }
+  let front = 0, back = 0, nFront = 0, nBack = 0;
+  for (let i = 2; i < positions.length; i += 3) {
+    if (positions[i] >= lo + 0.85 * (hi - lo)) { front += normals[i]; nFront++; }
+    else if (positions[i] <= lo + 0.15 * (hi - lo)) { back -= normals[i]; nBack++; }
   }
-  await MeshoptSimplifier.ready;
-  const positions = Float32Array.from(mesh.positions);
-  const normals = Float32Array.from(mesh.normals);
-  const indices = Uint32Array.from(mesh.indices);
-  const weights = [normalWeight, normalWeight, normalWeight];
-  const [count, achieved] = MeshoptSimplifier.simplifyWithUpdate(
-    indices, positions, 3, normals, 3, weights, null, Math.min(indices.length, triangles * 3), error, ["LockBorder", "Prune"],
-  );
-  for (let i = 0; i < normals.length; i += 3) {
-    const l = Math.hypot(normals[i], normals[i + 1], normals[i + 2]) || 1;
-    normals[i] /= l; normals[i + 1] /= l; normals[i + 2] /= l;
-  }
-  return { positions, normals, indices: indices.slice(0, count), error: achieved };
+  return (front / Math.max(nFront, 1) + back / Math.max(nBack, 1)) / 2;
 }
 
 /** Downloads a model once and returns its cached file name (the model's own id, so swapping a garment's source never reuses an old download). */
@@ -231,7 +218,7 @@ try {
     if (result.stats.outward < -0.05) {
       throw new Error(`${id}: the normals point into the garment (${result.stats.outward.toFixed(2)}): this is the inner lining of the panels. Use "exclude" to keep the outer copy instead.`);
     }
-    if (result.stats.outward < 0.3) {
+    if (result.stats.outward < 0.3 && !source.postprocess) {
       console.warn(`  warning: the front and back surfaces do not clearly face outwards (${result.stats.outward.toFixed(2)}): check which copy of the panels is kept (see "exclude"), or printing may fail.`);
     }
     let merged = {
@@ -245,9 +232,21 @@ try {
       merged = await simplify(merged, source.simplify);
       reduced = `, simplified from ${before} to ${merged.indices.length / 3} triangles (error ${merged.error.toFixed(4)})`;
     }
+    // A finishing step written for this one garment (a module next to this script whose default export takes
+    // the merged mesh and returns a changed one): what the model needs to suit the Atelier and the product.
+    let finished = "";
+    if (source.postprocess) {
+      const finish = (await import(new URL(source.postprocess, import.meta.url))).default;
+      merged = finish(merged, { floor: FLOOR });
+      const outward = outwardness(merged);
+      // (A sheet with a second wall a couple of millimetres behind the first reads near 0 here: both walls fall in
+      // the same front and back bands and cancel. Only a clearly inward-facing result is an error.)
+      finished = `, finished by ${source.postprocess} (normals outward ${outward.toFixed(2)})`;
+      if (outward < -0.05) throw new Error(`${id}: after ${source.postprocess} the surfaces face inwards (${outward.toFixed(2)}), so nothing could be printed.`);
+    }
     const mesh = finishMesh(merged);
 
-    const credit = `"${source.title}" by ${source.author} (${source.sourceUrl}), ${source.license} (${source.licenseUrl}). ` +
+    const credit =`"${source.title}" by ${source.author} (${source.sourceUrl}), ${source.license} (${source.licenseUrl}). ` +
       `Adapted: ${source.adapted ? source.adapted + "; " : ""}pieces merged, textures removed, resized and repositioned.`;
     const glb = writeGlb(mesh, { name: id, copyright: credit });
     writeFileSync(join(appDir, "public", "models", `${id}.glb`), glb);
@@ -262,7 +261,7 @@ try {
     };
     const size = mesh.max.map((m, c) => (m - mesh.min[c]).toFixed(3)).join(" x ");
     const s = result.stats;
-    console.log(`  ${s.inputTriangles} -> ${s.outputTriangles} triangles${reduced}, ${mesh.positions.length / 3} vertices, ${(glb.length / 1024).toFixed(0)} KB, ${size} (w x h x d); ${s.flippedPieces}/${s.pieces} pieces re-wound; normals outward ${s.outward.toFixed(2)}`);
+    console.log(`  ${s.inputTriangles} -> ${s.outputTriangles} triangles${reduced}${finished}, ${mesh.positions.length / 3} vertices, ${(glb.length / 1024).toFixed(0)} KB, ${size} (w x h x d); ${s.flippedPieces}/${s.pieces} pieces re-wound; normals outward ${s.outward.toFixed(2)}`);
   }
 } finally {
   browser.close();

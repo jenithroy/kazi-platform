@@ -10,7 +10,7 @@
 export const HERO_PHOTO = {
   src: "/merch/hero-model-hoodie.jpg", // TODO: model wearing a Kazi hoodie, portrait 4:5, 1200x1500
   fallback: "/images/collections/white-label/hoodie.webp",
-  alt: "A heavyweight hoodie made by Kazi, with the Kazi logo on the chest",
+  alt: "A blank white heavyweight hoodie made by Kazi, laid flat on concrete",
 };
 
 export const FORM_ID = "drop-form";

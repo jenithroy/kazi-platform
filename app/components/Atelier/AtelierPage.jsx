@@ -16,7 +16,7 @@ import QtyStepper from './QtyStepper'
 import { saveQuoteDesigns } from '@/lib/quote-handoff'
 import {
   COLOURS, DEFAULT_COLOUR, FABRICS, GARMENTS, MODEL_CREDITS, createPresetLayers, fabricsFor, getGarment,
-  isUntouchedPreset,
+  isUntouchedPreset, stageBackground,
 } from '@/lib/garments'
 
 // react-three-fiber's <Canvas> creates a WebGL context on mount — loading it via next/dynamic
@@ -692,7 +692,12 @@ function AtelierPage() {
     >
       <h1 className="sr-only">Design your garment in the Kazi Atelier</h1>
       <div className="absolute inset-0">
-        <div ref={canvasAreaRef} className="relative w-full h-full bg-paper-raised/40 overflow-hidden">
+        {/* The stage deepens behind a pale garment (white, cream, oat) so it doesn't disappear into the page. */}
+        <div
+          ref={canvasAreaRef}
+          className="relative w-full h-full bg-paper-raised/40 overflow-hidden transition-colors duration-300"
+          style={{ backgroundColor: stageBackground(colour) }}
+        >
 
           {/* Canvas — clear of the dock below and, on a compact layout (see globals.css), of the controls above */}
           <div
@@ -813,7 +818,10 @@ function AtelierPage() {
                     }`}>
                     <span className="grid h-12 w-12 shrink-0 place-items-center rounded bg-paper-raised">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={g.thumb} alt="" width={48} height={48} loading="lazy" className="h-10 w-10 object-contain" />
+                      <img
+                        src={g.thumb} alt="" width={48} height={48} loading="lazy" className="h-10 w-10 object-contain"
+                        style={{ filter: 'drop-shadow(0 0 0.6px rgba(27, 58, 43, 0.65))' }}
+                      />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className={`block font-body text-[9px] tracking-[0.18em] uppercase mb-0.5 ${garment === g.id ? 'text-bone/70' : 'text-pine-soft'}`}>{g.code}</span>

@@ -2,120 +2,182 @@
   "vest": {
     "front": {
       "src": "/mockups/vest-front.png",
-      "width": 897,
-      "height": 1280,
+      "light": "/mockups/vest-front-light.png",
+      "width": 907,
+      "height": 989,
       "area": {
-        "x": 0.0468,
-        "y": 0.0328,
-        "width": 0.9064,
-        "height": 0.9344
+        "x": 0.032,
+        "y": 0.0293,
+        "width": 0.9361,
+        "height": 0.9414
       }
     },
     "back": {
       "src": "/mockups/vest-back.png",
-      "width": 897,
-      "height": 1280,
+      "light": "/mockups/vest-back-light.png",
+      "width": 907,
+      "height": 989,
       "area": {
-        "x": 0.0468,
-        "y": 0.0328,
-        "width": 0.9064,
-        "height": 0.9344
+        "x": 0.032,
+        "y": 0.0293,
+        "width": 0.9361,
+        "height": 0.9414
       }
     }
   },
   "long-sleeve": {
     "front": {
       "src": "/mockups/long-sleeve-front.png",
-      "width": 1159,
-      "height": 1280,
+      "light": "/mockups/long-sleeve-front-light.png",
+      "width": 777,
+      "height": 729,
       "area": {
-        "x": 0.0362,
-        "y": 0.0328,
-        "width": 0.9275,
-        "height": 0.9344
+        "x": 0.0296,
+        "y": 0.0316,
+        "width": 0.9408,
+        "height": 0.9369
       }
     },
     "back": {
       "src": "/mockups/long-sleeve-back.png",
-      "width": 1159,
-      "height": 1280,
+      "light": "/mockups/long-sleeve-back-light.png",
+      "width": 777,
+      "height": 729,
       "area": {
-        "x": 0.0362,
-        "y": 0.0328,
-        "width": 0.9275,
-        "height": 0.9344
+        "x": 0.0296,
+        "y": 0.0316,
+        "width": 0.9408,
+        "height": 0.9369
       }
     }
   },
   "sweatpants": {
     "front": {
       "src": "/mockups/sweatpants-front.png",
-      "width": 519,
-      "height": 1280,
+      "light": "/mockups/sweatpants-front-light.png",
+      "width": 653,
+      "height": 1051,
       "area": {
-        "x": 0.0809,
-        "y": 0.0328,
-        "width": 0.8382,
-        "height": 0.9344
+        "x": 0.0475,
+        "y": 0.0295,
+        "width": 0.9051,
+        "height": 0.941
       }
     },
     "back": {
       "src": "/mockups/sweatpants-back.png",
-      "width": 519,
-      "height": 1280,
+      "light": "/mockups/sweatpants-back-light.png",
+      "width": 653,
+      "height": 1051,
       "area": {
-        "x": 0.0809,
-        "y": 0.0328,
-        "width": 0.8382,
-        "height": 0.9344
+        "x": 0.0475,
+        "y": 0.0295,
+        "width": 0.9051,
+        "height": 0.941
       }
     }
   },
   "tote": {
     "front": {
       "src": "/mockups/tote-front.png",
-      "width": 920,
-      "height": 1280,
+      "light": "/mockups/tote-front-light.png",
+      "width": 785,
+      "height": 878,
       "area": {
-        "x": 0.0457,
-        "y": 0.0328,
-        "width": 0.9087,
-        "height": 0.9344
+        "x": 0.0331,
+        "y": 0.0296,
+        "width": 0.9338,
+        "height": 0.9408
       }
     },
     "back": {
       "src": "/mockups/tote-back.png",
-      "width": 920,
-      "height": 1280,
+      "light": "/mockups/tote-back-light.png",
+      "width": 785,
+      "height": 878,
       "area": {
-        "x": 0.0457,
-        "y": 0.0328,
-        "width": 0.9087,
-        "height": 0.9344
+        "x": 0.0331,
+        "y": 0.0296,
+        "width": 0.9338,
+        "height": 0.9408
       }
     }
   },
   "apron": {
     "front": {
       "src": "/mockups/apron-front.png",
-      "width": 961,
-      "height": 1280,
+      "light": "/mockups/apron-front-light.png",
+      "width": 964,
+      "height": 1267,
       "area": {
-        "x": 0.0437,
-        "y": 0.0328,
-        "width": 0.9126,
-        "height": 0.9344
+        "x": 0.0384,
+        "y": 0.0292,
+        "width": 0.9232,
+        "height": 0.9416
       }
     },
     "back": {
       "src": "/mockups/apron-back.png",
-      "width": 961,
-      "height": 1280,
+      "light": "/mockups/apron-back-light.png",
+      "width": 964,
+      "height": 1267,
       "area": {
-        "x": 0.0437,
-        "y": 0.0328,
-        "width": 0.9126,
-        "height": 0.9344
+        "x": 0.0384,
+        "y": 0.0292,
+        "width": 0.9232,
+        "height": 0.9416
+      }
+    }
+  },
+  "t-shirt": {
+    "front": {
+      "src": "/mockups/tshirt-front.png",
+      "light": "/mockups/tshirt-front-light.png",
+      "width": 1280,
+      "height": 669,
+      "area": {
+        "x": 0.243,
+        "y": 0.1629,
+        "width": 0.5062,
+        "height": 0.7414
+      }
+    },
+    "back": {
+      "src": "/mockups/tshirt-back.png",
+      "light": "/mockups/tshirt-back-light.png",
+      "width": 1280,
+      "height": 669,
+      "area": {
+        "x": 0.2484,
+        "y": 0.148,
+        "width": 0.4992,
+        "height": 0.7339
+      }
+    }
+  },
+  "hoodie": {
+    "front": {
+      "src": "/mockups/hoodie-front.png",
+      "light": "/mockups/hoodie-front-light.png",
+      "width": 1280,
+      "height": 698,
+      "area": {
+        "x": 0.1141,
+        "y": 0.0415,
+        "width": 0.775,
+        "height": 0.8968
+      }
+    },
+    "back": {
+      "src": "/mockups/hoodie-back.png",
+      "light": "/mockups/hoodie-back-light.png",
+      "width": 1280,
+      "height": 683,
+      "area": {
+        "x": 0.1281,
+        "y": 0.0483,
+        "width": 0.7438,
+        "height": 0.8873
       }
     }
   }
