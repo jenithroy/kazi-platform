@@ -57,7 +57,11 @@ function memo(key, load) {
 
 async function query(table, build, fallback) {
   if (!client) {
-    warnOnce("Supabase isn't configured — building with the default SEO and no stories.");
+    // Only builds warn: `next dev` without Supabase is the documented local setup, whereas a
+    // production build here would quietly ship the site without its stories.
+    if (process.env.NODE_ENV !== "development") {
+      warnOnce("Supabase isn't configured — building with the default SEO and no stories.");
+    }
     return fallback;
   }
 
