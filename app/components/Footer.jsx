@@ -13,6 +13,7 @@ const EXPLORE_LINKS = [
   { href: "/heritage", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/digitizer", label: "Embroidery Digitizer" },
+  { href: "/merch", label: "Merch" },
   { href: "/video-editing", label: "Video Editing" },
   { href: "/stories", label: "Stories" },
   { href: "/lookbook", label: "Lookbook" },
