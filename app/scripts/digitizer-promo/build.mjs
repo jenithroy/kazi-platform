@@ -1,5 +1,6 @@
-// Records the homepage promo of the embroidery digitizer: a REAL session of /digitizer being used (a logo is dragged in,
-// converted, one shape is recoloured, the stitches are played back, the DST file is saved) and encodes it to
+// Records the homepage promo of the embroidery digitizer: a REAL session of /digitizer being used (the Kazi logo is dragged
+// in and converted, its tiny "manufacturing" lettering is boxed and deleted, the stitches are played back, the DST file is
+// saved) and encodes it to
 //   public/videos/digitizer-demo.mp4 + .webm   and   public/images/home/digitizer-poster.webp
 // See README.md in this folder.
 //
@@ -30,32 +31,23 @@ fs.mkdirSync(OUT_IMAGES, { recursive: true });
 for (const f of fs.readdirSync(frames)) fs.unlinkSync(path.join(frames, f));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/* ── 1. the logo to drag in: an original badge in the site's greens with a gold sun (five threads) ───────────── */
-async function makeEmblem(browser) {
-  const page = await browser.newPage({ viewport: { width: 900, height: 900 } });
+/* ── 1. the logo to drag in: the site's own Kazi logo (one pine colour on a transparent page) ───────────────── */
+// The thumbnail is the small picture shown on the dragged-file chip: the logo on white, like a file icon.
+async function loadLogo(browser) {
+  const file = process.env.LOGO_FILE || path.join(APP, "public", "images", "logo", "kazi-logo-dark.png");
+  const b64 = fs.readFileSync(file).toString("base64");
+  const page = await browser.newPage({ viewport: { width: 200, height: 200 } });
   await page.goto("about:blank");
-  const out = await page.evaluate(() => {
-    const c = document.createElement("canvas"); c.width = 1000; c.height = 1000;
-    const g = c.getContext("2d");
-    g.fillStyle = "#ffffff"; g.fillRect(0, 0, 1000, 1000);
-    const cx = 500, cy = 500;
-    g.fillStyle = "#1b3a2b"; g.beginPath(); g.arc(cx, cy, 470, 0, Math.PI * 2); g.fill(); // ring (pine)
-    g.fillStyle = "#3f8f5c"; g.beginPath(); g.arc(cx, cy, 425, 0, Math.PI * 2); g.fill(); // sky (moss)
-    g.save(); g.beginPath(); g.arc(cx, cy, 425, 0, Math.PI * 2); g.clip();
-    g.fillStyle = "#e3a93a"; g.beginPath(); g.arc(660, 320, 84, 0, Math.PI * 2); g.fill(); // sun (gold)
-    g.fillStyle = "#2e6e46"; g.beginPath(); g.moveTo(70, 700); g.lineTo(320, 380); g.lineTo(590, 700); g.closePath(); g.fill(); // back mountain (forest)
-    g.fillStyle = "#d3e4cf"; g.beginPath(); g.moveTo(250, 700); g.lineTo(530, 260); g.lineTo(820, 700); g.closePath(); g.fill(); // front mountain (pale sage)
-    g.fillStyle = "#9cc3a6"; g.beginPath(); g.moveTo(530, 260); g.lineTo(820, 700); g.lineTo(600, 700); g.lineTo(560, 520); g.lineTo(500, 600); g.closePath(); g.fill(); // shadow side
-    g.fillStyle = "#1b3a2b"; g.fillRect(0, 700, 1000, 330); // lettering band (pine)
-    g.restore();
-    g.fillStyle = "#d3e4cf"; g.font = "900 150px 'Arial Black', Arial, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
-    g.fillText("PEAK", cx, 805);
-    const t = document.createElement("canvas"); t.width = t.height = 64; t.getContext("2d").drawImage(c, 0, 0, 64, 64);
-    return [c.toDataURL("image/png").split(",")[1], t.toDataURL("image/png")];
-  });
+  const thumb = await page.evaluate(async (data) => {
+    const img = new Image(); img.src = "data:image/png;base64," + data; await img.decode();
+    const c = document.createElement("canvas"); c.width = c.height = 64;
+    const g = c.getContext("2d"); g.fillStyle = "#ffffff"; g.fillRect(0, 0, 64, 64);
+    const k = Math.min(56 / img.width, 56 / img.height);
+    g.drawImage(img, (64 - img.width * k) / 2, (64 - img.height * k) / 2, img.width * k, img.height * k);
+    return c.toDataURL("image/png");
+  }, b64);
   await page.close();
-  fs.writeFileSync(path.join(WORK, "peak-logo.png"), Buffer.from(out[0], "base64"));
-  return { b64: out[0], thumb: out[1] };
+  return { b64, thumb };
 }
 
 /* ── runs in the page before the app: the editor fills the window, plus a pointer, click ripples and a dragged-file chip ── */
@@ -93,7 +85,7 @@ function initPage() {
 /* ── 2. the session, recorded as raw screencast frames (a JPEG per repaint, with its timestamp) ─────────── */
 async function record() {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined, headless: true });
-  const emblem = await makeEmblem(browser);
+  const logo = await loadLogo(browser);
   const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, deviceScaleFactor: 2, acceptDownloads: true });
   await ctx.addInitScript(initPage);
   const page = await ctx.newPage();
@@ -142,6 +134,9 @@ async function record() {
 
   await page.goto(BASE + "/digitizer/", { waitUntil: "networkidle", timeout: 90000 });
   await page.waitForSelector(".dz-page");
+  // A roomier hoop than the default 100 x 100 mm, so the logo is stitched at about 18 cm and its detail comes out clean.
+  // (A native <select>: its pop-up is not painted in a recording, so it is set here, before the recording starts.)
+  await page.selectOption('select[aria-label="Hoop size"]', "medium");
   await page.locator(".dz-canvas").focus();
   await page.mouse.move(cur.x, cur.y);
   await sleep(700);
@@ -156,9 +151,9 @@ async function record() {
   log("a file is dragged over the canvas");
   const dt = await page.evaluateHandle((b64) => {
     const bin = atob(b64), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
-    const d = new DataTransfer(); d.items.add(new File([a], "peak-logo.png", { type: "image/png" })); return d;
-  }, emblem.b64);
-  await page.evaluate(([n, s]) => window.__fx.chip(n, s), ["peak-logo.png", emblem.thumb]);
+    const d = new DataTransfer(); d.items.add(new File([a], "kazi-logo.png", { type: "image/png" })); return d;
+  }, logo.b64);
+  await page.evaluate(([n, s]) => window.__fx.chip(n, s), ["kazi-logo.png", logo.thumb]);
   const stage = await page.locator(".dz-stage").boundingBox();
   const inStage = (x, y) => x > stage.x && x < stage.x + stage.width && y > stage.y && y < stage.y + stage.height;
   await glide({ x: stage.x + stage.width * 0.5, y: stage.y + stage.height * 0.6 }, 1300, {
@@ -174,31 +169,29 @@ async function record() {
 
   // b. the Picture step is showing; on to the Design step
   log("-> Design");
-  await clickOn(step("Design"), { ms: 800, after: 600 });
+  await clickOn(step("Design"), { ms: 800, after: 700 });
 
-  // c. pick the sun and change its thread colour
-  log("select the sun");
-  await clickOn(page.locator(".dz-orow", { hasText: "Gold" }).first().locator(".dz-oname"), { ms: 800, after: 650 });
-  log("open the colour chart");
-  await clickOn(page.locator(".dz-right button.dz-color").first(), { ms: 750, after: 600 });
-  await page.locator(".dz-pop").waitFor({ timeout: 5000 });
-  const idx = await page.evaluate(() => { // the swatch nearest a warm red-orange
-    const want = [217, 83, 47]; let best = 0, bd = 1e9;
-    [...document.querySelectorAll(".dz-pop .dz-swatch")].forEach((el, i) => {
-      const m = /rgb\((\d+), (\d+), (\d+)\)/.exec(getComputedStyle(el).backgroundColor); if (!m) return;
-      const d = (m[1] - want[0]) ** 2 + (m[2] - want[1]) ** 2 + (m[3] - want[2]) ** 2; if (d < bd) { bd = d; best = i; }
-    });
-    return best;
-  });
-  log("pick a new colour");
-  await clickOn(page.locator(".dz-pop .dz-swatch").nth(idx), { ms: 700, after: 1100 });
+  // c. tidy up: a drag-box round the logo's tiny "manufacturing" lettering (too small to stitch well), then Delete.
+  // The box is given as fractions of the canvas, measured on this 1200 x 675 window (the lettering sits at the bottom).
+  log("box the small lettering");
+  const cv = await page.locator(".dz-canvas").boundingBox();
+  const onCanvas = (fx, fy) => ({ x: cv.x + cv.width * fx, y: cv.y + cv.height * fy });
+  await glide(onCanvas(0.4275, 0.7181), 900); // below and left of the lettering, on bare cloth
+  await sleep(150); await page.mouse.down(); await sleep(120);
+  await glide(onCanvas(0.7855, 0.8076), 900, { curve: 0 }); // drag the box over it
+  await sleep(120); await page.mouse.up(); await sleep(1000);
+  const picked = Number(await page.evaluate(() => /(\d+)\s+selected/.exec(document.querySelector(".dz-right")?.innerText || "")?.[1] ?? 0));
+  if (picked < 8) throw new Error(`the drag-box should have picked up the lettering's shapes (about 10), it picked ${picked}: has the layout moved?`);
+  log(`delete the ${picked} shapes`);
+  await clickOn(page.locator(".dz-left button", { hasText: "Delete" }).last(), { ms: 800, after: 1200 });
 
   // d. the stitches
   log("-> Stitches");
   await clickOn(step("Stitches"), { ms: 900, after: 400 });
   await stitchesReady(); await idle(); await sleep(1100);
 
-  // e. watch them being sewn
+  // e. watch it being sewn, slowly enough to follow (the speed list is a native <select>, set directly)
+  await page.selectOption('select[aria-label="Playback speed"]', "800");
   log("play");
   await clickOn(page.getByRole("button", { name: "Play the stitching" }), { ms: 900, after: 150 });
   await page.waitForFunction(() => { const r = document.querySelector(".dz-sim input[type=range]"); return r && Number(r.value) >= Number(r.max) - 1; }, null, { timeout: 60000 });
