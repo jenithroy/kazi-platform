@@ -37,7 +37,9 @@ export function WhatsAppButton() {
   // that value already includes the safe-area inset, and the fallback is the one-row desktop dock.
   const bottom = isAtelier
     ? `calc(var(--atelier-dock-top, calc(76px + env(safe-area-inset-bottom))) + 24px + ${bannerOffset}px)`
-    : `calc(${20 + bannerOffset}px + env(safe-area-inset-bottom))`;
+    : // --merch-cta-offset is only set by /merch while its sticky "Plan your drop" bar is showing on a
+      // phone (components/merch/StickyDropCta.jsx), so the button sits above the bar instead of on it.
+      `calc(${20 + bannerOffset}px + var(--merch-cta-offset, 0px) + env(safe-area-inset-bottom))`;
 
   return (
     <a

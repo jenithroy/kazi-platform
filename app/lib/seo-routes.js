@@ -46,6 +46,20 @@ export const SEO_ROUTES = [
     priority: 0.7,
   },
   {
+    path: "/merch",
+    label: "Kazi Merch (creators)",
+    group: "Main pages",
+    // Used as written: with the brand suffix it would pass the 60-character limit, so
+    // composeTitle (lib/seo-core.js) leaves the suffix off.
+    title: "Kazi Merch — Cut-and-sew merch for creators",
+    description:
+      "Cut-and-sew merch for creators, made by hand in Kathmandu. From 100 pieces per style, sampled before we sew, with your own labels and packaging. Shipped worldwide.",
+    // No `image` yet, so it shares the site's default social image. TODO: add a 1200x630
+    // public/merch/og-kazi-merch.jpg and set `image: "/merch/og-kazi-merch.jpg"` here.
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
     path: "/video-editing",
     label: "Video editing",
     group: "Main pages",

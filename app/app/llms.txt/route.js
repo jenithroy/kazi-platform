@@ -19,6 +19,7 @@ Kazi Manufacturing is a garment manufacturer based in Kathmandu, Nepal, serving 
 - [Design Your Garment](https://kazimanufacturing.com/atelier): Interactive tool to design a custom garment — silhouette, colour and print placement — before requesting a quote.
 - [Pricing](https://kazimanufacturing.com/pricing): Cost estimator by product, quantity and add-ons.
 - [Request a Quote](https://kazimanufacturing.com/quote): Contact form for a firm, itemised manufacturing quote, replied to within 24 hours.
+- [Kazi Merch](https://kazimanufacturing.com/merch): Cut-and-sew merch for creators, influencers and their managers — from 100 pieces per style, sampled before production, with custom labels and packaging.
 - [Video Editing](https://kazimanufacturing.com/video-editing): In-house editing studio for product video, campaign films and social cut-downs.
 
 ## Browse
