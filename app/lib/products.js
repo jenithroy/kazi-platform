@@ -12,9 +12,9 @@
 // than invented per product, so every "Customize in the Atelier" deep link resolves to a
 // real, selectable colour instead of snapping to the nearest one.
 //
-// Every product has its own `image`: a white-label product photo (a blank white product
-// carrying the Kazi logo) in public/images/collections/white-label/ — 3:4 portraits, WebP
-// copies of the supplied photos (WhatsApp images and a "..._2K.jpg"). One product per photo, so no
+// Every product has its own `image`: a white-label product photo (a blank white product, no
+// logo on it) in public/images/collections/white-label/ — 3:4 portraits, WebP copies of the
+// supplied photos (the "Remove_logo_from_image_*_2K.jpg" set, Nov 2026). One product per photo, so no
 // two products share a picture, and a product without a real photo is not listed (the Canvas
 // Trainer was removed for that reason, along with the Footwear category). To add a product,
 // drop its photo in that folder and add an entry here; a new category goes in CATEGORIES too.
@@ -77,10 +77,10 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "The crew-neck tee with sleeves — mid-weight organic cotton jersey with ribbed cuffs, a layering staple that carries a left-chest print or a full back graphic equally well.",
+      "The crew-neck tee with sleeves — a relaxed, boxy cut in mid-weight organic cotton jersey with plain hemmed cuffs, a layering staple that carries a left-chest print or a full back graphic equally well.",
     specs: [
-      "Classic crew neck cut",
-      "Ribbed cuffs",
+      "Relaxed crew neck cut with a ribbed collar",
+      "Plain hemmed cuffs",
       "Reinforced shoulder-to-shoulder taping",
       "Double-needle stitched hems",
     ],
@@ -137,12 +137,12 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "A structured sleeveless layer in cotton canvas — stand collar, zip-and-snap front and big flap pockets — made for workwear, field and studio ranges that need a brand mark on the chest.",
+      "A sleeveless utility layer with a V-neck, centre zip and four flap pockets — made for workwear, field and studio ranges that need a brand mark on the chest.",
     specs: [
-      "Stand collar with zip-and-snap front",
-      "Two large lower flap pockets",
-      "Zip chest pocket",
-      "Heavyweight cotton canvas shell",
+      "V-neck with centre zip front",
+      "Four flap pockets: two chest, two lower",
+      "Solid shoulder yoke with bound armholes",
+      "Open-weave mesh body",
     ],
     sustainability: [
       "Organic cotton canvas available",
@@ -167,11 +167,11 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "Relaxed sweatpants in brushed loopback fleece — an elasticated drawstring waist, side pockets and ribbed cuffs, with room on the thigh for a print or embroidery.",
+      "Relaxed wide-leg sweatpants in brushed loopback fleece — a flat elasticated waistband, side pockets and plain hemmed ankles, with room on the thigh for a print or embroidery.",
     specs: [
-      "Elasticated waist with flat drawstring",
+      "Flat elasticated waistband",
       "Side pockets",
-      "Ribbed ankle cuffs",
+      "Wide straight leg with plain hems",
       "Brushed-back loopback fleece",
     ],
     sustainability: [
