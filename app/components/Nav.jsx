@@ -13,6 +13,10 @@ const LINKS = [
   { label: "Collections", href: "/collections" },
   { label: "Services", href: "/heritage" },
   { label: "Pricing", href: "/pricing" },
+  // The fifth link needs about 85px more than the bar has between 768 and 1023px (the logo sits in the
+  // middle column), so there it is left out of the bar (it is still in the footer); from 1024px up, and
+  // in the hamburger menu below 768px, it shows.
+  { label: "Digitizer", href: "/digitizer", barFrom: "lg" },
 ];
 
 // Shown only in the mobile hamburger menu, not the desktop nav.
@@ -180,7 +184,9 @@ export function Nav() {
             <Link
               key={link.label}
               href={link.href}
-              className={`font-display text-base tracking-wide transition-colors duration-300 hover:opacity-75 ${linkColor}`}
+              className={`font-display text-base tracking-wide transition-colors duration-300 hover:opacity-75 ${linkColor} ${
+                link.barFrom === "lg" ? "hidden lg:inline" : ""
+              }`}
             >
               {link.label}
             </Link>

@@ -36,6 +36,16 @@ export const SEO_ROUTES = [
     priority: 0.8,
   },
   {
+    path: "/digitizer",
+    label: "Embroidery digitizer",
+    group: "Main pages",
+    title: "Embroidery Digitizer",
+    description:
+      "Turn a logo or lettering into a machine embroidery stitch file (DST, PES, EXP, JEF, VP3, XXX) in your browser. Preview the stitching and save the file; your artwork never leaves your device.",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     path: "/pricing",
     label: "Pricing",
     group: "Main pages",

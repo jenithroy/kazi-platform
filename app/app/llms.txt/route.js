@@ -18,6 +18,7 @@ Kazi Manufacturing is a garment manufacturer based in Kathmandu, Nepal, serving 
 - [Manufacturing Services](https://kazimanufacturing.com/heritage): Full service catalogue — custom manufacturing, DTG, screen printing, embroidery, DTF and video editing.
 - [Design Your Garment](https://kazimanufacturing.com/atelier): Interactive tool to design a custom garment — silhouette, colour and print placement — before requesting a quote.
 - [Pricing](https://kazimanufacturing.com/pricing): Cost estimator by product, quantity and add-ons.
+- [Embroidery Digitizer](https://kazimanufacturing.com/digitizer): Browser-based tool that turns a logo or lettering into a machine embroidery stitch file (DST, PES, EXP, JEF, VP3, XXX), with a stitch preview. Runs on the visitor's device; nothing is uploaded.
 - [Request a Quote](https://kazimanufacturing.com/quote): Contact form for a firm, itemised manufacturing quote, replied to within 24 hours.
 - [Video Editing](https://kazimanufacturing.com/video-editing): In-house editing studio for product video, campaign films and social cut-downs.
 
