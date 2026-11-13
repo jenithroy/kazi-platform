@@ -1,5 +1,5 @@
 import { SITE_NAME, SITE_URL } from "@/lib/site";
-import { absoluteUrl } from "@/lib/seo-core";
+import { absoluteUrl, canonicalPath } from "@/lib/seo-core";
 import { storyFaqs, storyPath, wordCount } from "@/lib/stories";
 
 const ORGANIZATION_ID = `${SITE_URL}/#organization`;
@@ -35,7 +35,7 @@ export function siteJsonLd(site) {
           postalCode: site.postalCode,
           addressCountry: site.country,
         },
-        areaServed: "GB",
+        areaServed: ["GB", "US", "EU", "Worldwide"],
         sameAs: site.sameAs.length ? site.sameAs : undefined,
       },
       {
@@ -58,7 +58,7 @@ export function breadcrumbJsonLd(items) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: absoluteUrl(item.path),
+      item: absoluteUrl(canonicalPath(item.path)),
     })),
   };
 }
@@ -93,16 +93,110 @@ export function storyJsonLd(story, site) {
   };
 }
 
-export function faqJsonLd(story) {
-  const faqs = storyFaqs(story);
-  if (!faqs.length) return null;
+export function faqListJsonLd(items = []) {
+  const valid = items
+    .map((item) => ({
+      question: (item?.question ?? item?.q ?? "").trim(),
+      answer: (item?.answer ?? item?.a ?? "").trim(),
+    }))
+    .filter((item) => item.question && item.answer);
+  if (!valid.length) return null;
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: valid.map((faq) => ({
       "@type": "Question",
-      name: faq.question.trim(),
-      acceptedAnswer: { "@type": "Answer", text: faq.answer.trim() },
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
     })),
+  };
+}
+
+export function faqJsonLd(story) {
+  return faqListJsonLd(storyFaqs(story));
+}
+
+export function productJsonLd(product) {
+  const price = product.price.match(/[\d.]+/)?.[0];
+  const url = absoluteUrl(canonicalPath(`/products/${product.slug}`));
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${url}#product`,
+    name: product.name,
+    description: product.description,
+    sku: product.slug,
+    category: product.category,
+    image: absoluteUrl(product.image),
+    brand: {
+      "@type": "Brand",
+      name: SITE_NAME,
+    },
+    manufacturer: { "@id": ORGANIZATION_ID },
+    color: product.colors?.length ? product.colors.map((c) => c.name) : undefined,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "GBP",
+      price,
+      availability: "https://schema.org/InStock",
+      url,
+      seller: { "@id": ORGANIZATION_ID },
+      eligibleQuantity: {
+        "@type": "QuantitativeValue",
+        minValue: product.moq,
+        unitText: "units",
+      },
+    },
+  };
+}
+
+export function webAppJsonLd({ name, path, description, image, featureList }) {
+  const url = absoluteUrl(canonicalPath(path));
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": `${url}#app`,
+    name,
+    url,
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "All",
+    browserRequirements: "Requires JavaScript",
+    image: image ? absoluteUrl(image) : undefined,
+    featureList,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "GBP",
+    },
+    provider: { "@id": ORGANIZATION_ID },
+  };
+}
+
+export function serviceCatalogJsonLd({ name, path, description, services = [] }) {
+  const url = absoluteUrl(canonicalPath(path));
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name,
+    url,
+    description,
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: "Worldwide",
+    hasOfferCatalog: services.length
+      ? {
+          "@type": "OfferCatalog",
+          name: `${name} Catalogue`,
+          itemListElement: services.map((service) => ({
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: service.title || service.name,
+              description: service.description || service.body,
+            },
+          })),
+        }
+      : undefined,
   };
 }

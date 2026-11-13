@@ -205,7 +205,7 @@ function StoryCard({ story }) {
         // eslint-disable-next-line @next/next/no-img-element -- images are unoptimized in the static export
         <img
           src={story.coverUrl}
-          alt=""
+          alt={story.coverAlt || story.title}
           loading="lazy"
           decoding="async"
           className="mb-5 aspect-[16/10] w-full rounded-sm object-cover"

@@ -13,34 +13,16 @@ const outlineButton =
 
 const FILTERS = ["All", ...CATEGORIES];
 
-export function CollectionsPage() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const requestedCategory = searchParams.get("category");
-  const activeCategory = FILTERS.includes(requestedCategory ?? "") ? requestedCategory : "All";
-
+export function CollectionsView({ activeCategory = "All", onSelectCategory }) {
   const filtered = useMemo(
     () => (activeCategory === "All" ? products : products.filter((p) => p.category === activeCategory)),
     [activeCategory],
   );
 
-  function selectCategory(category) {
-    const params = new URLSearchParams(searchParams);
-    if (category === "All") {
-      params.delete("category");
-    } else {
-      params.set("category", category);
-    }
-    const qs = params.toString();
-    router.push(qs ? `${pathname}?${qs}` : pathname);
-  }
-
   return (
     <div className="bg-paper">
       {/* No visible header on purpose; the sr-only h1 keeps the page's heading for screen readers. */}
-      <h1 className="sr-only">The Collection</h1>
+      <h1 className="sr-only">The Collection — Customisable White-Label Blank Apparel</h1>
 
       <div
         className="sticky z-10 border-y border-pine/15 bg-paper/95 backdrop-blur"
@@ -53,7 +35,7 @@ export function CollectionsPage() {
               <button
                 key={category}
                 type="button"
-                onClick={() => selectCategory(category)}
+                onClick={() => onSelectCategory?.(category)}
                 className={`inline-flex h-9 shrink-0 items-center rounded-sm px-4 font-body text-xs font-semibold tracking-wide transition-colors duration-150 ${
                   active ? "bg-moss-deep text-bone" : "border border-pine text-pine hover:bg-bone"
                 }`}
@@ -94,4 +76,26 @@ export function CollectionsPage() {
       </section>
     </div>
   );
+}
+
+export function CollectionsPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const requestedCategory = searchParams.get("category");
+  const activeCategory = FILTERS.includes(requestedCategory ?? "") ? requestedCategory : "All";
+
+  function selectCategory(category) {
+    const params = new URLSearchParams(searchParams);
+    if (category === "All") {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  }
+
+  return <CollectionsView activeCategory={activeCategory} onSelectCategory={selectCategory} />;
 }

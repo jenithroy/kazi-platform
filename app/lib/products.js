@@ -34,6 +34,7 @@ export const products = [
   {
     slug: "organic-crew-tee",
     name: "Organic Crew Tee",
+    seoTitle: "Custom Organic Crew Tee (180 GSM)",
     category: "Knitwear",
     garmentModel: "t-shirt",
     image: whiteLabelPhoto("tshirt"),
@@ -47,7 +48,7 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "A classic crew neck cut in mid-weight organic cotton jersey — the everyday starting point most brands build a core range around.",
+      "Classic crew-neck tee in 180 gsm GOTS organic cotton jersey — reinforced shoulder taping, custom private-label branding and low-MOQ runs from 100 units.",
     specs: [
       "Classic crew neck cut",
       "Ribbed collar detailing",
@@ -64,6 +65,7 @@ export const products = [
   {
     slug: "long-sleeve-tee",
     name: "Long-Sleeve Tee",
+    seoTitle: "Custom Long-Sleeve Tee (180 GSM)",
     category: "Knitwear",
     garmentModel: "long-sleeve",
     image: whiteLabelPhoto("long-sleeve"),
@@ -77,7 +79,7 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "The crew-neck tee with sleeves — a relaxed, boxy cut in mid-weight organic cotton jersey with plain hemmed cuffs, a layering staple that carries a left-chest print or a full back graphic equally well.",
+      "Relaxed boxy-fit long-sleeve tee in 180 gsm organic cotton jersey with hemmed cuffs — built for custom chest or back prints, from 100 units per style.",
     specs: [
       "Relaxed crew neck cut with a ribbed collar",
       "Plain hemmed cuffs",
@@ -94,6 +96,7 @@ export const products = [
   {
     slug: "essential-hoodie",
     name: "Essential Hoodie",
+    seoTitle: "Custom Heavyweight Hoodie (380 GSM)",
     category: "Outerwear",
     garmentModel: "hoodie",
     image: whiteLabelPhoto("hoodie"),
@@ -107,7 +110,7 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "A clean-lined pullover hoodie in loopback french terry — the range's warmest core piece, built to hold shape wash after wash.",
+      "Heavyweight 380 gsm loopback french terry pullover hoodie with a double-lined hood and flatlock seams — custom cut-and-sew production from 100 units.",
     specs: [
       "Double-lined hood",
       "Ribbed cuffs and waistband",
@@ -124,6 +127,7 @@ export const products = [
   {
     slug: "utility-vest",
     name: "Utility Vest",
+    seoTitle: "Custom Cotton Canvas Utility Vest",
     category: "Outerwear",
     garmentModel: "vest",
     image: whiteLabelPhoto("vest"),
@@ -137,7 +141,7 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "A sleeveless utility layer with a V-neck, centre zip and four flap pockets — made for workwear, field and studio ranges that need a brand mark on the chest.",
+      "Sleeveless workwear utility vest in organic cotton canvas with a zip front and four flap pockets — garment-dyed in small batches from 100 units per style.",
     specs: [
       "V-neck with centre zip front",
       "Four flap pockets: two chest, two lower",
@@ -154,6 +158,7 @@ export const products = [
   {
     slug: "sweatpants",
     name: "Sweatpants",
+    seoTitle: "Custom Heavyweight Sweatpants (320 GSM)",
     category: "Bottoms",
     garmentModel: "sweatpants",
     image: whiteLabelPhoto("pants"),
@@ -167,7 +172,7 @@ export const products = [
     ],
     sizes: SIZES,
     description:
-      "Relaxed wide-leg sweatpants in brushed loopback fleece — a flat elasticated waistband, side pockets and plain hemmed ankles, with room on the thigh for a print or embroidery.",
+      "Relaxed wide-leg sweatpants in 320 gsm brushed loopback fleece with elasticated waist and side pockets — custom print or embroidery from 100 units.",
     specs: [
       "Flat elasticated waistband",
       "Side pockets",
@@ -184,6 +189,7 @@ export const products = [
   {
     slug: "canvas-tote",
     name: "Canvas Tote",
+    seoTitle: "Custom 12oz Heavyweight Canvas Tote Bag",
     category: "Accessories",
     garmentModel: "tote",
     image: whiteLabelPhoto("tote"),
@@ -194,7 +200,7 @@ export const products = [
       { name: "Black", hex: "#1A1A1A" },
     ],
     description:
-      "A heavyweight cotton canvas tote built for daily use, with reinforced handles and a flat base that holds shape unloaded.",
+      "Heavyweight 12oz cotton canvas tote bag with reinforced handles and a structured flat base — custom screen-printed or embroidered in runs from 100 units.",
     specs: [
       "12oz heavyweight cotton canvas",
       "Reinforced stitched handles",
@@ -211,6 +217,7 @@ export const products = [
   {
     slug: "work-apron",
     name: "Work Apron",
+    seoTitle: "Custom Cotton Twill Work Apron",
     category: "Accessories",
     garmentModel: "apron",
     image: whiteLabelPhoto("apron"),
@@ -223,7 +230,7 @@ export const products = [
     ],
     // No `sizes` — one size, with an adjustable neck strap and long waist ties.
     description:
-      "A hard-wearing bib apron in cotton twill — adjustable neck strap, long waist ties and a generous bib that shows off a printed or embroidered logo.",
+      "Hard-wearing bib work apron in organic cotton twill with adjustable neck buckle and waist ties — custom printed or embroidered from 100 units per style.",
     specs: [
       "Mid-weight cotton twill",
       "Adjustable neck strap with buckle",

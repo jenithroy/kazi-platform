@@ -19,7 +19,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const story = await getLiveStory(slug);
-  return story ? storyMetadata(story) : {};
+  return story
+    ? storyMetadata(story)
+    : {
+        title: "Story Not Found",
+        robots: { index: false, follow: false },
+      };
 }
 
 // Same category first, then the most recent.

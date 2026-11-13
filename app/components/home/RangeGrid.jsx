@@ -37,7 +37,7 @@ function Tile({ tile, index }) {
       <div className="relative aspect-[3/4] overflow-hidden rounded-[1.25rem] bg-paper-raised after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-pine/10 after:content-[''] md:rounded-[1.75rem]">
         <Image
           src={tile.product.image}
-          alt=""
+          alt={`${tile.product.name} — custom white-label ${tile.title.toLowerCase()} blank`}
           fill
           sizes="(min-width: 768px) 24vw, 46vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"

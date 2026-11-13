@@ -11,7 +11,7 @@ const filledButtonSmall =
 // Service catalogue and process steps below are this project's own placeholder set, written to
 // match the site's voice — not a confirmed list of what Kazi actually offers or its real specs.
 // Confirm each service, spec and lead time against reality before this ships.
-const SERVICES = [
+export const HERITAGE_SERVICES = [
   {
     title: "Custom Manufacturing",
     slug: "custom-manufacturing",
@@ -19,7 +19,7 @@ const SERVICES = [
     tagline: "Full garment production from your designs",
     description:
       "From tech pack to finished collection — pattern-cutting, sampling and bulk production, all inside one Kathmandu atelier.",
-    specs: ["Min. 50 units", "All fabric weights", "Organic cotton available on request", "Lead time 6–10 weeks"],
+    specs: ["Low MOQ: 100 units per style", "All fabric weights", "Organic cotton available on request", "Lead time 6–10 weeks"],
   },
   {
     title: "Direct-to-Garment (DTG)",
@@ -37,7 +37,7 @@ const SERVICES = [
     tagline: "High-volume, precise brand graphics",
     description:
       "The workhorse for bulk runs — sharp spot-colour graphics at a per-unit cost that drops as volume climbs.",
-    specs: ["From 50 units/design", "Up to 6 spot colours", "Water-based inks", "Price breaks at volume"],
+    specs: ["From 100 units/design", "Up to 6 spot colours", "Water-based inks", "Price breaks at volume"],
   },
   {
     title: "Embroidery",
@@ -119,7 +119,7 @@ export function HeritagePage() {
 
       <section>
         <div className="mx-auto max-w-[1440px] px-6 pt-12 md:px-8 md:pt-16">
-          {SERVICES.map((service, index) => (
+          {HERITAGE_SERVICES.map((service, index) => (
             <div
               key={service.slug}
               className={`grid gap-8 py-12 md:grid-cols-2 md:gap-16 md:py-16 ${

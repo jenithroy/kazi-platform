@@ -29,6 +29,20 @@ export default async function RootLayout({ children }) {
     // with min-h-dvh instead.
     <html lang="en-GB" suppressHydrationWarning>
       <head>
+        <link
+          rel="preload"
+          href="/font/InstrumentSerif-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/font/ITCGaramondStd-BkCond.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         {/* Flags that JS is running before first paint, so Reveal's hidden-until-scrolled
             state only applies when something will actually reveal it again (see globals.css). */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

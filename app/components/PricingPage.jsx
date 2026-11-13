@@ -10,7 +10,7 @@ const PRODUCT_TYPES = [
   { id: "hoodie", label: "Hoodies" },
 ];
 
-const QTY_MIN = 50;
+const QTY_MIN = 100;
 const QTY_MAX = 2000;
 
 // Every figure on this page — tiers, add-on deltas, reference grid — is a placeholder cost
@@ -18,7 +18,6 @@ const QTY_MAX = 2000;
 // figures are supplied. The calculator and the static reference table below intentionally
 // share this same data so the two can never contradict each other.
 const PRICING_TIERS = [
-  { min: 50, max: 99, label: "50–99", "t-shirt": 8.5, hoodie: 18.0 },
   { min: 100, max: 249, label: "100–249", "t-shirt": 6.5, hoodie: 14.5 },
   { min: 250, max: 499, label: "250–499", "t-shirt": 5.0, hoodie: 12.0 },
   { min: 500, max: 999, label: "500–999", "t-shirt": 4.0, hoodie: 10.0 },

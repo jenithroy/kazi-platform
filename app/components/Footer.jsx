@@ -10,6 +10,7 @@ import {
 
 const EXPLORE_LINKS = [
   { href: "/atelier", label: "Design" },
+  { href: "/collections", label: "Collections" },
   { href: "/heritage", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/digitizer", label: "Embroidery Digitizer" },

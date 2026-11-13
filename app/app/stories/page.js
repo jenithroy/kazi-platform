@@ -1,7 +1,9 @@
 import { StoriesPage } from "@/components/StoriesPage";
+import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { getLiveStories } from "@/lib/cms";
 import { formatStoryDate, readingMinutes, storyPath } from "@/lib/stories";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 export function generateMetadata() {
   return pageMetadata("/stories");
@@ -22,5 +24,15 @@ export default async function StoriesRoute() {
     readTime: `${readingMinutes(story.content)} min read`,
   }));
 
-  return <StoriesPage stories={stories} />;
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Stories", path: "/stories/" },
+        ])}
+      />
+      <StoriesPage stories={stories} />
+    </>
+  );
 }

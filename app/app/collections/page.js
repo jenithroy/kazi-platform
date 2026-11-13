@@ -1,23 +1,25 @@
 import { Suspense } from "react";
-import { CollectionsPage } from "@/components/CollectionsPage";
+import { CollectionsPage, CollectionsView } from "@/components/CollectionsPage";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 export function generateMetadata() {
   return pageMetadata("/collections");
 }
 
-function CollectionsFallback() {
-  return (
-    <div className="bg-paper">
-      <h1 className="sr-only">The Collection</h1>
-    </div>
-  );
-}
-
 export default function CollectionsRoute() {
   return (
-    <Suspense fallback={<CollectionsFallback />}>
-      <CollectionsPage />
-    </Suspense>
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "The Collection", path: "/collections/" },
+        ])}
+      />
+      <Suspense fallback={<CollectionsView activeCategory="All" />}>
+        <CollectionsPage />
+      </Suspense>
+    </>
   );
 }

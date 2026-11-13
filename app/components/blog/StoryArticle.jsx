@@ -80,8 +80,8 @@ function QuoteCta() {
         <div>
           <h2 className="m-0 mb-3 font-display text-2xl text-bone md:text-3xl">Planning a production run?</h2>
           <p className="m-0 max-w-md font-body leading-relaxed text-bone/80">
-            Tell us what you&rsquo;re making — we reply within 24 hours with a clear, itemised quote. Runs start at 50
-            units per style.
+            Tell us what you&rsquo;re making — we reply within 24 hours with a clear, itemised quote. Low-MOQ small-batch
+            runs start at 100 units per style.
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-3">
@@ -111,7 +111,7 @@ function RelatedStories({ stories }) {
                 // eslint-disable-next-line @next/next/no-img-element -- images are unoptimized in the static export
                 <img
                   src={story.cover_image_url}
-                  alt=""
+                  alt={story.cover_image_alt || story.title}
                   loading="lazy"
                   decoding="async"
                   className="mb-5 aspect-[16/10] w-full rounded-sm object-cover"

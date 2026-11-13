@@ -1,15 +1,15 @@
 import { Suspense } from "react";
-import { QuotePage } from "@/components/QuotePage";
+import { QuotePage, QuotePageForm } from "@/components/QuotePage";
 
 export const metadata = {
   title: "Request a Quote",
   robots: { index: false, follow: true },
-  alternates: { canonical: "/quote" },
+  alternates: { canonical: "/quote/" },
 };
 
 export default function AtelierQuoteRoute() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<QuotePageForm hideHeading hideArtwork />}>
       <QuotePage hideHeading hideArtwork />
     </Suspense>
   );

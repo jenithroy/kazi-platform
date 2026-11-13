@@ -1,7 +1,8 @@
 import { ProductPage } from "@/components/ProductPage";
+import { JsonLd } from "@/components/JsonLd";
 import { products } from "@/lib/products";
-import { SITE_URL } from "@/lib/site";
 import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -15,26 +16,6 @@ export async function generateMetadata({ params }) {
   return pageMetadata(`/products/${product.slug}`);
 }
 
-function productJsonLd(product) {
-  const price = product.price.match(/[\d.]+/)?.[0];
-  return {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    category: product.category,
-    image: `${SITE_URL}${product.image}`,
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "GBP",
-      price,
-      availability: "https://schema.org/InStock",
-      url: `${SITE_URL}/products/${product.slug}`,
-      eligibleQuantity: { "@type": "QuantitativeValue", minValue: product.moq },
-    },
-  };
-}
-
 export default async function ProductRoute({ params }) {
   const { slug } = await params;
   const product = products.find((p) => p.slug === slug);
@@ -42,10 +23,16 @@ export default async function ProductRoute({ params }) {
   return (
     <>
       {product && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(product)) }}
-        />
+        <>
+          <JsonLd data={productJsonLd(product)} />
+          <JsonLd
+            data={breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "The Collection", path: "/collections/" },
+              { name: product.name, path: `/products/${product.slug}/` },
+            ])}
+          />
+        </>
       )}
       <ProductPage key={slug} slug={slug} />
     </>

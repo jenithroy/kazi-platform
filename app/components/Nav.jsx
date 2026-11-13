@@ -20,7 +20,11 @@ const LINKS = [
 ];
 
 // Shown only in the mobile hamburger menu, not the desktop nav.
-const MOBILE_ONLY_LINKS = [{ label: "Video Editing", href: "/video-editing" }];
+const MOBILE_ONLY_LINKS = [
+  { label: "Merch", href: "/merch" },
+  { label: "Video Editing", href: "/video-editing" },
+  { label: "Stories", href: "/stories" },
+];
 const MOBILE_LINKS = [...LINKS, ...MOBILE_ONLY_LINKS];
 
 const FOCUSABLE_SELECTOR = "a[href], button:not([disabled])";

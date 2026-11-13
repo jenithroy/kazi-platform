@@ -103,8 +103,12 @@ function validate(form, isHandoff) {
   return errors;
 }
 
-export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
-  const searchParams = useSearchParams();
+export function QuotePageForm({
+  hideHeading = false,
+  hideArtwork = false,
+  initialService = "",
+  initialDetails = "",
+} = {}) {
   const [designs, setDesigns] = useState(() => readQuoteDesigns());
   const [excludedDesignIds, setExcludedDesignIds] = useState(new Set());
   const [file, setFile] = useState(null);
@@ -116,15 +120,6 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
   const [submitFailed, setSubmitFailed] = useState(false);
 
   const isHandoff = designs !== null;
-
-  const initialService = useMemo(() => {
-    const requested = searchParams.get("service");
-    return SERVICES.find((s) => s.slug === requested)?.slug ?? "";
-  }, [searchParams]);
-
-  // Prefills from any `/quote?details=` deep link — the same one-directional query-param
-  // pattern Heritage's per-service quote links and a product page's "Request Sample" use.
-  const initialDetails = useMemo(() => searchParams.get("details") ?? "", [searchParams]);
 
   const [form, setForm] = useState({
     name: "",
@@ -609,5 +604,24 @@ export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
         </div>
       </section>
     </div>
+  );
+}
+
+export function QuotePage({ hideHeading = false, hideArtwork = false } = {}) {
+  const searchParams = useSearchParams();
+  const initialService = useMemo(() => {
+    const requested = searchParams.get("service");
+    return SERVICES.find((s) => s.slug === requested)?.slug ?? "";
+  }, [searchParams]);
+  const initialDetails = useMemo(() => searchParams.get("details") ?? "", [searchParams]);
+
+  return (
+    <QuotePageForm
+      key={`${initialService}:${initialDetails}`}
+      hideHeading={hideHeading}
+      hideArtwork={hideArtwork}
+      initialService={initialService}
+      initialDetails={initialDetails}
+    />
   );
 }

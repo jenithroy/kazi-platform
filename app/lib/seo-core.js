@@ -1,4 +1,13 @@
-import { SITE_DESCRIPTION, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "@/lib/site";
+import {
+  SITE_DESCRIPTION,
+  SITE_EMAIL,
+  SITE_FACEBOOK_URL,
+  SITE_INSTAGRAM_URL,
+  SITE_LINKEDIN_URL,
+  SITE_NAME,
+  SITE_PHONE,
+  SITE_URL,
+} from "@/lib/site";
 
 // Title/description rules and site-settings resolution, shared by the build (lib/seo.js)
 // and the /admin previews so both show exactly the same thing.
@@ -9,6 +18,8 @@ export const DESCRIPTION_MIN = 120;
 export const DESCRIPTION_MAX = 160;
 
 export const DEFAULT_OG_IMAGE = { url: "/hero/hero.jpeg", width: 1600, height: 900 };
+
+export const DEFAULT_SAME_AS = [SITE_INSTAGRAM_URL, SITE_FACEBOOK_URL, SITE_LINKEDIN_URL];
 
 /**
  * The <title> a page ships with. The brand suffix is added when it fits inside the ~60
@@ -21,6 +32,29 @@ export function composeTitle(title, { absolute = false } = {}) {
   if (absolute || base.includes(SITE_NAME)) return base;
   const branded = base + TITLE_SUFFIX;
   return branded.length <= TITLE_LIMIT ? branded : base;
+}
+
+/**
+ * Normalises a route path or URL to match `trailingSlash: true` in next.config.mjs,
+ * so `<link rel="canonical">`, `og:url`, and JSON-LD URLs match `sitemap.xml` and
+ * never point at a non-trailing-slash redirect. File paths (e.g. `.xml`, `.webp`) are kept as-is.
+ */
+export function canonicalPath(path) {
+  if (!path) return "/";
+  if (/^https?:\/\//i.test(path)) {
+    try {
+      const parsed = new URL(path);
+      if (parsed.pathname !== "/" && !parsed.pathname.endsWith("/") && !/\.[a-z0-9]+$/i.test(parsed.pathname)) {
+        parsed.pathname = `${parsed.pathname}/`;
+      }
+      return parsed.toString();
+    } catch {
+      return path;
+    }
+  }
+  const clean = path.startsWith("/") ? path : `/${path}`;
+  if (clean === "/" || clean.endsWith("/") || /\.[a-z0-9]+$/i.test(clean)) return clean;
+  return `${clean}/`;
 }
 
 export function absoluteUrl(url) {
@@ -52,6 +86,7 @@ function pick(value, fallback) {
 
 /** The seo_settings row merged over the defaults in code — every setting is optional. */
 export function resolveSiteSettings(settings = {}) {
+  const configuredSameAs = (settings.same_as ?? []).filter(isHttpUrl);
   return {
     orgName: pick(settings.org_name, SITE_NAME),
     email: pick(settings.org_email, SITE_EMAIL),
@@ -62,7 +97,7 @@ export function resolveSiteSettings(settings = {}) {
     postalCode: pick(settings.org_postal_code, undefined),
     country: pick(settings.org_country, "NP"),
     logoUrl: pick(settings.org_logo_url, "/images/logo/kazi-logo-trimmed.png"),
-    sameAs: (settings.same_as ?? []).filter(isHttpUrl),
+    sameAs: configuredSameAs.length ? configuredSameAs : DEFAULT_SAME_AS.filter(isHttpUrl),
     defaultDescription: pick(settings.default_description, SITE_DESCRIPTION),
     defaultOgImage: pick(settings.default_og_image_url, DEFAULT_OG_IMAGE.url),
     googleVerification: verificationCode(settings.google_site_verification),

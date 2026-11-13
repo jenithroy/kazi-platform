@@ -2,7 +2,7 @@ import "server-only";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { getPageOverrides, getSeoSettings } from "@/lib/cms";
 import { findSeoRoute } from "@/lib/seo-routes";
-import { DEFAULT_OG_IMAGE, composeTitle, resolveSiteSettings } from "@/lib/seo-core";
+import { DEFAULT_OG_IMAGE, canonicalPath, composeTitle, resolveSiteSettings } from "@/lib/seo-core";
 import { storyPath } from "@/lib/stories";
 
 const RSS_ALTERNATE = {
@@ -31,7 +31,7 @@ export function buildMetadata({
   openGraph = {},
 }) {
   const fullTitle = composeTitle(title, { absolute: absoluteTitle });
-  const url = canonical || path;
+  const url = canonicalPath(canonical || path);
   const socialImage = ogImage(image, imageAlt || fullTitle);
 
   return {
@@ -109,12 +109,15 @@ export async function siteMetadata() {
     title: { default: defaultTitle, template: `%s | ${SITE_NAME}` },
     description: site.defaultDescription,
     keywords: [
-      "apparel manufacturing Nepal",
-      "clothing manufacturer Kathmandu",
-      "custom garment manufacturing",
-      "private label clothing",
+      "low MOQ clothing manufacturer",
       "small batch clothing manufacturer",
-      "UK clothing brand manufacturer",
+      "custom apparel manufacturing Nepal",
+      "clothing manufacturer Kathmandu",
+      "custom garment manufacturing UK",
+      "private label clothing manufacturer",
+      "white label blank apparel wholesale",
+      "cut and sew merch for creators",
+      "free online embroidery digitizer",
     ],
     alternates: { types: RSS_ALTERNATE },
     openGraph: {

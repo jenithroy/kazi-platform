@@ -39,7 +39,7 @@ export function ProductPage({ slug }) {
 
   const [colorIndex, setColorIndex] = useState(0);
   const [size, setSize] = useState(product?.sizes?.[0] ?? null);
-  const [qty, setQty] = useState(product?.moq ?? 50);
+  const [qty, setQty] = useState(product?.moq ?? 100);
   const [viewMode, setViewMode] = useState("image");
   const [openAccordion, setOpenAccordion] = useState("specs");
 

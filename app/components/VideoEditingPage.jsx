@@ -20,7 +20,7 @@ const FACTS = [
   ["You keep the files", "Masters, exports and project files on delivery."],
 ];
 
-const SERVICES = [
+export const VIDEO_EDITING_SERVICES = [
   {
     icon: ShoppingBag,
     title: "Product video",
@@ -136,7 +136,7 @@ const DELIVERABLES = [
   ["Turnaround", "3–7 working days"],
 ];
 
-const FAQS = [
+export const VIDEO_EDITING_FAQS = [
   {
     q: "Do I have to manufacture with Kazi to use the editing studio?",
     a: "No, we take on editing work on its own. Most of the brands we edit for do produce with us, and it helps: the team has seen the garment in production, so the fabric and the fit tend to come out right on the first pass.",
@@ -162,10 +162,6 @@ const FAQS = [
     a: "Per project, based on how long the finished pieces are, how many versions you need and how much footage there is to work through. Describe the scope on the quote form and we come back with a fixed figure.",
   },
 ];
-
-function imageSrc(file) {
-  return `/landing-page-images/${file}`;
-}
 
 function videoSrc(file) {
   return `/videos/${file}`;
@@ -203,6 +199,7 @@ export function VideoEditingPage() {
               muted
               loop
               playsInline
+              preload="metadata"
               className="aspect-[4/3] w-full object-cover lg:aspect-[5/4]"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-pine/55 via-pine/5 to-transparent" />
@@ -241,6 +238,7 @@ export function VideoEditingPage() {
                     muted
                     loop
                     playsInline
+                    preload="metadata"
                     aria-label={`${item.label} — ${item.caption}`}
                     className="aspect-[9/16] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   />
@@ -262,7 +260,7 @@ export function VideoEditingPage() {
           </Reveal>
 
           <div className="grid gap-px border border-pine/15 bg-pine/15 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map(({ icon: Icon, title, body }, index) => (
+            {VIDEO_EDITING_SERVICES.map(({ icon: Icon, title, body }, index) => (
               <Reveal key={title} delay={index * 60} as="article" className="bg-bone p-8">
                 <Icon size={22} strokeWidth={1.5} className="mb-5 text-moss-deep" />
                 <h3 className="m-0 mb-3 font-display text-xl leading-snug text-pine">{title}</h3>
@@ -291,7 +289,7 @@ export function VideoEditingPage() {
               <Reveal key={format.ratio} delay={index * 80} as="figure" className="m-0">
                 <div className={`relative overflow-hidden rounded-sm ${format.className}`}>
                   <Image
-                    src={imageSrc("collection-denim.jpg")}
+                    src="/images/home/step-sampling.webp"
                     alt={`The same shot cropped to ${format.ratio} for ${format.use}`}
                     fill
                     sizes="(min-width: 640px) 33vw, 100vw"
@@ -359,7 +357,7 @@ export function VideoEditingPage() {
         <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal as="figure" className="relative order-2 m-0 aspect-[4/3] overflow-hidden rounded-sm lg:order-1">
             <Image
-              src={imageSrc("heritage.jpg")}
+              src="/images/home/step-production.webp"
               alt="Hand-finishing on the Kazi production floor"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -439,7 +437,7 @@ export function VideoEditingPage() {
           </Reveal>
 
           <Reveal delay={100} className="divide-y divide-pine/15 border-t border-pine/15">
-            {FAQS.map(({ q, a }) => (
+            {VIDEO_EDITING_FAQS.map(({ q, a }) => (
               <details key={q} className="group py-5">
                 <summary className="flex list-none items-start justify-between gap-6 font-body text-base font-medium text-pine [&::-webkit-details-marker]:hidden">
                   {q}
@@ -459,7 +457,7 @@ export function VideoEditingPage() {
 
       <section className="relative isolate overflow-hidden px-6 py-20 md:px-8 md:py-24">
         <Image
-          src={imageSrc("process-bulk-production.jpg")}
+          src="/images/home/step-delivery.webp"
           alt=""
           aria-hidden="true"
           fill

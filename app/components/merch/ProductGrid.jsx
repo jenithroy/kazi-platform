@@ -31,7 +31,7 @@ export function ProductGrid() {
               <div className={`relative aspect-[3/4] overflow-hidden bg-paper-raised ${TILE}`}>
                 <Image
                   src={product.image}
-                  alt=""
+                  alt={`${product.name} — custom cut-and-sew creator merch blank`}
                   fill
                   sizes="(min-width: 768px) 24vw, 46vw"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"

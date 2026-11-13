@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Reveal } from "@/components/Reveal";
 
-const FAQS = [
+export const HOME_FAQS = [
   {
     q: "What's your minimum order quantity?",
     a: "We take on small-batch runs starting from 100 units per style, so new and growing brands can order without over-committing to stock.",
@@ -43,7 +43,7 @@ export function FaqSection() {
         </Reveal>
 
         <div className="border-t border-pine/10">
-          {FAQS.map((item, index) => {
+          {HOME_FAQS.map((item, index) => {
             const isOpen = index === openIndex;
             return (
               <Reveal key={item.q} as="div" delay={index * 60} className="border-b border-pine/10">

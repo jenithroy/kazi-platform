@@ -16,11 +16,11 @@ export const CONTENT_IDEAS = [
     ],
   },
   {
-    title: "Low MOQ clothing manufacturing: what 50 units really costs",
+    title: "Low MOQ clothing manufacturing: what a 100-unit run really costs",
     keyword: "low MOQ clothing manufacturer",
     category: "Pricing",
-    intent: "Searchers who know they need small runs — Kazi's 50-unit minimum is the differentiator.",
-    outline: ["What MOQ means and why factories set one", "A cost breakdown for a 50-unit run", "How price per unit falls as quantity rises", "When a small run makes sense"],
+    intent: "Searchers who know they need small runs — Kazi's 100-unit minimum is the differentiator.",
+    outline: ["What MOQ means and why factories set one", "A cost breakdown for a 100-unit run", "How price per unit falls as quantity rises", "When a small-batch run makes sense"],
   },
   {
     title: "The tech pack checklist: what your manufacturer needs before sampling",
