@@ -17,7 +17,7 @@ import { intersectRings, offsetRings, differenceRings } from "../geometry/clip.j
 import { tatamiFill, FILL_DEFAULTS } from "./fill.js";
 import { satinIsland, lineIsland, SATIN_DEFAULTS } from "./satin.js";
 import { strokeCenterlines } from "../geometry/skeleton.js";
-import { beanAlong, runAlong, satinAlong } from "./path.js";
+import { beanAlong, runAlong, satinAlong, curveRun, densify } from "./path.js";
 import { outlineRuns, OUTLINE_DEFAULTS } from "./outline.js";
 import { fillUnderlayRuns, autoFillUnderlay } from "./underlay.js";
 import { coverageOf } from "./quality.js";
@@ -44,6 +44,7 @@ export const ENGINE_DEFAULTS = {
   lineHoles: 999, // ... with at most this many holes (the loops of an a, an e, an o, or a network of thin lines: what counts is the width of its middle lines, see lineWide) ...
   lineWide: 1.2, // ... and the middle lines of a piece with holes must be no wider than this times lineMaxWidth on average (the black of an engraving, a mass full of tiny holes, is not a network of lines)
   lineLen: 1.4, // mm, the length of one stretch of that bean line
+  lineDev: 0.07, // mm: how far a stretch of a thin line (the bean lines of lettering, the fine lines of a picture) may cut across a curve: the needle holes come closer on a tight curve, so a small ring stays round (a fixed 1.4 to 2 mm made a pearl's outline a decagon); 0 = a fixed length, as before
   lineImpl: "runs", // how the line is laid: "runs" (the skeleton's chains as they are) or "island" (satin.js lineIsland: strokes that run straight through a junction are one line, ends run on to the tip, stitches follow a curve)
   thinArms: 1, // a thin stroke that grows out of a bigger piece of the same colour (a smile that touches a nose, a hairline serif) is cut away from the fill and sewn as a line; 0 = never
   thinArmMin: 1.8, // ... when it is at least this long (mm)
@@ -587,7 +588,7 @@ function lineRuns(shape, start, S) {
     }
     const [t] = todo.splice(bi, 1);
     const line = flip ? t.pts.slice().reverse() : t.pts;
-    const pts = beanAlong(line, { len: S.lineLen, closed: t.closed });
+    const pts = beanAlong(line, { len: S.lineLen, closed: t.closed, dev: S.lineDev > 0 ? S.lineDev : 0 });
     if (pts.length >= 2) {
       out.push({ pts, join: !!at && bd <= 0.8 });
       at = pts[pts.length - 1];
@@ -798,8 +799,8 @@ function objectRuns(item, needle, S0, warn, info) {
     for (const ln of lines) {
       let pts;
       if (st.type === "satin") pts = satinAlong(ln, { spacing: Math.min(st.spacing, 0.35), closed: false, half: st.width / 2, pullComp: 0.1 });
-      else if (st.type === "run") pts = runAlong(ln, { len: st.len });
-      else pts = beanAlong(ln, { len: st.len });
+      else if (st.type === "run") pts = S.lineDev > 0 ? curveRun(densify(ln, 0.25, false), { len: st.len, dev: S.lineDev }) : runAlong(ln, { len: st.len });
+      else pts = beanAlong(ln, { len: st.len, dev: S.lineDev > 0 ? S.lineDev : 0 });
       if (pts.length < 2) continue;
       runs.push({ pts, join: false, connectMax: 0, kind: "line", color: item.color });
       count++;

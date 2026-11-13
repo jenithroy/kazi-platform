@@ -77,6 +77,9 @@ console.log("edges.js and look.js");
   check("a photograph gets none", edgeLook(wide, { ...ctx, kind: "photo" }) === null);
   check("a thin shape gets none (it is a line of thread already)", edgeLook(wide, { ...ctx, widthMm: 1 }) === null);
   check("a speck gets none", edgeLook(shapeRect(0, 0, 15, 15, 0), { ...ctx, widthMm: 1.6 }) === null);
+  check("a 2.4 mm dot (a pearl, a full stop) now gets an edge line: its row ends are all of its edge", !!edgeLook(shapeRect(0, 0, 24, 24, 0), { ...ctx, widthMm: 2.4 }));
+  const withHoles = { ...shapeRect(0, 0, 600, 100, 0), contours: [[[0, 0], [600, 0], [600, 100], [0, 100]], [[50, 40], [70, 40], [70, 60], [50, 60]]] };
+  check("a long bar with holes in it is a fill, not a satin stroke: it gets one (the row ends round its holes showed)", !!edgeLook(withHoles, { ...ctx, widthMm: 4.5 }));
   check("a long stroke that may be sewn as satin gets none", edgeLook(shapeRect(0, 0, 600, 100, 0), { ...ctx, widthMm: 3 }) === null);
   check("look settings read from anything", JSON.stringify(lookOptions()) === JSON.stringify(LOOK_DEFAULTS) && lookOptions({ angles: "plain" }).angles === "plain" && lookOptions({ edges: "none" }).edges === "none" && lookOptions({ angles: 7, edges: {} }).angles === LOOK_DEFAULTS.angles);
 
