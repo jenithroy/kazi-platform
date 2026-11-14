@@ -47,7 +47,7 @@ import { processChains } from "./simplify.js";
 import { findCrossing, pullBack } from "./repair.js";
 import { renderTrace } from "./render.js";
 import { detectKind, kuwahara, restoreThin, thinLines } from "./photo.js";
-import { validRegions, cutOutPerson, resampleClasses, importanceMap, DEFAULT_REGION_WEIGHTS } from "./regions.js";
+import { validRegions, cutOutPerson, resampleClasses, importanceMap, DEFAULT_REGION_WEIGHTS, REGION_COUNT } from "./regions.js";
 import { buildRegionalPalette, classifyByRegion } from "./regionPalette.js";
 import { rgbToLab, rgbFloatToLab, toHex, now } from "./color.js";
 import { limitsFor } from "./detail.js";
@@ -103,6 +103,10 @@ export const DEFAULT_OPTIONS = Object.freeze({
   regions: null, // a map of what each pixel is (background, hair, skin, clothes ...), see regions.js: the background is cut out and the person's colours are weighted by class
   regionPalette: true, // with a region map: every region (hair, skin, clothes ...) gets colours of its own and its pixels keep to them (regionPalette.js); false: one palette for the person, only weighted
   regionWeights: null, // how hard each class pulls on the palette (by class number); null = DEFAULT_REGION_WEIGHTS
+  regionAreaPower: null, // how the colours are shared out between regions: the gain of one more colour counts by the region's size to this power (null = REGION_AREA_POWER, see regionPalette.js)
+  regionMinColors: null, // the colours a region is given before the shares are made, by class number, e.g. { 3: 4 } (null = REGION_MIN_COLORS)
+  regionFeatureExtra: null, // the colours the eyes and lips may add on top of the palette (null = REGION_FEATURE_EXTRA)
+  regionAnchors: null, // colours measured on the picture that the person's palette must have, [{ rgb: [r, g, b], classes: [8] }]: the white of the eyes and of the teeth (digitizer/faces.js featureAnchors), which flat patches never find
   reserveColors: 1, // a person cut out of a photograph, fine details on: this many of the colours are kept back for the details' own threads (a dark brown for lids and lashes), see convert.js fineObjects
   details: false, // photographs and artwork: also find the fine lines (veins, twigs, lids, lashes) and small dots from the picture itself, to be sewn on top of the colours (details.js, fine.js); the colour layer is not changed
 });
@@ -163,7 +167,26 @@ export function normalizeOptions(opts = {}) {
     regions: validRegions(opts.regions) ? opts.regions : null,
     regionWeights: Array.isArray(opts.regionWeights) ? opts.regionWeights : null,
     regionPalette: opts.regionPalette === undefined ? true : !!opts.regionPalette,
+    regionAreaPower: Number.isFinite(opts.regionAreaPower) ? Math.min(1, Math.max(0, opts.regionAreaPower)) : null,
+    regionMinColors: opts.regionMinColors && typeof opts.regionMinColors === "object" ? opts.regionMinColors : null,
+    regionFeatureExtra: Number.isFinite(opts.regionFeatureExtra) ? Math.min(6, Math.max(0, Math.round(opts.regionFeatureExtra))) : null,
+    regionAnchors: validAnchors(opts.regionAnchors),
   };
+}
+
+/** The anchor colours that can be used: at most four, each with an sRGB colour and the classes (0..7) it belongs to; null when there are none. */
+function validAnchors(list) {
+  if (!Array.isArray(list)) return null;
+  const ok = [];
+  for (const a of list) {
+    if (!a || !Array.isArray(a.rgb) || a.rgb.length < 3 || !Array.isArray(a.classes)) continue;
+    const rgb = [0, 1, 2].map((i) => Math.round(num(a.rgb[i], NaN, 0, 255)));
+    const classes = a.classes.filter((c) => Number.isInteger(c) && c >= 1 && c < REGION_COUNT);
+    if (rgb.some((v) => !Number.isFinite(v)) || !classes.length) continue;
+    ok.push({ rgb, classes });
+    if (ok.length === 4) break;
+  }
+  return ok.length ? ok : null;
 }
 
 function checkImage(image) {
@@ -267,7 +290,7 @@ function analyse(image, o, maxSide) {
   const maxFg = Math.max(1, o.colors - (hasAlpha && !o.personClasses ? 1 : 0) - (bgColor ? 1 : 0) - reserve);
   // a person cut out of a photograph: each region gets the colours it earns, and its pixels keep to them (regionPalette.js)
   const regional = regionCls && kind === "photo" && o.regionPalette
-    ? buildRegionalPalette(rgbD, w, h, regionCls, { maxColors: maxFg, seed: o.seed, mergeDE: o.mergeDE || 6, crumbs: "strict", noiseTol: dn.tol, weightPower: 0.5, weights: o.regionWeights || DEFAULT_REGION_WEIGHTS, skip })
+    ? buildRegionalPalette(rgbD, w, h, regionCls, { maxColors: maxFg, seed: o.seed, mergeDE: o.mergeDE || 6, crumbs: "strict", noiseTol: dn.tol, weightPower: 0.5, weights: o.regionWeights || DEFAULT_REGION_WEIGHTS, skip, areaPower: o.regionAreaPower ?? undefined, minColors: o.regionMinColors || undefined, featureExtra: o.regionFeatureExtra ?? undefined, anchors: o.regionAnchors || undefined })
     : null;
   // The colours of a picture are its own, whatever size it is sewn at. When the picture is enlarged for tracing (above), its colours are still found on its own
   // pixels. On the enlarged copy the k-means centres shift a little with every change of size (the copy's size changes with it), so two colours near the merge
@@ -510,7 +533,9 @@ function analyse(image, o, maxSide) {
     bg: new Uint8Array(K2),
     transparent: new Uint8Array(K2),
     enclosed: new Uint8Array(K2),
+    fixed: new Uint8Array(K2), // colours the caller measured (regionAnchors): kept as measured, not averaged with the pixels they came to cover
   };
+  const anchorOf = regional && regional.anchor ? regional.anchor : null;
   // colour class of every entry: an enclosed copy of a background colour and its parent are the same colour
   const cls = new Uint8Array(256);
   for (let k = 0; k < 256; k++) cls[k] = k;
@@ -521,6 +546,7 @@ function analyse(image, o, maxSide) {
     pal2.count[m] = count[k];
     pal2.bg[m] = bg[k];
     pal2.transparent[m] = k === transIndex ? 1 : 0;
+    if (anchorOf && k < anchorOf.length && anchorOf[k]) pal2.fixed[m] = 1;
     if (k >= K) {
       pal2.enclosed[m] = 1;
       if (remap[parent[k]] >= 0) cls[m] = remap[parent[k]];
@@ -530,7 +556,7 @@ function analyse(image, o, maxSide) {
   const transNew = hasAlpha ? remap[transIndex] : -1;
   const means = clusterMeans(wk.rgb, w, h, labels, soft, K2, pal2.rgb, transNew);
   for (let k = 0; k < K2; k++) {
-    if (k === transNew) continue;
+    if (k === transNew || pal2.fixed[k]) continue;
     const fixedBg = bgColor && pal2.bg[k] && Math.abs(pal2.rgb[k * 3] - bgColor[0]) + Math.abs(pal2.rgb[k * 3 + 1] - bgColor[1]) + Math.abs(pal2.rgb[k * 3 + 2] - bgColor[2]) < 1e-6;
     if (fixedBg) continue;
     for (let j = 0; j < 3; j++) pal2.rgb[k * 3 + j] = means[k * 3 + j];
@@ -540,7 +566,7 @@ function analyse(image, o, maxSide) {
     if (cls[k] !== k) for (let j = 0; j < 3; j++) pal2.rgb[k * 3 + j] = pal2.rgb[cls[k] * 3 + j];
   }
   for (let k = 0; k < K2; k++) rgbFloatToLab(pal2.rgb[k * 3], pal2.rgb[k * 3 + 1], pal2.rgb[k * 3 + 2], pal2.lab, k * 3);
-  return { wk, w, h, N, labels, lab2, soft, cls, pal: pal2, K: K2, scale, minFeaturePx, minAreaPx, noise: dn, cleaned, stages, bgInfo, regionAlloc: regional ? regional.alloc : null, regionCls };
+  return { wk, w, h, N, labels, lab2, soft, cls, pal: pal2, K: K2, scale, minFeaturePx, minAreaPx, noise: dn, cleaned, stages, bgInfo, regionAlloc: regional ? regional.alloc : null, regionAnchored: regional ? regional.anchored : 0, regionCls };
 }
 
 /**
@@ -1020,9 +1046,11 @@ export function traceImage(image, opts = {}) {
       strokeCount: a.cleaned.strokeCount || 0,
       strokeMedianMm: (a.cleaned.strokeMedian || 0) * a.scale * o.mmPerPx,
       kind,
+      backgroundOff: o.background === "none", // the person asked for the whole picture: nothing is left out as background, and the converter does not leave out colours that match the cloth either
       frame: unframed ? unframed.px : 0, // the thickness (pixels) of a frame that was painted over, else 0
       kindInfo: info,
       regionColours: a.regionAlloc || null, // [class, colours asked for] for each region that got colours of its own (regionPalette.js)
+      regionAnchored: a.regionAnchored || 0, // how many of the colours handed over as `regionAnchors` (a face's whites) the palette took
       person: cut ? +cut.share.toFixed(3) : null, // the share of the picture that is a person, when a region map cut one out (regions.js)
       stages: a.stages,
     },

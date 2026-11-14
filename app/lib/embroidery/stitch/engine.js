@@ -22,6 +22,7 @@ import { outlineRuns, OUTLINE_DEFAULTS } from "./outline.js";
 import { fillUnderlayRuns, autoFillUnderlay } from "./underlay.js";
 import { coverageOf } from "./quality.js";
 import { overlappingPairs } from "./overlap.js";
+import { widenThin, meanStrokeWidth } from "../geometry/thin.js";
 import { createPlan, PLAN_DEFAULTS } from "./plan.js";
 import { FABRICS, DEFAULT_FABRIC } from "./presets.js";
 
@@ -39,6 +40,9 @@ export const ENGINE_DEFAULTS = {
   textSatinGap: 2, // ... except typed lettering (an object of kind "text"): its letters are strokes of a font, where satin is the right stitch and a fill makes the edges ragged: 1.3 sent the bold letters K, Z and I (1.3 to 1.5 at their bends, with every other check passed) to a ragged fill
   minIsland: 0.3, // mm2: a smaller piece is dropped (a needle cannot sew a speck under about 0.6 mm across)
   lineMaxWidth: 0.7, // mm: a long piece thinner than this is one line of bean stitches along its middle (a lash, a hair, a vein, a twig), not a filled strip (0.58 until the merge with upstream's thickening fix in trace/labels.js, which draws a script's hairlines 0.6 to 0.7 mm wide: 0.58 sent them to tatami and broke the strokes into pieces; 0.7 on 51 real pictures: stitches +0.35 %, fine-detail error +0.07, a script's lettering 0.91 better and legible)
+  textLineBelow: 0.7, // mm: typed lettering (an object of kind "text") whose strokes are this wide or less, typically (area weighted, see meanStrokeWidth), is sewn all as lines, and heavier lettering as satin: decided letter by letter it flipped inside a word (AVE as thin lines and MARIA as fat satin, because the strokes of one letter are 0.57 mm wide and of the next 0.6). Measured on 168 typed texts (9 fonts, caps 3 to 15 mm, two strings), against the letter-by-letter rule: texts that mix lines and satin 40 -> 22, letters broken into pieces 15 -> 0, texts that lose a counter (a, e, o) 65 -> 63, the area the thread covers over the letter's own 1.19 -> 1.15; 0 = letter by letter, as before
+  textLineMax: 0.9, // mm: ... and in a text sewn as lines a letter is a line up to this wide (the limit of a single letter is lineMaxWidth, 0.58 mm)
+  textMinStroke: 0.4, // mm: heavy lettering (above textLineBelow) with thick and thin strokes has the strips thinner than this widened to it before it is sewn: the hairlines and serifs of a small Times or Georgia (0.15 to 0.3 mm at 4 mm caps) were dropped (a satin layout leaves out what is under satinMinStroke), and a letter came out as two bars and a slash; 0 = as drawn
   handLineMaxWidth: 0.58, // mm: ... but only for the shapes made from a picture (object.source === "image": the tracer draws a script's hairlines 0.6 to 0.7 mm wide); typed lettering and shapes drawn by hand keep the limit they always had
   lineRatio: 2.5, // ... when it is at least this many times longer than wide
   lineHoles: 999, // ... with at most this many holes (the loops of an a, an e, an o, or a network of thin lines: what counts is the width of its middle lines, see lineWide) ...
@@ -685,7 +689,9 @@ function smallFill(fs, f, outer, area, meanW) {
  */
 function objectRuns(item, needle, S0, warn, info) {
   const obj = item.obj;
-  const S = obj.source === "image" || !(S0.handLineMaxWidth < S0.lineMaxWidth) ? S0 : { ...S0, lineMaxWidth: S0.handLineMaxWidth }; // (a thin line is up to lineMaxWidth wide only for a shape made from a picture)
+  let S = obj.source === "image" || !(S0.handLineMaxWidth < S0.lineMaxWidth) ? S0 : { ...S0, lineMaxWidth: S0.handLineMaxWidth }; // (a thin line is up to lineMaxWidth wide only for a shape made from a picture)
+  // typed lettering with thin strokes is lines from end to end: a letter is a line up to textLineMax wide (see textLineBelow)
+  if (obj.kind === "text" && item.textStroke > 0 && item.textStroke < S0.textLineBelow) S = { ...S, lineMaxWidth: Math.max(S.lineMaxWidth, S0.textLineMax) };
   const rings = item.rings;
   const runs = [];
   const fill = obj.fill || {};
@@ -833,9 +839,16 @@ export function generate(design, options = {}) {
     if (!obj || obj.visible === false) return;
     const open = obj.open === true; // an object of open lines (no fill): its rings are polylines of two points or more
     const baked = bakeObject(obj).filter((r) => Array.isArray(r) && r.length >= (open ? 2 : 3));
-    const rings = baked.filter((r) => r.every(sane));
+    let rings = baked.filter((r) => r.every(sane));
     if (rings.length < baked.length) warn.push({ kind: "far", objectId: obj.id, message: `"${obj.name || obj.id}" has a part that is not a usable shape (or lies far outside the hoop) and was left out.` });
     if (!rings.length) return;
+    // Typed lettering is sewn one way from end to end, by how wide its strokes are (S.textLineBelow). In heavy lettering the hairlines and serifs are widened to what a needle
+    // can follow (see geometry/thin.js); the stored letters are not changed.
+    let textStroke = 0;
+    if (obj.kind === "text" && !open) {
+      textStroke = meanStrokeWidth(rings);
+      if (S.textMinStroke > 0 && textStroke >= S.textLineBelow) rings = widenThin(rings, S.textMinStroke).rings;
+    }
     const fill = obj.fill || {};
     const stroke = obj.stroke && obj.stroke.type && obj.stroke.type !== "none" ? obj.stroke : null;
     const detail = obj.layer === "detail";
@@ -851,7 +864,7 @@ export function generate(design, options = {}) {
     // An object is up to two items: its fill, and its outline (which has its own colour).
     if ((fill.type || "auto") !== "none") {
       const color = parseColor(fill.color);
-      items.push({ obj, objIndex, part: "fill", rings, box, color, colorKey: `${color.r},${color.g},${color.b}`, detail });
+      items.push({ obj, objIndex, part: "fill", rings, box, color, colorKey: `${color.r},${color.g},${color.b}`, detail, textStroke });
     }
     if (stroke) {
       const color = parseColor(stroke.color || fill.color);

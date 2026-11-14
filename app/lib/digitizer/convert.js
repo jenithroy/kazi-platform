@@ -29,6 +29,14 @@ export function clothMatch(kind, fabric = null) {
 }
 
 /**
+ * The same for a traced picture. When the person has switched "Leave out the background" OFF the whole picture is stitched: white and every other colour, whether or not
+ * it is like the cloth (before, a white page or a white part of a logo was still left out as "the cloth showing through", which is leaving out the background by another door).
+ */
+export function clothMatchOf(traced, fabric = null) {
+  return traced.stats?.backgroundOff ? 0 : clothMatch(traced.stats?.kind, fabric);
+}
+
+/**
  * A shape in a colour like the cloth is left unstitched (the cloth shows through) when it is wide: a gap in a fill can be kept clean
  * when it is about this wide, but not a narrow one (white lettering or a thin white ring inside a dark badge comes out ragged and
  * broken, because the rows of the fill around it cannot stop that close). A narrower shape than this (mean width in millimetres) is
@@ -79,6 +87,7 @@ export function traceOptions(settings, mmPerPx) {
     maxColors: s.maxColors,
     mmPerPx,
     background: s.background === "none" ? "none" : "auto",
+    ...(s.background === "none" ? { trimFrame: false } : {}), // the whole picture: a frame round it is part of it, not painted over
     mode: s.kind === "logo" || s.kind === "art" || s.kind === "photo" ? s.kind : "auto",
     thicken: true,
     ...detailLimits(s.detail), // what a logo gets
@@ -246,10 +255,11 @@ export const DETAIL_LINE_MM = 0.45;
 export const DETAIL_THICK_MM = 0.7;
 
 /**
- * How much a detail counts, by the region of a person it lies in (regions.js: background, hair, body skin, face skin, clothes, other): the lids and lashes of a face
- * come before the pattern on a tie when threads and stitches are shared out. Details of a picture without a region map count the same.
+ * How much a detail counts, by the region of a person it lies in (regions.js: background, hair, body skin, face skin, clothes, other, eyes and brows, lips, the white of
+ * the eye, the open mouth): the lids and lashes of a face come before the pattern on a tie when threads and stitches are shared out. Details of a picture without a
+ * region map count the same.
  */
-export const DETAIL_REGION_WEIGHTS = Object.freeze([0, 2, 1.5, 4, 0.5, 1]);
+export const DETAIL_REGION_WEIGHTS = Object.freeze([0, 2, 1.5, 4, 0.5, 1, 6, 3, 6, 3]);
 
 /** The numbers above as one set, so a caller (a test, a sweep) can try others: `objectsFromTrace(..., { detailTune: { visibleDE: 8 } })`. */
 export const DETAIL_TUNE = Object.freeze({
@@ -410,7 +420,7 @@ function fineObjects(traced, { palette, cloth, originX, originY, mmPerPx, snap, 
  */
 export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new Set(), include = new Set(), fabric = null, snap = false, bleed = 0.4, before = null, maxColors = 12, detailThick = false, detailTune = null }) {
   const cloth = fabric ? toLab(...Object.values(hexToRgb(fabric))) : null;
-  const matchDE = clothMatch(traced.stats?.kind, fabric);
+  const matchDE = clothMatchOf(traced, fabric);
   // Which shapes have a hole that another shape sits in? Touching shapes share exactly the same boundary points, so a shape sits in the hole of
   // any shape whose hole outline has one of its own outline's points. Built (and widths measured) only when a colour like the cloth has narrow shapes.
   const indexOf = new Map(traced.shapes.map((sh, k) => [sh, k]));
@@ -501,7 +511,7 @@ export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new
  */
 export function contentBox(traced, { originX, originY, mmPerPx, fabric = null }) {
   const cloth = fabric ? toLab(...Object.values(hexToRgb(fabric))) : null;
-  const matchDE = clothMatch(traced.stats?.kind, fabric);
+  const matchDE = clothMatchOf(traced, fabric);
   const counts = traced.palette.map((p) => {
     if (p.background) return false;
     if (!cloth || matchDE <= 0) return true;

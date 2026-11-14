@@ -162,7 +162,7 @@ async function load(f) {
     modelBytes: model.bytes.length,
     moduleLoader: !!useModule,
   };
-  engine = { seg, vision, info };
+  engine = { seg, vision, info, fileset };
   if (f.warm) {
     const tw = now();
     runModel(new Uint8ClampedArray(256 * 256 * 4).fill(128)); // flat grey picture
@@ -182,6 +182,11 @@ export function ready(options = {}) {
     });
   }
   return loading;
+}
+
+/** The MediaPipe module and wasm files the person model was loaded with, so another task (the face landmarker, faceFinder.js) runs on the same runtime. null before ready(). */
+export function visionAssets() {
+  return engine ? { vision: engine.vision, fileset: engine.fileset } : null;
 }
 
 /** Frees the wasm instance. The next call to ready()/segmentPicture() loads it again. */

@@ -5,6 +5,7 @@
 import { Group, Row, NumberField, Slider, Segmented, Toggle, ColorField } from "./Controls";
 import HoopFit from "./HoopFit";
 import { followsPicture } from "../../lib/digitizer/model";
+import { FACE_EYE_MIN_MM } from "../../lib/digitizer/faces";
 
 const COLOR_CHOICES = [
   { value: "auto", label: "Auto" },
@@ -102,12 +103,13 @@ export default function PicturePanel({ api, pickFile }) {
         <Toggle checked={settings.angles !== "plain"} onChange={(v) => api.changeSettings({ angles: v ? "auto" : "plain" })}>Stitch rows follow the shape</Toggle>
         <Toggle checked={settings.edges !== "none"} onChange={(v) => api.changeSettings({ edges: v ? "auto" : "none" })}>Sharper edges</Toggle>
         <p className="dz-hint">Rows run the long way of hair, limbs and leaves, and shapes that touch are sewn at different angles. Sharper edges lay a thin line just inside the edge of big flat shapes in a logo or artwork, so the stitched shape matches the drawing more closely, for about 3% more stitches.</p>
-        <Row label="Cloth" hint="What colour is the garment? Colours in the picture that match it are not stitched: the cloth shows through.">
+        <Row label="Cloth" hint={settings.background === "none" ? "What colour is the garment? It is how the design is shown. With \"Leave out the background\" off, the whole picture is stitched, whatever its colours." : "What colour is the garment? Colours in the picture that match it are not stitched: the cloth shows through."}>
           <ColorField value={design.fabricColor} label="Cloth colour" onChange={(c) => api.setFabricColor(c)} />
         </Row>
         <Toggle checked={settings.background === "auto"} onChange={(v) => api.changeSettings({ background: v ? "auto" : "none" })}>Leave out the background</Toggle>
+        {settings.background === "none" && <p className="dz-hint">Off: nothing is left out. The whole picture is stitched, white and the page included, and no colour is left to the cloth.</p>}
         <Toggle checked={settings.people !== false} disabled={settings.background !== "auto"} onChange={(v) => api.changeSettings({ people: v })}>Find the person in a photo</Toggle>
-        <p className="dz-hint">In a photo of a person the background is left out, and the hair, face, body and clothes each get colours of their own, so the face keeps its detail. The first time, the browser loads a small picture model (about 30 MB) and keeps it.</p>
+        <p className="dz-hint">In a photo of a person the background is left out, and the hair, face, body and clothes each get colours of their own, so the face keeps its detail. The first time, the browser loads two small picture models (about 35 MB in all) and keeps them. They find the person and then the face, so the eyes and lips get colours of their own.</p>
         <Toggle checked={settings.snap} onChange={(v) => api.changeSettings({ snap: v })}>Use the nearest thread colours</Toggle>
         <Toggle checked={settings.details !== false} onChange={(v) => api.changeSettings({ details: v })}>Fine details on top</Toggle>
         <p className="dz-hint">Thin lines and tiny dots, such as leaf veins, twigs, eyelids, lashes and small dark spots, are found in the picture itself and sewn on top, last. For photos and artwork; a flat logo has none.</p>
@@ -133,6 +135,19 @@ export default function PicturePanel({ api, pickFile }) {
         )}
         {traceInfo && traceInfo.person > 0 && settings.people !== false && !convertError && (
           <p className="dz-note-inline">A person was found ({Math.round(traceInfo.person * 100)}% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick &quot;Find the person in a photo&quot; to keep the whole picture.</p>
+        )}
+        {traceInfo && traceInfo.face && settings.people !== false && !convertError && (() => {
+          // found in the picture's own pixels, so it is true for the picture as it is now (bigger, smaller, cropped, after an undo)
+          const faceMm = traceInfo.face.facePx * ref.mmPerPx;
+          const eyeMm = traceInfo.face.eyePx * ref.mmPerPx;
+          return eyeMm < FACE_EYE_MIN_MM
+            ? <p className="dz-warn">The face is only about {faceMm.toFixed(0)} mm wide, so each eye is about {eyeMm.toFixed(1)} mm. Eyes that small sew as dark marks, not as eyes. {traceInfo.faceCrop ? "Crop to the face, or make the picture bigger." : "Make the picture bigger."}</p>
+            : <p className="dz-note-inline">The face is about {faceMm.toFixed(0)} mm wide, so each eye is about {eyeMm.toFixed(1)} mm.</p>;
+        })()}
+        {traceInfo && traceInfo.faceCrop && settings.people !== false && !convertError && (
+          <div className="dz-actions">
+            <button type="button" className="kb-btn kb-btn--ghost" disabled={!hasImage || converting} onClick={api.cropToFace} title="Cut away what is round the head and shoulders, then make the result fill the hoop">Crop to the face</button>
+          </div>
         )}
         {traceInfo && traceInfo.widenedMm2 >= 1 && !convertError && (
           <p className="dz-note-inline">Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger.</p>

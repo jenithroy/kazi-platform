@@ -6,11 +6,12 @@
  *
  * Exit code 0 when every check passes, 1 otherwise.
  */
-import { traceImage, renderTrace, quantize, detectBackground } from "./index.js";
+import { traceImage, renderTrace, quantize, detectBackground, normalizeOptions } from "./index.js";
 import { detailLimits, limitsFor } from "./detail.js";
 import { contentBox, fillScale, objectsFromTrace, mergeTraceObjects, changedColours, bleedUnder, clothFromTrace, clothMatch, CLOTH_MATCH, CLOTH_MATCH_PHOTO, CLOTH_FINE_MM, CLOTH_FIELD_MM } from "../../digitizer/convert.js";
-import { REGION, cutOutPerson, resampleClasses, importanceMap, DEFAULT_REGION_WEIGHTS } from "./regions.js";
+import { REGION, REGION_COUNT, cutOutPerson, resampleClasses, importanceMap, DEFAULT_REGION_WEIGHTS } from "./regions.js";
 import { buildRegionalPalette, classifyByRegion } from "./regionPalette.js";
+import { rgbToLab } from "./color.js";
 import { removeFrame } from "./frame.js";
 import { HALO_RATIO } from "./details.js";
 import { buildPalette, missingNeutral, NEUTRAL_FAR, NEUTRAL_MIN_SHARE } from "./quantize.js";
@@ -900,6 +901,128 @@ log("N. a portrait: light hair against a light wall, and a person cut out of the
       if (!(rp.classMask[labels[i]] & (1 << REGION.CLOTHES))) leaks++;
     }
     check("regional palette: a pixel deep inside a region takes only colours that region owns", n > 1000 && leaks === 0, `${leaks} of ${n} pixels took another region's colour`);
+  }
+  // a SMALL many-toned face next to big, many-toned regions: counting error in pixels gave the suit and the helmet the colours and the face ONE (a flat patch with no eyes)
+  {
+    const W2 = 240, H2 = 240;
+    const rgb2 = new Uint8ClampedArray(W2 * H2 * 3), cls2 = new Uint8Array(W2 * H2);
+    const set = (x, y, c, v) => { const i = y * W2 + x; cls2[i] = c; rgb2[i * 3] = v[0]; rgb2[i * 3 + 1] = v[1]; rgb2[i * 3 + 2] = v[2]; };
+    const suit = [[240, 240, 242], [205, 210, 220], [165, 172, 192], [115, 124, 152], [62, 72, 110]];
+    const helmet = [[150, 60, 30], [110, 40, 20], [70, 25, 15], [200, 120, 70]];
+    const hair = [[40, 30, 25], [75, 55, 40], [110, 85, 60]];
+    const skin = [[225, 170, 150], [200, 140, 120], [170, 110, 90], [235, 195, 175]];
+    for (let y = 0; y < H2; y++) for (let x = 0; x < W2; x++) {
+      if (y >= 110 && x < 120) set(x, y, REGION.CLOTHES, suit[Math.floor(x / 24)]); // a big suit, five tones
+      else if (y >= 110) set(x, y, REGION.OTHER, helmet[Math.floor((x - 120) / 30)]); // a big helmet, four tones
+      else if (y < 40 && x > 70 && x < 170) set(x, y, REGION.HAIR, hair[Math.floor((x - 70) / 34) % 3]);
+      else if ((x - 120) ** 2 + (y - 75) ** 2 <= 24 * 24) set(x, y, REGION.FACE_SKIN, skin[Math.floor((x - 96) / 12) % 4]); // a small face (area about 1800 px), four tones
+    }
+    const base = { maxColors: 10, seed: 1, mergeDE: 6, crumbs: "strict", noiseTol: 6, weights: DEFAULT_REGION_WEIGHTS };
+    const asked = (rp, c) => (rp.alloc.find((a) => a[0] === c) || [0, 0])[1];
+    const oldRule = buildRegionalPalette(rgb2, W2, H2, cls2, { ...base, areaPower: 1, minColors: {} });
+    const newRule = buildRegionalPalette(rgb2, W2, H2, cls2, base);
+    check("(control) counting error by the pixel starves a small face next to big many-toned regions", !!oldRule && asked(oldRule, REGION.FACE_SKIN) <= 2, JSON.stringify(oldRule && oldRule.alloc));
+    check("the face is given colours before the shares are made: at least three, as far as it has tones", !!newRule && asked(newRule, REGION.FACE_SKIN) >= 3 && asked(newRule, REGION.FACE_SKIN) > asked(oldRule, REGION.FACE_SKIN), JSON.stringify(newRule && newRule.alloc));
+    check("... and the palette never holds more colours than were asked for", newRule.n <= base.maxColors, `${newRule.n} colours`);
+    const small = buildRegionalPalette(rgb2, W2, H2, cls2, { ...base, maxColors: 5 });
+    check("a small palette is the person's own choice: no minimums are made out of it", asked(small, REGION.FACE_SKIN) <= 2 || small.n <= 5, JSON.stringify(small.alloc));
+  }
+  // the eyes and lips (classes 6 and 7, painted by the face finder) have colours of their own from a few dozen pixels, and the palette still keeps to the colours asked for
+  {
+    const W2 = 200, H2 = 200;
+    const rgb2 = new Uint8ClampedArray(W2 * H2 * 3), cls2 = new Uint8Array(W2 * H2);
+    const set = (x, y, c, v) => { const i = y * W2 + x; cls2[i] = c; rgb2[i * 3] = v[0]; rgb2[i * 3 + 1] = v[1]; rgb2[i * 3 + 2] = v[2]; };
+    for (let y = 0; y < H2; y++) for (let x = 0; x < W2; x++) {
+      if (y >= 120) set(x, y, REGION.CLOTHES, [[40, 50, 90], [60, 75, 130]][x < 100 ? 0 : 1]);
+      else if ((x - 100) ** 2 + (y - 70) ** 2 <= 45 * 45) {
+        const eye = (x - 82) ** 2 + (y - 62) ** 2 <= 7 * 7 || (x - 118) ** 2 + (y - 62) ** 2 <= 7 * 7;
+        const lips = ((x - 100) / 15) ** 2 + ((y - 92) / 5) ** 2 <= 1;
+        if (eye) set(x, y, REGION.FEATURES, [50, 32, 22]);
+        else if (lips) set(x, y, REGION.LIPS, [190, 60, 72]);
+        else set(x, y, REGION.FACE_SKIN, [[225, 170, 150], [205, 150, 130], [235, 190, 170]][Math.floor((x - 55) / 30) % 3]);
+      }
+    }
+    const rp = buildRegionalPalette(rgb2, W2, H2, cls2, { maxColors: 9, seed: 1, mergeDE: 6, crumbs: "strict", noiseTol: 6, weights: DEFAULT_REGION_WEIGHTS });
+    const has = (c, test) => { for (let k = 0; k < rp.n; k++) if ((rp.classMask[k] & (1 << c)) && test(rp.rgb[k * 3], rp.rgb[k * 3 + 1], rp.rgb[k * 3 + 2])) return true; return false; };
+    check("the eyes (about 150 pixels each) and the lips are regions of their own", rp.live.includes(REGION.FEATURES) && rp.live.includes(REGION.LIPS), JSON.stringify(rp.live));
+    check("the eyes get their dark thread and the lips their red", has(REGION.FEATURES, (r, g, b) => r < 90 && g < 70 && b < 60) && has(REGION.LIPS, (r, g, b) => r > 150 && r > g + 80), JSON.stringify(Array.from(rp.rgb).map(Math.round)));
+    check("with the eyes and lips added the palette is still within the colours asked for", rp.n <= 9, `${rp.n} colours`);
+    check("the weights cover all ten classes (the eyes and the lips are the most read)", DEFAULT_REGION_WEIGHTS.length === REGION_COUNT && REGION_COUNT === 10 && DEFAULT_REGION_WEIGHTS[REGION.FEATURES] > DEFAULT_REGION_WEIGHTS[REGION.FACE_SKIN] && DEFAULT_REGION_WEIGHTS[REGION.LIPS] > DEFAULT_REGION_WEIGHTS[REGION.CLOTHES]);
+  }
+  // The white of the eye (class 8) and the open mouth (class 9) are ZONES inside the eyes (6) and the lips (7): no palette of their own, they only say where a white that was
+  // measured on the picture (`anchors`) may be used. Without an anchor they change nothing; with one the white is a thread of the palette, kept exactly as measured.
+  {
+    const W2 = 200, H2 = 200;
+    const rgb2 = new Uint8ClampedArray(W2 * H2 * 3), cls2 = new Uint8Array(W2 * H2);
+    const set = (x, y, c, v) => { const i = y * W2 + x; cls2[i] = c; rgb2[i * 3] = v[0]; rgb2[i * 3 + 1] = v[1]; rgb2[i * 3 + 2] = v[2]; };
+    const WHITE_EYE = [236, 233, 229], TEETH = [240, 236, 230], SHINE = [246, 242, 238];
+    // (the whites are drawn as two close colours side by side: not a flat patch, so the palette finds no colour of its own in them, as in a real picture where a white is a few blurred pixels)
+    const speckle = (x, y, a) => ((x + y) % 2 ? a : a.map((v) => v - 22));
+    const draw = (zones) => {
+      for (let y = 0; y < H2; y++) for (let x = 0; x < W2; x++) {
+        if (y >= 130) { set(x, y, REGION.CLOTHES, [[40, 50, 90], [60, 75, 130]][x < 100 ? 0 : 1]); continue; }
+        if ((x - 100) ** 2 + (y - 70) ** 2 > 50 * 50) continue;
+        set(x, y, REGION.FACE_SKIN, [[225, 170, 150], [205, 150, 130], [235, 190, 170]][Math.floor((x - 50) / 33) % 3]);
+        for (const ex of [78, 122]) {
+          const d = Math.hypot(x - ex, y - 58);
+          if (d <= 5) set(x, y, REGION.FEATURES, [50, 32, 22]); // the iris
+          else if (d <= 10) set(x, y, zones ? REGION.EYE_WHITE : REGION.FEATURES, speckle(x, y, WHITE_EYE)); // the white round it
+          else if (d <= 12) set(x, y, REGION.FEATURES, [95, 65, 50]); // the lid
+        }
+        const m = ((x - 100) / 22) ** 2 + ((y - 98) / 11) ** 2, o = ((x - 100) / 12) ** 2 + ((y - 98) / 5) ** 2;
+        if (m <= 1) {
+          if (o <= 1) set(x, y, zones ? REGION.MOUTH : REGION.LIPS, y < 98 ? speckle(x, y, TEETH) : [60, 25, 30]); // an open mouth: teeth above, the dark behind them below
+          else set(x, y, REGION.LIPS, [190, 60, 72]);
+        }
+        if (Math.abs(x - 82) <= 1 && Math.abs(y - 98) <= 1) set(x, y, REGION.LIPS, SHINE); // a shine on the lip, as white as the teeth but not in the mouth
+        if (y >= 40 && y <= 44 && x >= 60 && x <= 96) set(x, y, REGION.FEATURES, Math.abs(x - 80) <= 1 && y === 42 ? SHINE : [95, 65, 50]); // a brow, with a shine on it
+      }
+    };
+    const base = { maxColors: 10, seed: 1, mergeDE: 6, crumbs: "strict", noiseTol: 6, weights: DEFAULT_REGION_WEIGHTS };
+    draw(true);
+    const zoned = { rgb: rgb2.slice(), cls: cls2.slice() };
+    draw(false);
+    const folded = { rgb: rgb2.slice(), cls: cls2.slice() };
+    const plainZ = buildRegionalPalette(zoned.rgb, W2, H2, zoned.cls, base), plainF = buildRegionalPalette(folded.rgb, W2, H2, folded.cls, base);
+    check("zones without a measured white change nothing: the palette is the one the eyes and lips alone give", !!plainZ && plainZ.n === plainF.n && Array.from(plainZ.rgb).every((v, k) => Math.abs(v - plainF.rgb[k]) < 1e-9) && !plainZ.live.includes(REGION.EYE_WHITE) && !plainZ.live.includes(REGION.MOUTH), JSON.stringify([plainZ.n, plainF.n, plainZ.live]));
+    const lab0 = classifyByRegion(zoned.rgb, W2 * H2, W2, H2, plainZ.lab, plainZ.n, zoned.cls, plainZ, 2);
+    const lab1 = classifyByRegion(folded.rgb, W2 * H2, W2, H2, plainF.lab, plainF.n, folded.cls, plainF, 2);
+    check("... and neither do they in the labelling of the pixels", lab0.every((v, i) => v === lab1[i]));
+    const white = { rgb: [250, 246, 240], classes: [REGION.EYE_WHITE] }; // (not the colour of the white in the picture: it must be kept as given)
+    const one = buildRegionalPalette(zoned.rgb, W2, H2, zoned.cls, { ...base, anchors: [white] });
+    const entryOf = (rp, rgb) => { for (let k = 0; k < rp.n; k++) if (Math.abs(rp.rgb[k * 3] - rgb[0]) < 1e-6 && Math.abs(rp.rgb[k * 3 + 1] - rgb[1]) < 1e-6 && Math.abs(rp.rgb[k * 3 + 2] - rgb[2]) < 1e-6) return k; return -1; };
+    const ka = entryOf(one, white.rgb);
+    check("a measured white is a colour of the palette, exactly as measured, for the zone it belongs to", ka >= 0 && one.anchor[ka] === 1 && (one.classMask[ka] & (1 << REGION.EYE_WHITE)) !== 0 && one.live.includes(REGION.EYE_WHITE) && one.anchored === 1, JSON.stringify([ka, one.anchored, one.live]));
+    check("... and still within the colours asked for", one.n <= base.maxColors && plainF.n <= base.maxColors, `${one.n} colours`);
+    const mouthAnchor = { rgb: TEETH.slice(), classes: [REGION.MOUTH] };
+    const both = buildRegionalPalette(zoned.rgb, W2, H2, zoned.cls, { ...base, anchors: [{ rgb: WHITE_EYE.slice(), classes: [REGION.EYE_WHITE] }, mouthAnchor] });
+    check("two whites that are alike are one thread (it serves both zones), and the palette stays within its colours", both.n <= base.maxColors && both.anchored === 2 && Array.from({ length: both.n }, (_, k) => k).some((k) => (both.classMask[k] & (1 << REGION.EYE_WHITE)) && (both.classMask[k] & (1 << REGION.MOUTH))), JSON.stringify([both.n, both.anchored]));
+    // where the white is used: the labelling with a palette made by hand (skin, two eye colours, the lips' red and the dark of the mouth, and the white of the eye and the teeth)
+    {
+      const hand = [[225, 170, 150], [50, 32, 22], [95, 65, 50], [190, 60, 72], [60, 25, 30], [240, 236, 230]];
+      const labH = new Float64Array(hand.length * 3);
+      hand.forEach((c, k) => rgbToLab(c[0], c[1], c[2], labH, k * 3));
+      const palH = { n: 6, live: [3, 6, 7, 8, 9], classMask: Uint16Array.from([1 << 3, 1 << 6, 1 << 6, 1 << 7, 1 << 7, (1 << 8) | (1 << 9)]) };
+      const labels = classifyByRegion(zoned.rgb, W2 * H2, W2, H2, labH, 6, zoned.cls, palH, 2);
+      let ring = 0, ringWhite = 0;
+      for (let y = 0; y < H2; y++) for (let x = 0; x < W2; x++) {
+        const d = Math.min(Math.hypot(x - 78, y - 58), Math.hypot(x - 122, y - 58));
+        if (zoned.cls[y * W2 + x] === REGION.EYE_WHITE && d > 6.5 && d < 8.5) { ring++; if (labels[y * W2 + x] === 5) ringWhite++; }
+      }
+      check("the white takes the white of the eye (the middle of the ring), the teeth and nothing else", ring > 100 && ringWhite === ring && labels[93 * W2 + 100] === 5 && labels[96 * W2 + 96] === 5, `${ringWhite} of ${ring} in the ring`);
+      check("the dark behind the teeth keeps its own dark", labels[101 * W2 + 100] === 4 && labels[100 * W2 + 96] === 4, `colours ${labels[101 * W2 + 100]} and ${labels[100 * W2 + 96]}`);
+      check("a shine on the lip, as white as the teeth, is not sewn in the white: it is not in the mouth", labels[98 * W2 + 82] !== 5 && labels[97 * W2 + 83] !== 5, `colour ${labels[98 * W2 + 82]}`);
+      check("nor is a shine on the brow, which is in the eyes' class but not in the white of the eye", labels[42 * W2 + 80] !== 5 && labels[42 * W2 + 79] !== 5 && labels[42 * W2 + 81] !== 5, `colour ${labels[42 * W2 + 80]}`);
+      const noWhite = classifyByRegion(zoned.rgb, W2 * H2, W2, H2, labH, 6, zoned.cls, { ...palH, live: [3, 6, 7], classMask: Uint16Array.from([1 << 3, 1 << 6, 1 << 6, 1 << 7, 1 << 7, 0]) }, 2);
+      let any = 0;
+      for (let i = 0; i < W2 * H2; i++) if (noWhite[i] === 5) any++;
+      check("a zone with no white measured for it is read as the eyes and the lips it lies in", any === 0 && noWhite[58 * W2 + 78 + 8] !== 5);
+    }
+    const tiny = buildRegionalPalette(zoned.rgb, W2, H2, zoned.cls, { ...base, anchors: [{ rgb: [250, 246, 240], classes: [REGION.MOUTH] }] });
+    check("an anchor for a zone with no pixels to speak of is left out", (() => { const none = new Uint8Array(W2 * H2).map((_, i) => (zoned.cls[i] === REGION.MOUTH || zoned.cls[i] === REGION.EYE_WHITE ? REGION.FACE_SKIN : zoned.cls[i])); const r = buildRegionalPalette(zoned.rgb, W2, H2, none, { ...base, anchors: [white] }); return r.anchored === 0 && !r.live.includes(REGION.EYE_WHITE); })() && tiny.anchored === 1, "");
+    check("damaged anchors are ignored (no colour, no classes, classes that do not exist)", (() => { const r = buildRegionalPalette(zoned.rgb, W2, H2, zoned.cls, { ...base, anchors: [null, {}, { rgb: [1, 2], classes: [8] }, { rgb: [1, NaN, 3], classes: [8] }, { rgb: [250, 246, 240], classes: [] }, { rgb: [250, 246, 240], classes: [99] }] }); return r.anchored === 0 && r.n === plainZ.n; })());
+    // ... and through the tracer: the option is checked, the colour is kept as measured, and a picture without anchors is traced as before
+    check("regionAnchors is checked: at most four, each with a colour and real classes", (() => { const o = normalizeOptions({ regionAnchors: [{ rgb: [1, 2, 3], classes: [8] }, { rgb: [1, 2], classes: [8] }, { rgb: [9, 9, 9], classes: [99] }, { rgb: [300, -5, 7.4], classes: [9, 99] }, null, { rgb: [5, 5, 5], classes: [6] }, { rgb: [6, 6, 6], classes: [6] }, { rgb: [7, 7, 7], classes: [6] }] }).regionAnchors; return !!o && o.length === 4 && o[1].rgb.join() === "255,0,7" && o[1].classes.join() === "9"; })() && normalizeOptions({}).regionAnchors === null && normalizeOptions({ regionAnchors: [] }).regionAnchors === null);
   }
   const auto = traceImage(img, { mode: "auto", mmPerPx: 0.25, regions });
   check("a picture with a person cut out is traced as a photograph when the kind is left to the tracer", auto.stats.kind === "photo");

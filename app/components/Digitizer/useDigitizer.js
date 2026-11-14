@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "r
 import { createHistory } from "../../lib/digitizer/history";
 import { createEngine } from "../../lib/digitizer/engineClient";
 import { findPerson, disposePersonFinder } from "../../lib/digitizer/segmentClient";
+import { mainFaces, paintFeatureClasses, faceMeasures, faceCropBox } from "../../lib/digitizer/faces";
 import {
   newDesign, makeObject, boxOfObjects, objectBox, objectCorners, moveObject, setObjectSize, setObjectCentre, withTransform, scaleObjectAbout, flipObject,
   breakApart, fillHoles, cloneObjects, engineDesign, serializeDesign, parseDesign, DEFAULT_FILL, DEFAULT_CLOTH, newId, centreRings, followsPicture,
@@ -71,6 +72,34 @@ const rememberedHoop = () => {
 
 /** What identifies a crop of the picture for the person finder: what it found stays valid until the crop changes. */
 const personKey = (crop) => [crop.x, crop.y, crop.w, crop.h].map(Math.round).join(",");
+
+/**
+ * What the person finder found, as the tracer wants it at this size: the region map with the face's eyes, brows and lips painted in (their width in pixels
+ * depends on how big a pixel is on the cloth, so this is done for each trace). `faces` are the landmarker's points (faceFinder.js); a picture without one
+ * has the person finder's own map.
+ */
+function personAt(person, mmPerPx) {
+  if (!person || !person.regions) return null;
+  const { width: W, height: H } = person.regions;
+  const fl = person.faces && person.faces.length ? mainFaces(person.faces, W, H) : [];
+  if (!fl.length) return { regions: person.regions };
+  const painted = paintFeatureClasses(person.regions.data, W, H, fl, { mmPerPx });
+  // (the white of the eyes and of the teeth, measured on the picture when it was looked at: they go with the eyes and lips painted above)
+  return { regions: { width: W, height: H, data: painted.classes }, anchors: person.anchors && person.anchors.length ? person.anchors : null };
+}
+
+/**
+ * The biggest face the person finder found, in the PICTURE's own pixels (`scale` = pixels of the traced copy per picture pixel), and a crop that frames it. In the
+ * picture's pixels so that it stays true for any size, crop, undo or redo: the page multiplies by the picture's millimetres a pixel NOW. null without a face.
+ */
+function faceOf(person, scale) {
+  if (!person || !person.regions || !person.faces || !person.faces.length) return null;
+  const { width: W, height: H } = person.regions;
+  const fl = mainFaces(person.faces, W, H);
+  if (!fl.length) return null;
+  const m = faceMeasures(fl[0], 1 / scale); // (the "millimetres" of faceMeasures are picture pixels here: a pixel of the traced copy is 1 / scale of one of the picture's)
+  return { face: { facePx: m.faceMm, eyePx: m.eyeMm }, box: faceCropBox(fl, W, H) };
+}
 
 export function useDigitizer() {
   const hist = useRef(null);
@@ -733,8 +762,11 @@ export function useDigitizer() {
       // is given the region map the finder made. What was found is kept with the picture, so a slider moved later does not look again.
       const seekKey = personKey(ref0.crop);
       const lookForPerson = s.people !== false && s.background !== "none" && (s.kind === "auto" || s.kind === "photo");
-      const withPerson = (o) => (lookForPerson && img.person && img.person.key === seekKey && img.person.regions ? { ...o, regions: img.person.regions } : o);
-      let opts = withPerson(traceOptions(s, mmPerPx));
+      const withPerson = (o, mm) => {
+        const at = lookForPerson && img.person && img.person.key === seekKey ? personAt(img.person, mm) : null;
+        return at ? { ...o, regions: at.regions, ...(at.anchors ? { regionAnchors: at.anchors } : {}) } : o;
+      };
+      let opts = withPerson(traceOptions(s, mmPerPx), mmPerPx);
       let tok = newToken();
       let res = await engine.current.trace(first.image, opts, "picture", tok);
       if (token !== convertToken.current) return;
@@ -742,10 +774,10 @@ export function useDigitizer() {
       if (lookForPerson && res.stats?.kind === "photo" && !(img.person && img.person.key === seekKey)) {
         const found = await findPerson(extractImage(img.canvas, ref0.crop, 1600).image);
         if (token !== convertToken.current) return;
-        img.person = { key: seekKey, regions: found ? found.regions : null };
+        img.person = { key: seekKey, regions: found ? found.regions : null, faces: found ? found.faces : [], anchors: found ? found.anchors : [] };
         if (found) {
           const again = extractImage(img.canvas, ref0.crop, 1600);
-          opts = withPerson(traceOptions(s, mmPerPx));
+          opts = withPerson(traceOptions(s, mmPerPx), mmPerPx);
           tok = newToken();
           res = await engine.current.trace(again.image, opts, "picture", tok);
           if (token !== convertToken.current) return;
@@ -764,7 +796,7 @@ export function useDigitizer() {
           const next = { ...ref0, mmPerPx: ref0.mmPerPx * k, x: -cx * k, y: -cy * k };
           const again = extractImage(img.canvas, ref0.crop, 1600); // the first copy went to the worker (its memory moved over): take another
           const mm2 = next.mmPerPx / again.scale;
-          const opts2 = withPerson(traceOptions(s, mm2));
+          const opts2 = withPerson(traceOptions(s, mm2), mm2);
           const tok2 = newToken();
           const res2 = await engine.current.trace(again.image, opts2, "picture", tok2);
           if (token !== convertToken.current) return;
@@ -798,7 +830,10 @@ export function useDigitizer() {
       const lt = { token: tok, scale, crop: { x: Math.round(ref.crop.x), y: Math.round(ref.crop.y) }, holder: img, maxColors: typeof s.colors === "number" ? Math.min(s.colors, s.maxColors) : s.maxColors, thick: !!s.detailThick, recipe: { crop: { x: ref0.crop.x, y: ref0.crop.y, w: ref0.crop.w, h: ref0.crop.h }, options: opts } };
       const perWorkPx = mmPerPx * (res.stats?.scale || 1); // millimetres a pixel of the tracer's own (maybe shrunk) copy is
       const droppedMm2 = ((res.stats?.removedSliverPixels || 0) + (res.stats?.removedSpeckPixels || 0)) * perWorkPx * perWorkPx;
-      const info = { kind: res.stats?.kind || "logo", person: res.stats?.person ?? null, widenedMm2: (res.stats?.widenedPixels || 0) * perWorkPx * perWorkPx, letters: res.stats?.strokeCount || 0, letterMm: res.stats?.strokeMedianMm || 0, widthMm: ref.crop.w * ref.mmPerPx };
+      // the face the person finder found: how wide it and one eye are, in the picture's own pixels (the panel multiplies by the picture's size NOW), and a crop that frames it
+      const faceNow = lookForPerson && img.person && img.person.key === seekKey ? faceOf(img.person, scale) : null;
+      const faceCrop = faceNow && faceNow.box ? { x: Math.round(ref0.crop.x + faceNow.box[0] / scale), y: Math.round(ref0.crop.y + faceNow.box[1] / scale), w: Math.round((faceNow.box[2] - faceNow.box[0]) / scale), h: Math.round((faceNow.box[3] - faceNow.box[1]) / scale) } : null;
+      const info = { kind: res.stats?.kind || "logo", person: res.stats?.person ?? null, widenedMm2: (res.stats?.widenedPixels || 0) * perWorkPx * perWorkPx, letters: res.stats?.strokeCount || 0, letterMm: res.stats?.strokeMedianMm || 0, widthMm: ref.crop.w * ref.mmPerPx, face: faceNow ? faceNow.face : null, faceCrop };
       const nextSkip = new Set(), nextInclude = new Set();
       cloth = clothOf(res);
       // The shapes are made in the worker. What was found out, the colour list and the shapes land together, in one step.
@@ -833,6 +868,27 @@ export function useDigitizer() {
   runConvertRef.current = runConvert;
   /** Make the picture (and the shapes made from it) as big as the hoop allows and read it again at that size: where the extra detail of a bigger hoop comes from. */
   const fitToHoop = useCallback(() => runConvertRef.current({}, "hoop"), []);
+
+  /**
+   * Crop the picture to the head and shoulders round the face the person finder found (traceInfo.faceCrop, in the picture's own pixels), then make the result
+   * fill the hoop: a face that is a small part of a picture is a few millimetres wide on the cloth, and eyes that small cannot be sewn.
+   * One step to undo for the crop; the conversion that follows is its own.
+   */
+  const cropToFace = useCallback(() => {
+    const old = hist.current.present.reference;
+    const box = traceInfo && traceInfo.faceCrop;
+    if (!old || !box || !refImage.current) return;
+    flush();
+    const x = Math.max(0, Math.min(old.srcW - 1, box.x)), y = Math.max(0, Math.min(old.srcH - 1, box.y));
+    const nc = { x, y, w: Math.max(1, Math.min(old.srcW - x, box.w)), h: Math.max(1, Math.min(old.srcH - y, box.h)) };
+    commit((dd) => {
+      const r = dd.reference;
+      if (!r) return dd;
+      return { ...dd, reference: { ...r, crop: nc, x: r.x + (nc.x - r.crop.x) * r.mmPerPx, y: r.y + (nc.y - r.crop.y) * r.mmPerPx } };
+    });
+    setCrop(false);
+    setTimeout(() => runConvertRef.current({}, "hoop"), 0);
+  }, [traceInfo, commit, flush]);
 
   // Turn a colour of the picture on or off. A colour that matches the cloth starts off; turning it on is remembered in `include`.
   const toggleSkip = useCallback((index) => {
@@ -1190,7 +1246,7 @@ export function useDigitizer() {
     undo, redo, commit, coalesced, begin, live, end, flush, setFabricColor, include,
     patchFill, patchStroke, patchSatin, patchObject, addObjects, removeObjects, duplicate, reorder, stepOrder, breakApart: doBreakApart, fillHoles: doFillHoles,
     flip, setSize, setCentre, setRotation, align, nudge, recolor, setDesign, setHoop, newFile, editText, retext,
-    runConvert, fitToHoop, changeSettings, toggleSkip, loadPictureFile, setReference, setReferenceWidth, removeReference, replacing, confirmReplace, cancelReplace,
+    runConvert, fitToHoop, cropToFace, changeSettings, toggleSkip, loadPictureFile, setReference, setReferenceWidth, removeReference, replacing, confirmReplace, cancelReplace,
     trace, traceBack, traceCancel, traceFinish, startTracing, menu, openMenu, closeMenu,
     playSim, pauseSim, stopSim, seekSim, setSimSpeed,
     exportFormats, exportPreview, printProduction, saveDesignFile, openDesignFile, openStitchFile, restore,

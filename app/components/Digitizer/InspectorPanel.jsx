@@ -93,7 +93,7 @@ function DesignSettings({ api }) {
         <Row label="Colour">
           <ColorField value={design.fabricColor} label="Cloth colour" onChange={(c) => api.setFabricColor(c)} />
         </Row>
-        <p className="dz-hint">The colour of the garment. Only for looking at the design: white thread on white cloth is hard to see. Colours in a picture that match it are left out when the picture is converted. It is not saved in the stitch file.</p>
+        <p className="dz-hint">The colour of the garment. Only for looking at the design: white thread on white cloth is hard to see. Colours in a picture that match it are left out when the picture is converted (not when &quot;Leave out the background&quot; is switched off in the Picture step: then the whole picture is stitched). It is not saved in the stitch file.</p>
       </Group>
       <Group title="Add">
         <div className="dz-actions">
