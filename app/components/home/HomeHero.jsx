@@ -47,6 +47,14 @@ export function HomeHero() {
               Get a quote
               <ArrowRight size={18} weight="bold" aria-hidden="true" />
             </Link>
+            {/* Create by design (/create): your logo on a hoodie in two clicks. Shown from 360px up (two buttons fit one row on a phone from
+                there); "Design it yourself" (the Atelier) stays a tablet-and-up button. */}
+            <Link
+              href="/create"
+              className="hidden h-12 items-center whitespace-nowrap rounded-md border border-white/45 bg-white/10 px-6 font-body text-base font-semibold text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/20 min-[360px]:inline-flex"
+            >
+              Create by design
+            </Link>
             <Link
               href="/atelier"
               className="hidden h-12 items-center whitespace-nowrap rounded-md border border-white/45 bg-white/10 px-6 font-body text-base font-semibold text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/20 md:inline-flex"

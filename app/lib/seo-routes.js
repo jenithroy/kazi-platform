@@ -36,6 +36,16 @@ export const SEO_ROUTES = [
     priority: 0.8,
   },
   {
+    path: "/create",
+    label: "Create by design",
+    group: "Main pages",
+    title: "Create by Design",
+    description:
+      "Pick a hoodie, t-shirt or sweatpants, add your website or upload your logo and see it embroidered on the garment. Order in two clicks; Kazi confirms the price.",
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
     path: "/digitizer",
     label: "Embroidery digitizer",
     group: "Main pages",

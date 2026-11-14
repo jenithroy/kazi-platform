@@ -10,6 +10,8 @@ import { SITE_PHONE, SITE_PHONE_DIGITS } from "@/lib/site";
 
 const LINKS = [
   { label: "Design", href: "/atelier" },
+  // The bar has room for it from 1280px; below that it is in the footer, the homepage's first screen and (below 768px) the menu.
+  { label: "Create by design", href: "/create", barFrom: "xl" },
   { label: "Collections", href: "/collections" },
   { label: "Services", href: "/heritage" },
   { label: "Pricing", href: "/pricing" },
@@ -189,7 +191,7 @@ export function Nav() {
               key={link.label}
               href={link.href}
               className={`font-display text-base tracking-wide transition-colors duration-300 hover:opacity-75 ${linkColor} ${
-                link.barFrom === "lg" ? "hidden lg:inline" : ""
+                link.barFrom === "lg" ? "hidden lg:inline" : link.barFrom === "xl" ? "hidden xl:inline" : ""
               }`}
             >
               {link.label}

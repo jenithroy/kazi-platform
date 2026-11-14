@@ -17,6 +17,7 @@ Kazi Manufacturing is a full-service garment manufacturer based in Kathmandu, Ne
 - [Home](https://kazimanufacturing.com/): Overview of low-MOQ custom clothing manufacturing, white-label blanks, process and the brand.
 - [Manufacturing Services](https://kazimanufacturing.com/heritage/): Full service catalogue — custom cut-and-sew manufacturing (MOQ 100), DTG, screen printing, embroidery, DTF and video editing.
 - [Design Your Garment](https://kazimanufacturing.com/atelier/): Interactive 3D & 2D garment configurator to customise silhouettes, fabrics, colours and artwork placement before requesting a quote.
+- [Create by Design](https://kazimanufacturing.com/create/): Pick a hoodie, t-shirt or sweatpants, give a website or upload a logo, and see the logo embroidered on the garment; the order goes to Kazi, which checks it and confirms the price. Nothing is paid or made until the price is agreed.
 - [Pricing Calculator](https://kazimanufacturing.com/pricing/): Instant per-unit cost estimator by garment type, quantity tier (from 100 units) and print/embroidery add-ons.
 - [Free Online Embroidery Digitizer](https://kazimanufacturing.com/digitizer/): Browser-based tool that converts a logo, PNG or lettering into machine embroidery stitch files (DST, PES, EXP, JEF, VP3, XXX) with a real-time stitch preview. Runs locally on the visitor's device.
 - [Request a Quote](https://kazimanufacturing.com/quote/): Direct project brief and tech-pack upload form for an itemised manufacturing quote within 24 hours.
