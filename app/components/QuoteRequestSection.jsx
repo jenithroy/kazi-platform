@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { readQuoteDesigns, clearQuoteDesigns, describeQuoteDesigns } from "@/lib/quote-handoff";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { LIMITS, clampQty, clip, mailtoUrl, newOrderKey, retryOutbox, submitWithMirror, whatsappUrl } from "@/lib/dashboard-orders";
 import { Reveal } from "@/components/Reveal";
 
 const GARMENT_CATEGORIES = ["Knitwear", "Outerwear", "Denim", "Accessories", "Footwear", "Other"];
@@ -76,6 +77,15 @@ export function QuoteRequestSection() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [failedOrder, setFailedOrder] = useState(null); // the request, written for the e-mail / WhatsApp links when nothing could store it
+  // One key for this request however many times it is sent (it is the quote's id and the dashboard's `key`): pressing the button again after a
+  // failure sends the same request, not a second one.
+  const orderKey = useRef(null);
+
+  // Requests an earlier visit could not deliver to the dashboard are sent again, once, quietly.
+  useEffect(() => {
+    retryOutbox();
+  }, []);
 
   // A visitor who designed something in the Atelier and clicked "Get a Quote" there lands
   // here — carry their saved design(s) into the message field instead of making them
@@ -119,35 +129,74 @@ export function QuoteRequestSection() {
 
     setSubmitting(true);
     setSubmitError(null);
+    setFailedOrder(null);
 
-    try {
+    // The id is made here (not by the database) so it can also be the dashboard's `key`. The insert below asks for nothing back, so row-level
+    // security, which lets a logged-out visitor write a quote but not read it, does not get in the way.
+    const quoteId = (orderKey.current ||= newOrderKey());
+    const category = form.garmentCategory === "Other" ? form.garmentCategoryOther : form.garmentCategory;
+    const volume = form.orderVolume === "Other" ? form.orderVolumeOther : form.orderVolume;
+    const order = {
+      v: 1,
+      key: quoteId,
+      kind: "quote",
+      contact: {
+        name: clip(form.name, LIMITS.name),
+        email: form.email.trim(),
+        ...(form.phone.trim() ? { phone: clip(form.phone, 40) } : {}),
+        company: clip(form.company, LIMITS.company),
+      },
+      items: [{ garment: "other", label: category, qty: clampQty(resolveQuantity(form)) }],
+      // the range is turned into one number for the table, so the words go along
+      message: clip(`Approx. order volume: ${volume}\n\n${form.message}`, LIMITS.message),
+      source: { page: window.location.pathname },
+    };
+
+    // The site's own database, exactly as before.
+    async function toSiteDatabase() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       const { error } = await supabase.from("quotes").insert({
+        id: quoteId,
         customer_id: user?.id ?? null,
         contact_name: form.name,
         contact_email: form.email,
         contact_phone: form.phone || null,
         company_name: form.company,
-        product_type: form.garmentCategory === "Other" ? form.garmentCategoryOther : form.garmentCategory,
+        product_type: category,
         quantity: resolveQuantity(form),
         details: form.message,
       });
-      if (error) throw error;
+      // 23505 (the id is taken): an earlier attempt of this very request stored it, which is what we want.
+      if (error && error.code !== "23505") throw error;
+      return true;
+    }
 
+    // Received when either place has it; if only the site's database does, the request stays in the outbox and is sent to the dashboard later.
+    let stored = false;
+    try {
+      const sent = await submitWithMirror(order, isSupabaseConfigured ? toSiteDatabase : null);
+      stored = sent.stored;
+      // Raw Supabase/network messages aren't meant for visitors — keep them in the console.
+      if (!stored) console.error("Quote request failed", sent.mirror?.error || sent.dashboard);
+      else if (sent.mirror && !sent.mirror.ok) console.warn("The quote reached the dashboard but not the site's own database", sent.mirror.error);
+    } catch (err) {
+      console.error("Quote request failed", err);
+    }
+
+    if (stored) {
+      orderKey.current = null;
       clearQuoteDesigns();
       setSubmitted(true);
-    } catch (err) {
-      // Raw Supabase/network messages aren't meant for visitors — keep them in the console.
-      console.error("Quote request failed", err);
+    } else {
+      setFailedOrder(order);
       setSubmitError(
         "We couldn't send your request just now. Please try again, or email hello@kazimanufacturing.com.",
       );
-    } finally {
-      setSubmitting(false);
     }
+    setSubmitting(false);
   }
 
   return (
@@ -288,7 +337,19 @@ export function QuoteRequestSection() {
                   {submitting ? "Sending…" : "Get a Quote"}
                 </button>
                 <span className="font-body text-sm text-pine-soft">No obligation. We reply within 24 hours.</span>
-                {submitError && <p role="alert" className={errorClass}>{submitError}</p>}
+                {submitError && (
+                  <p role="alert" className={errorClass}>
+                    {submitError}
+                    {failedOrder && (
+                      <>
+                        {" "}Or send it as a message:{" "}
+                        <a href={whatsappUrl(failedOrder)} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">WhatsApp</a>
+                        {" · "}
+                        <a href={mailtoUrl(failedOrder)} className="underline underline-offset-2">E-mail</a>
+                      </>
+                    )}
+                  </p>
+                )}
               </div>
             </form>
           )}

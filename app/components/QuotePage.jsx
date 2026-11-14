@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Upload, X, ArrowLeft, ArrowRight, Check } from "lucide-react";
@@ -9,6 +9,11 @@ import { GarmentMockup2D } from "@/components/Atelier/GarmentMockup2D";
 import { readQuoteDesigns, clearQuoteDesigns, describeQuoteDesigns } from "@/lib/quote-handoff";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { SITE_PHONE, SITE_PHONE_DIGITS } from "@/lib/site";
+import { LIMITS, clampQty, clip, dashboardEnabled, mailtoUrl, newOrderKey, retryOutbox, submitWithMirror, whatsappUrl } from "@/lib/dashboard-orders";
+
+// A quote request can be stored by the dashboard link (the order system the team works in), by the site's own database, or both: the
+// request is "received" when either has it. With the link off (NEXT_PUBLIC_DASHBOARD_API_URL unset) this page behaves as it always did.
+const canSubmitOnline = isSupabaseConfigured || dashboardEnabled;
 
 // Slugs match the deep links Heritage's per-service CTAs use (`/quote?service=dtg`, etc).
 const SERVICES = [
@@ -68,15 +73,16 @@ const contactLinkClass = "text-pine underline underline-offset-2 hover:text-moss
 
 // Shown when the form can't reach Supabase (not configured in this build, or a submission
 // failed) so the visitor still has a way to reach us.
-function ContactFallback() {
+// `order`, when given, is the request that could not be sent: the e-mail and the WhatsApp message then carry it, written out.
+function ContactFallback({ order = null }) {
   return (
     <>
       email{" "}
-      <a href={`mailto:${CONTACT_EMAIL}`} className={contactLinkClass}>
+      <a href={order ? mailtoUrl(order) : `mailto:${CONTACT_EMAIL}`} className={contactLinkClass}>
         {CONTACT_EMAIL}
       </a>{" "}
       or message us on{" "}
-      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={contactLinkClass}>
+      <a href={order ? whatsappUrl(order) : WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={contactLinkClass}>
         WhatsApp ({SITE_PHONE})
       </a>
       .
@@ -118,6 +124,14 @@ export function QuotePageForm({
   const [submitting, setSubmitting] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [submitFailed, setSubmitFailed] = useState(false);
+  const [failedOrder, setFailedOrder] = useState(null); // the request, written for the e-mail / WhatsApp links when nothing could store it
+  // One key for this request however many times it is sent: it is the quote's id and the dashboard's `key`, so a retry is never a second request.
+  const orderKey = useRef(null);
+
+  // Requests an earlier visit could not deliver to the dashboard are sent again, once, quietly.
+  useEffect(() => {
+    retryOutbox();
+  }, []);
 
   const isHandoff = designs !== null;
 
@@ -187,10 +201,11 @@ export function QuotePageForm({
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    if (!isSupabaseConfigured) return;
+    if (!canSubmitOnline) return;
 
     setSubmitting(true);
     setSubmitFailed(false);
+    setFailedOrder(null);
 
     const includedDesigns = isHandoff && designs ? designs.filter((d) => !excludedDesignIds.has(d.id)) : [];
 
@@ -216,9 +231,42 @@ export function QuotePageForm({
     // The id is generated here rather than read back with `.select()`: that would make
     // PostgREST use INSERT … RETURNING, which also needs the new row to pass a SELECT policy —
     // and none matches a logged-out visitor's quote, so the insert would be rejected by RLS.
-    const quoteId = crypto.randomUUID();
+    // The same id is the dashboard's `key` (docs/dashboard-link.md), and it is kept until the request is stored, so pressing the button again after a
+    // failure sends the same request, not a second one.
+    const quoteId = (orderKey.current ||= newOrderKey());
+    const details = detailsParts.filter(Boolean).join("\n\n");
 
-    try {
+    // What the dashboard gets: the request in its own words. No files go there (they stay in the site's storage), but their names do, in case the
+    // site's database was the one that could not be reached.
+    const artworkNames = [file, ...additionalFiles].filter(Boolean).map((f) => f.name);
+    const category = form.garmentCategory === "Other" ? form.garmentCategoryOther : form.garmentCategory;
+    const order = {
+      v: 1,
+      key: quoteId,
+      kind: "quote",
+      contact: {
+        name: clip(form.name, LIMITS.name),
+        email: form.email.trim(),
+        ...(form.phone.trim() ? { phone: clip(form.phone, 40) } : {}),
+        company: clip(form.company, LIMITS.company),
+      },
+      items:
+        isHandoff && includedDesigns.length
+          ? includedDesigns.slice(0, 10).map((d) => ({
+              garment: d.garment,
+              label: d.garmentLabel,
+              ...(d.colourHex ? { colour: { hex: d.colourHex, label: d.colourLabel } } : {}),
+              qty: clampQty(d.qty),
+            }))
+          : [{ garment: "other", label: isHandoff ? productType : category, qty: clampQty(quantity) }],
+      ...(!isHandoff && form.service ? { service: form.service } : {}),
+      ...(form.deadline ? { deadline: form.deadline } : {}),
+      message: clip(`${details}${artworkNames.length ? `\n\nArtwork files (kept in the website's storage): ${artworkNames.join(", ")}` : ""}`, LIMITS.message),
+      source: { page: window.location.pathname },
+    };
+
+    // The site's own database, exactly as before: the quote, then its files.
+    async function toSiteDatabase() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -233,21 +281,36 @@ export function QuotePageForm({
         product_type: productType,
         quantity,
         deadline: form.deadline || null,
-        details: detailsParts.filter(Boolean).join("\n\n"),
+        details,
       });
-      if (error) throw error;
+      // 23505 (the id is taken): an earlier attempt of this very request stored it, which is what we want.
+      if (error && error.code !== "23505") throw error;
 
       if (file) await uploadQuoteFile(quoteId, file);
       for (let i = 0; i < additionalFiles.length; i++) {
         await uploadQuoteFile(quoteId, additionalFiles[i], `additional-${i}-`);
       }
+      return true;
+    }
+
+    // Received when either place has it; if only the site's database does, the request stays in the outbox and is sent to the dashboard later.
+    let stored = false;
+    try {
+      const sent = await submitWithMirror(order, isSupabaseConfigured ? toSiteDatabase : null);
+      stored = sent.stored;
+      if (!stored) console.error("Quote submission failed", sent.mirror?.error || sent.dashboard);
+      else if (sent.mirror && !sent.mirror.ok) console.warn("The quote reached the dashboard but not the site's own database", sent.mirror.error);
     } catch (err) {
       console.error("Quote submission failed", err);
+    }
+    if (!stored) {
+      setFailedOrder(order);
       setSubmitFailed(true);
       setSubmitting(false);
       return;
     }
 
+    orderKey.current = null;
     setSubmitting(false);
     setFirstName(form.name.trim().split(" ")[0] ?? "");
     if (isHandoff) clearQuoteDesigns();
@@ -296,7 +359,7 @@ export function QuotePageForm({
       </section>
 
       <section className="px-6 pb-20 md:px-8">
-        {!isSupabaseConfigured && (
+        {!canSubmitOnline && (
           <div role="status" className="mx-auto mb-6 max-w-[1440px] rounded-sm border border-red-600/30 bg-red-600/5 p-5 font-body text-sm text-pine">
             Online quote requests are temporarily unavailable — please <ContactFallback />
           </div>
@@ -573,7 +636,7 @@ export function QuotePageForm({
                 I agree to Kazi&rsquo;s terms and conditions.
               </span>
             </label>
-            <button type="submit" disabled={submitting || !isSupabaseConfigured} className={filledButton}>
+            <button type="submit" disabled={submitting || !canSubmitOnline} className={filledButton}>
               {submitting ? "Sending…" : "Get a Quote"}
             </button>
             {errors.agreedToTerms && <p className={`${errorClass} w-full`}>{errors.agreedToTerms}</p>}
@@ -586,7 +649,7 @@ export function QuotePageForm({
             </span>
             {submitFailed && (
               <p role="alert" className={`${errorClass} w-full`}>
-                Sorry, we couldn&rsquo;t send your request. Please try again, or <ContactFallback />
+                Sorry, we couldn&rsquo;t send your request. Please try again, or <ContactFallback order={failedOrder} />
               </p>
             )}
           </div>
