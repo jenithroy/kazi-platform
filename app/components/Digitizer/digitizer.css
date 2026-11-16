@@ -1,3 +1,12 @@
+/* Four look-alikes for the text tool (lib/digitizer/text.js FONTS), used only where the device has none of the fonts named before them: Archivo Black, Anton, Pacifico and
+   Nunito, Latin subsets, SIL Open Font License 1.1 (the licences are in public/fonts/digitizer). Without them a phone or a Linux computer drew Arial Black, Impact, Brush Script
+   and Comic Sans all as the same plain sans. One weight each, so the same face serves Bold on and off (no smeared "faux bold"). */
+@font-face { font-family: "Kazi Heavy"; src: url("/fonts/digitizer/kazi-heavy.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kazi Condensed"; src: url("/fonts/digitizer/kazi-condensed.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kazi Script"; src: url("/fonts/digitizer/kazi-script.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kazi Round"; src: url("/fonts/digitizer/kazi-round-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kazi Round"; src: url("/fonts/digitizer/kazi-round-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
 /* ══════════════════════════════════════════════════════════════════
    EMBROIDERY DIGITIZER, in this site's look (everything is `.dz-*`, plus the few `.kb-*` / `.ksel` names the components use)
 
