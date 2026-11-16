@@ -833,7 +833,7 @@ export function useDigitizer() {
       // the face the person finder found: how wide it and one eye are, in the picture's own pixels (the panel multiplies by the picture's size NOW), and a crop that frames it
       const faceNow = lookForPerson && img.person && img.person.key === seekKey ? faceOf(img.person, scale) : null;
       const faceCrop = faceNow && faceNow.box ? { x: Math.round(ref0.crop.x + faceNow.box[0] / scale), y: Math.round(ref0.crop.y + faceNow.box[1] / scale), w: Math.round((faceNow.box[2] - faceNow.box[0]) / scale), h: Math.round((faceNow.box[3] - faceNow.box[1]) / scale) } : null;
-      const info = { kind: res.stats?.kind || "logo", person: res.stats?.person ?? null, widenedMm2: (res.stats?.widenedPixels || 0) * perWorkPx * perWorkPx, letters: res.stats?.strokeCount || 0, letterMm: res.stats?.strokeMedianMm || 0, widthMm: ref.crop.w * ref.mmPerPx, face: faceNow ? faceNow.face : null, faceCrop };
+      const info = { kind: res.stats?.kind || "logo", lettering: res.stats?.lettering || null, person: res.stats?.person ?? null, widenedMm2: (res.stats?.widenedPixels || 0) * perWorkPx * perWorkPx, letters: res.stats?.strokeCount || 0, letterMm: res.stats?.strokeMedianMm || 0, widthMm: ref.crop.w * ref.mmPerPx, face: faceNow ? faceNow.face : null, faceCrop };
       const nextSkip = new Set(), nextInclude = new Set();
       cloth = clothOf(res);
       // The shapes are made in the worker. What was found out, the colour list and the shapes land together, in one step.

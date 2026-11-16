@@ -6,6 +6,7 @@ import { Group, Row, NumberField, Slider, Segmented, Toggle, ColorField } from "
 import HoopFit from "./HoopFit";
 import { followsPicture } from "../../lib/digitizer/model";
 import { FACE_EYE_MIN_MM } from "../../lib/digitizer/faces";
+import { letteringAdvice, adviceText, THIN_RUN_MM, DENSE_CAP_MM, DENSE_STROKE_MM } from "../../lib/digitizer/legible";
 
 const COLOR_CHOICES = [
   { value: "auto", label: "Auto" },
@@ -50,6 +51,10 @@ export default function PicturePanel({ api, pickFile }) {
   const heightMm = ref.crop.h * ref.mmPerPx;
   // How tall the smallest lettering is NOW: it was measured when the picture was converted, and grows with the picture.
   const smallLetterMm = traceInfo && traceInfo.kind !== "photo" && traceInfo.letters >= 4 && traceInfo.letterMm > 0 && traceInfo.widthMm > 0 ? traceInfo.letterMm * (widthMm / traceInfo.widthMm) : 0;
+  // The lettering the converter found (runs of letters, trace/lettering.js), as big as it is NOW: sewn as one text, and how well it can be read at this size.
+  const grow = traceInfo && traceInfo.widthMm > 0 ? widthMm / traceInfo.widthMm : 1;
+  const found = traceInfo && traceInfo.lettering ? { ...traceInfo.lettering, capMm: traceInfo.lettering.capMm * grow, strokeMm: traceInfo.lettering.strokeMm * grow } : null;
+  const foundAdvice = found ? letteringAdvice({ capMm: found.capMm, strokeMm: found.strokeMm, hair: found.hair || 0 }) : null;
   const colorValue = settings.colors === "auto" ? "auto" : settings.colors;
   const shapeCount = design.objects.filter(followsPicture).length; // made from the picture or traced over it
   // The fine lines and dots the design has NOW (undo, a deleted object or a new conversion changes them; the reading's count would go stale)
@@ -152,7 +157,14 @@ export default function PicturePanel({ api, pickFile }) {
         {traceInfo && traceInfo.widenedMm2 >= 1 && !convertError && (
           <p className="dz-note-inline">Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger.</p>
         )}
-        {smallLetterMm > 0 && smallLetterMm < SMALL_LETTER_MM && !convertError && (
+        {found && !convertError && (
+          <p className={foundAdvice.level === "good" ? "dz-note-inline" : "dz-warn"}>
+            Lettering found: {n(found.letters)} {found.letters === 1 ? "letter" : "letters"} in {found.blocks} {found.blocks === 1 ? "line" : "lines"}, the smallest about {found.capMm.toFixed(1)} mm tall.
+            {` Lettering up to ${DENSE_CAP_MM} mm tall with strokes of ${DENSE_STROKE_MM} mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under ${THIN_RUN_MM} mm) is sewn as one line of stitches from end to end.`}
+            {foundAdvice.level !== "good" && ` ${adviceText(foundAdvice, { capMm: found.capMm, font: "this lettering" })} (Make the whole design about ${(foundAdvice.goodMm / found.capMm).toFixed(1)} times bigger; it needs a bigger hoop.)`}
+          </p>
+        )}
+        {!found && smallLetterMm > 0 && smallLetterMm < SMALL_LETTER_MM && !convertError && (
           <p className="dz-warn">
             The smallest lettering is only about {smallLetterMm.toFixed(1)} mm tall. Letters under {SMALL_LETTER_MM} mm do not sew clearly: make the whole design about {(SMALL_LETTER_MM / smallLetterMm).toFixed(1)} times bigger (it needs a bigger hoop), or leave the lettering out.
           </p>

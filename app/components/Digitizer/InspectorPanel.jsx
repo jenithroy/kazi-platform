@@ -2,13 +2,14 @@
  * The Design step's side panel: what you can change about the selected shapes (where they are, how big, what colour, how they
  * are stitched, their outline, their lettering), or, with nothing selected, about the whole design (hoop, fabric, name).
  */
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Select from "./Select";
 import { Group, Row, NumberField, Slider, Segmented, Toggle, ColorField } from "./Controls";
 import HoopFit from "./HoopFit";
 import { HOOPS, boxOfObjects, objectSize } from "../../lib/digitizer/model";
 import { FABRICS } from "../../lib/embroidery/stitch/presets";
 import { FONTS } from "../../lib/digitizer/text";
+import { adviceForTextObject, adviceText } from "../../lib/digitizer/legible";
 
 /** "Woven (shirts, twill, denim, canvas)" is the name on the button and the examples beside it in the list: the whole line does not fit in the box. */
 const fabricOption = ([id, f]) => {
@@ -114,6 +115,9 @@ export default function InspectorPanel({ api }) {
   useEffect(() => {
     if (api.openRequest && selected.length === 1 && selected[0].kind === "text") textRef.current?.focus();
   }, [api.openRequest]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Can the selected text be read once it is stitched? Worked out from its letters as they are NOW (their size, their weight, how much of them is hairline), so it follows the font, the height and any scaling.
+  const textObj = selected.length === 1 && selected[0].kind === "text" && selected[0].text ? selected[0] : null;
+  const textAdvice = useMemo(() => (textObj ? adviceForTextObject(textObj) : null), [textObj && textObj.rings, textObj && textObj.transform.sx, textObj && textObj.transform.sy, textObj && textObj.text.size]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!selected.length) return <DesignSettings api={api} />;
 
@@ -192,7 +196,14 @@ export default function InspectorPanel({ api }) {
           <Row label="Align">
             <Segmented label="Text alignment" value={one.text.align} onChange={(v) => api.editText(one.id, { align: v })} options={[{ value: "left", label: "Left" }, { value: "center", label: "Centre" }, { value: "right", label: "Right" }]} />
           </Row>
-          {one.text.size < 5 && <p className="dz-warn">Letters under about 5 mm tall are hard to sew cleanly. Try a bolder font or make it larger.</p>}
+          {textAdvice && textAdvice.level !== "good" && (
+            <>
+              <p className="dz-warn">{adviceText(textAdvice, { capMm: textAdvice.capMm, font: FONTS.find((f) => f.id === one.text.font)?.label || "this font" })}</p>
+              {one.text.font !== "sans" && textAdvice.kind !== "plain" && (
+                <button type="button" className="kb-btn kb-btn--ghost" onClick={() => api.editText(one.id, { font: "sans" })}>Use Sans</button>
+              )}
+            </>
+          )}
           <button type="button" className="kb-btn kb-btn--ghost" onClick={() => api.breakApart(ids)}>Split into letters</button>
         </Group>
       )}

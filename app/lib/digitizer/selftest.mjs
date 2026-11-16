@@ -8,12 +8,13 @@ import { assignAngles, elongationOf, touching, angleGap } from "./angles.js";
 import { edgeLook, EDGE_DEFAULTS } from "./edges.js";
 import { applyLook, lookOptions, LOOK_DEFAULTS } from "./look.js";
 import { objectsFromTrace, mergeTraceObjects, traceOptions, clothMatchOf, contentBox, CLOTH_MATCH, CLOTH_MATCH_PHOTO } from "./convert.js";
-import { makeObject, engineDesign } from "./model.js";
+import { makeObject, engineDesign, parseDesign } from "./model.js";
 import { traceImage } from "../embroidery/trace/index.js";
 import { outlineRuns } from "../embroidery/stitch/outline.js";
-import { widenThin, meanStrokeWidth } from "../embroidery/geometry/thin.js";
+import { widenThin, meanStrokeWidth, thinShare, letterHeight, lightenHeavy, lightenThick } from "../embroidery/geometry/thin.js";
+import { letteringAdvice, adviceText, adviceForTextObject, THIN_RUN_MM, DENSE_CAP_MM, DENSE_STROKE_MM } from "./legible.js";
 import { islandsOf, ringArea } from "../embroidery/geometry/poly.js";
-import { generate } from "../embroidery/stitch/engine.js";
+import { generate, ENGINE_DEFAULTS } from "../embroidery/stitch/engine.js";
 import { findPerson } from "./segmentClient.js";
 import { faceParts, plausibleFace, faceMeasures, paintFeatureClasses, mainFaces, faceCropBox, featureAnchors, FACE_REGION, FACE_EYE_MIN_MM } from "./faces.js";
 import { REGION } from "../embroidery/trace/regions.js";
@@ -233,17 +234,18 @@ console.log("tracer and engine agree on what a thin line is (script lettering fe
   const kindsOf = (rings, extra, options) => (made(rings, extra, options).info || []).map((i) => i.kind).join(",");
   const kindOf = (extra, w = 0.65) => kindsOf([stripOf(w)], extra);
   check("a 0.65 mm strip made from a picture is one line of stitches", kindOf({ source: "image" }) === "line", kindOf({ source: "image" }));
-  check("the same strip as typed lettering is a line too: lettering with thin strokes is sewn as lines", kindOf({ kind: "text" }) === "line", kindOf({ kind: "text" }));
+  const oldText = { denseLetters: 0 }; // the rules before the dense fill (the engine keeps them as an option): checked here with it off
+  check("the same strip as typed lettering is a line too: lettering with thin strokes is sewn as lines (dense lettering off)", kindsOf([stripOf(0.65)], { kind: "text" }, oldText) === "line", kindsOf([stripOf(0.65)], { kind: "text" }, oldText));
   check("a 0.95 mm strip of typed lettering (a heavy face) is not: it is sewn as satin", kindOf({ kind: "text" }, 0.95) !== "line", kindOf({ kind: "text" }, 0.95));
   check("as a shape drawn by hand (source hand, or none) the old limit holds: not a single line", kindOf({ source: "hand" }) !== "line" && kindOf({}) !== "line", kindOf({ source: "hand" }) + " / " + kindOf({}));
   const word = [stripOf(0.5), stripOf(0.75, 5)]; // two letters of one word, a little apart in weight: 0.5 mm is a line, 0.75 mm was a satin
-  check("lettering with strokes of 0.5 and 0.75 mm is lines from end to end (the heavier letter no longer changes the weight inside the word)", kindsOf(word, { kind: "text" }) === "line,line", kindsOf(word, { kind: "text" }));
-  const letterByLetter = kindsOf(word, { kind: "text" }, { textLineBelow: 0 });
+  check("lettering with strokes of 0.5 and 0.75 mm is lines from end to end (the heavier letter no longer changes the weight inside the word; dense lettering off)", kindsOf(word, { kind: "text" }, oldText) === "line,line", kindsOf(word, { kind: "text" }, oldText));
+  const letterByLetter = kindsOf(word, { kind: "text" }, { textLineBelow: 0, denseLetters: 0 });
   check("(control) letter by letter, as before (textLineBelow 0), the same word is a line and a satin", /line/.test(letterByLetter) && /satin/.test(letterByLetter), letterByLetter);
   // the hairline of a serif: a thick bar with a thin foot hanging off its end
   const serif = [[[0, 0], [25, 0], [25, 1.2], [0.25, 1.2], [0.25, 7], [0, 7]]];
   const reach = (g) => Math.max(...g.pattern.stitches.filter((q) => q[2] === CMD.STITCH).map((q) => q[1] / 10));
-  const kept = made(serif, { kind: "text" }), dropped = made(serif, { kind: "text" }, { textMinStroke: 0 });
+  const kept = made(serif, { kind: "text" }), dropped = made(serif, { kind: "text" }, { textMinStroke: 0, denseLetters: 0 }); // (the dense fill sews a 0.25 mm foot as it is; the control is for the older rules)
   check("the thin foot of heavy lettering is sewn: the stitches reach its end 7 mm away", reach(kept) > 6, `${reach(kept).toFixed(1)} mm`);
   check("(control) without widening the foot is left out and the stitches stop at the bar", reach(dropped) > 0 && reach(dropped) < 3, `${reach(dropped).toFixed(1)} mm`);
   // widenThin and meanStrokeWidth themselves
@@ -256,6 +258,95 @@ console.log("tracer and engine agree on what a thin line is (script lettering fe
   check("a plain shape, or a crumb off a sharp corner, is not a strip: nothing is widened", widenThin(square, 0.4).rings === square && widenThin([stripOf(1.2)], 0.4).strips === 0);
   check("no widening asked for, or damaged rings: nothing changes, no error", widenThin(serif, 0).rings === serif && widenThin([], 0.4).rings.length === 0 && widenThin(null, 0.4).widened === 0);
   check("the typical width of a stroke: twice the area over the outline, by area", Math.abs(meanStrokeWidth([stripOf(0.65)]) - 0.63) < 0.03 && meanStrokeWidth([]) === 0 && meanStrokeWidth([[[0, 0], [0.1, 0], [0.1, 0.1], [0, 0.1]]]) === 0);
+}
+
+console.log("lettering: letters of a run found in a picture are sewn like typed lettering, heavy lettering is filled, and the advice follows the font");
+{
+  const stripOf = (w, y0 = 0) => [[0, y0], [25, y0], [25, y0 + w], [0, y0 + w]];
+  const objectOf = (rings, extra) => ({ id: "s", name: "s", visible: true, rings, transform: { x: 0, y: 0, sx: 1, sy: 1, rot: 0 }, fill: { type: "auto", color: "#202020" }, stroke: { type: "none", color: "#202020" }, ...extra });
+  const made = (rings, extra, options = {}) => generate(engineDesign({ name: "strip", fabric: "woven", settings: {}, objects: [objectOf(rings, extra)] }), options);
+  const kindsOf = (rings, extra, options) => (made(rings, extra, options).info || []).map((i) => i.kind).join(",");
+  const oldText = { denseLetters: 0 }; // typed lettering by the rules before the dense fill (kept as an option)
+  // two letters of a word found in a picture, a little apart in weight (0.5 and 0.75 mm): one rule for the run, as for typed lettering
+  const word = [stripOf(0.5), stripOf(0.75, 5)];
+  const letters = { block: 0, stroke: 0.5, cap: 4 };
+  const asRun = [objectOf([word[0]], { source: "image", letters, id: "a" }), objectOf([word[1]], { source: "image", letters, id: "b" })];
+  const kindsRun = (objects, options = {}) => (generate(engineDesign({ name: "w", fabric: "woven", settings: {}, objects }), options).info || []).map((i) => i.kind).join(",");
+  const alone = [objectOf([word[0]], { source: "image", id: "a" }), objectOf([word[1]], { source: "image", id: "b" })];
+  check("letters of a run found in a picture, 0.5 and 0.75 mm wide, are both lines (the run's typical stroke is 0.5: one rule for the whole word)", kindsRun(asRun) === "line,line", kindsRun(asRun));
+  check("(control) the same two shapes with no mark on them are decided one by one: a line and a satin", /line/.test(kindsRun(alone)) && /satin/.test(kindsRun(alone)), kindsRun(alone));
+  check("(control) pictureLettering 0 turns the picture's half off: each letter on its own again", kindsRun(asRun, { pictureLettering: 0 }) === kindsRun(alone), kindsRun(asRun, { pictureLettering: 0 }));
+  const big = (k) => objectOf([word[0]], { source: "image", letters, id: "a", transform: { x: 0, y: 0, sx: k, sy: k, rot: 0 } });
+  const kindOfBig = (k) => (generate(engineDesign({ name: "w", fabric: "woven", settings: {}, objects: [big(k)] })).info || []).map((i) => i.kind).join(",");
+  check("a run's numbers follow the shape when it is made bigger afterwards (0.5 mm stroke x 2 is 1 mm: no longer a thin run, so no longer one line)", kindOfBig(1) === "line" && kindOfBig(2) !== "line", `${kindOfBig(1)} / ${kindOfBig(2)}`);
+  // dense lettering in a picture (engine denseInPictures): the letters of a block of at least denseMinLetters (5; 3 when the second tracing confirmed the block), at most denseCap (8 mm) tall, with a stroke of at least denseMinStroke (0.35 mm), are a fill
+  const run = (n, stroke, cap = 4) => Array.from({ length: n }, (_, i) => objectOf([stripOf(0.5, i * 3)], { source: "image", letters: { block: 0, stroke, cap }, id: `l${i}` }));
+  check("(dense lettering in a picture) five letters of a block (0.5 mm strokes, 4 mm tall) are a fill, not lines; with denseInPictures 0 they are lines, as before", kindsRun(run(5, 0.5)) === "tatami,tatami,tatami,tatami,tatami" && kindsRun(run(5, 0.5), { denseInPictures: 0 }) === "line,line,line,line,line", `${kindsRun(run(5, 0.5))} / ${kindsRun(run(5, 0.5), { denseInPictures: 0 })}`);
+  check("(dense lettering in a picture) three letters of a block (what the finder takes a crown's outlines for) stay lines, and so does a block whose stroke is under 0.35 mm", kindsRun(run(3, 0.5)) === "line,line,line" && kindsRun(run(6, 0.31)) === "line,line,line,line,line,line", `${kindsRun(run(3, 0.5))} / ${kindsRun(run(6, 0.31))}`);
+  const refinedRun = (n, extra = { refined: 1 }) => Array.from({ length: n }, (_, i) => objectOf([stripOf(0.5, i * 3)], { source: "image", letters: { block: 0, stroke: 0.5, cap: 4, n, ...extra }, id: `r${i}` }));
+  check("(dense lettering in a picture) the three letters of a short word (KAZI, BMW) are a fill when the second tracing confirmed the block, two letters are not a block and stay lines", kindsRun(refinedRun(3)) === "tatami,tatami,tatami" && kindsRun(refinedRun(2)) === "line,line", `${kindsRun(refinedRun(3))} / ${kindsRun(refinedRun(2))}`);
+  // a short word whose letters touch is two objects: the finder's count of its letters (`n`) is read only when the second tracing confirmed the block (`refined`)
+  const word2 = (extra) => Array.from({ length: 2 }, (_, i) => objectOf([stripOf(0.5, i * 3)], { source: "image", letters: { block: 0, stroke: 0.5, cap: 4, ...extra }, id: `w${i}` }));
+  check("(dense lettering in a picture) a short word of two objects that the finder counts as four letters is a fill when the second tracing confirmed it, and stays as it was when not (a zip taken for a word is not confirmed)", kindsRun(word2({ n: 4, refined: 1 })) === "tatami,tatami" && kindsRun(word2({ n: 4 })) === "line,line" && kindsRun(word2({ n: 2, refined: 1 })) === "line,line", `${kindsRun(word2({ n: 4, refined: 1 }))} / ${kindsRun(word2({ n: 4 }))} / ${kindsRun(word2({ n: 2, refined: 1 }))}`);
+  check("(dense lettering in a picture) letters taller than denseCap (10 mm against 8) stay as they were", kindsRun(run(5, 0.5, 10)) === kindsRun(run(5, 0.5, 10), { denseInPictures: 0 }), kindsRun(run(5, 0.5, 10)));
+  // heavy lettering at a small size: a fill, not satin columns (strokes 1 mm, letters 5 mm tall, no hairlines)
+  const bar = (x, w = 1, h = 5) => [[x, 0], [x + w, 0], [x + w, h], [x, h]];
+  const heavy = [bar(0), bar(3), bar(6)];
+  const filled = kindsOf(heavy, { kind: "text" }), satin = kindsOf(heavy, { kind: "text" }, { textFillStroke: 0, denseLetters: 0 });
+  check("typed lettering with 1 mm strokes and 5 mm letters is filled", /tatami/.test(filled) && !/satin/.test(filled), filled);
+  check("(control) with textFillStroke 0 it is satin, as before", /satin/.test(satin) && !/tatami/.test(satin), satin);
+  check("the same letters 12 mm tall are satin: the fill is for small lettering only", !/tatami/.test(kindsOf([bar(0, 1.4, 12), bar(4, 1.4, 12)], { kind: "text" })), kindsOf([bar(0, 1.4, 12), bar(4, 1.4, 12)], { kind: "text" }));
+  // a letter with a hairline foot (a serif) is not filled: its thin stroke is sewn better as satin and lines
+  const serifLetter = [[[0, 0], [1.3, 0], [1.3, 4.6], [6, 4.6], [6, 4.85], [0, 4.85]], [[8, 0], [9.3, 0], [9.3, 4.6], [14, 4.6], [14, 4.85], [8, 4.85]]];
+  check("lettering with hairlines (a thick stem and a 0.25 mm foot) is not filled by the heavy-lettering rule (dense lettering off)", thinShare(serifLetter, 0.65) > 0.045 && !/tatami/.test(kindsOf(serifLetter, { kind: "text" }, oldText)), `hair ${thinShare(serifLetter, 0.65).toFixed(3)}, ${kindsOf(serifLetter, { kind: "text" }, oldText)}`);
+  check("(dense lettering) the same hairlines ARE filled: small typed lettering is a fill whatever its weight, and the foot is sewn to its end", /tatami/.test(kindsOf(serifLetter, { kind: "text" })) && Math.max(...made(serifLetter, { kind: "text" }).pattern.stitches.filter((q) => q[2] === CMD.STITCH).map((q) => q[0] / 10)) > 13.5, kindsOf(serifLetter, { kind: "text" }));
+  check("a heavy run found in a picture (1 mm strokes) is left to the old letter-by-letter way: the typed rule's fill and satin made lettering in pictures worse", kindsRun([objectOf(heavy, { source: "image", letters: { block: 0, stroke: 1, cap: 5 }, id: "z" })]) === kindsRun([objectOf(heavy, { source: "image", id: "z" })]) && !/tatami/.test(kindsRun([objectOf(heavy, { source: "image", letters: { block: 0, stroke: 1, cap: 5 }, id: "z" })])) === !/tatami/.test(kindsRun([objectOf(heavy, { source: "image", id: "z" })])));
+  const width = (g, i) => { const xs = g.pattern.stitches.filter((q) => q[2] === CMD.STITCH).map((q) => q[0] / 10); return Math.max(...xs) - Math.min(...xs); };
+  const fixedLighten = { denseWeight: 0 }; // (the fixed 0.06 mm lightening of filled typed letters is what denseWeight replaces)
+  check("the filled letters are made a little lighter (0.06 mm on each side): the stitches span 0.1 mm less than the drawing's 7 mm", width(made(heavy, { kind: "text" }, fixedLighten)) < width(made(heavy, { kind: "text" }, { ...fixedLighten, textLighten: 0 })) - 0.05, `${width(made(heavy, { kind: "text" }, fixedLighten)).toFixed(2)} vs ${width(made(heavy, { kind: "text" }, { ...fixedLighten, textLighten: 0 })).toFixed(2)} mm`);
+  // small typed lettering is dense (engine denseLetters): a plain fill whose rows run right up to the edge, whatever the weight of the face
+  const thinBar = [bar(0, 0.6, 4)];
+  const stitchesOf = (g) => g.pattern.stitches.filter((q) => q[2] === CMD.STITCH).length;
+  check("(dense lettering) small typed lettering with thin strokes (0.6 mm, 4 mm tall) is a fill, not a line", kindsOf(thinBar, { kind: "text" }) === "tatami" && /line/.test(kindsOf(thinBar, { kind: "text" }, oldText)), `${kindsOf(thinBar, { kind: "text" })} / ${kindsOf(thinBar, { kind: "text" }, oldText)}`);
+  check("(dense lettering) its rows run up to the edge: the stitches span most of the 0.6 mm stroke (a line spans none)", width(made(thinBar, { kind: "text" })) > 0.4 && width(made(thinBar, { kind: "text" }, oldText)) < 0.1, `${width(made(thinBar, { kind: "text" })).toFixed(2)} vs ${width(made(thinBar, { kind: "text" }, oldText)).toFixed(2)} mm`);
+  const fatBars = [bar(0, 1.4, 5), bar(4, 1.4, 5)];
+  const fatBar = [bar(0, 1.4, 5)], noWeight = { denseWeight: 0, denseInset: 0 }; // (one stroke, so the span of the stitches is the stroke's; a text of two bars spans both)
+  check("(dense lettering, denseWeight) the rows of a heavy stroke (1.4 mm) stop short of its edge, so the stitched letter is as wide as the drawn one: the stitches span 0.15 mm less than with the rows at the edge", width(made(fatBar, { kind: "text" })) < width(made(fatBar, { kind: "text" }, noWeight)) - 0.15, `${width(made(fatBar, { kind: "text" })).toFixed(2)} vs ${width(made(fatBar, { kind: "text" }, noWeight)).toFixed(2)} mm`);
+  check("(dense lettering, denseWeight) the thread is 0.45 mm wide: the stitched stroke (the span of the stitches and a thread) is no wider than the drawn 1.4 mm plus 0.15; with the rows at the edge it is wider", width(made(fatBar, { kind: "text" })) + 0.45 <= 1.4 + 0.15 && width(made(fatBar, { kind: "text" }, noWeight)) + 0.45 > 1.4 + 0.15, `${(width(made(fatBar, { kind: "text" })) + 0.45).toFixed(2)} / ${(width(made(fatBar, { kind: "text" }, noWeight)) + 0.45).toFixed(2)} mm`);
+  const yspan = (g) => { const ys = g.pattern.stitches.filter((q) => q[2] === CMD.STITCH).map((q) => q[1] / 10); return Math.max(...ys) - Math.min(...ys); };
+  check("(dense lettering, denseWeight) a thin stroke (0.45 mm wide, 5 mm long) is still sewn along its whole length, not left in dots", yspan(made([bar(0, 0.45, 5)], { kind: "text" })) > 4.4, `${yspan(made([bar(0, 0.45, 5)], { kind: "text" })).toFixed(2)} mm`);
+  const perSetting = (fill) => stitchesOf(made(heavy, { kind: "text", fill: { type: "auto", color: "#202020", ...fill } }));
+  check("(dense lettering) the rows are 0.2 mm apart, and a spacing the person set by hand wins (0.6 mm: about a third of the stitches)", perSetting({ spacing: 0.6 }) < 0.5 * perSetting({}) && perSetting({}) > 1.6 * stitchesOf(made(heavy, { kind: "text" }, oldText)), `${perSetting({ spacing: 0.6 })} / ${perSetting({})} / ${stitchesOf(made(heavy, { kind: "text" }, oldText))}`);
+  check("(dense lettering) letters taller than denseCap (9 mm against 8) are not dense: satin or the normal fill, as before", /satin/.test(kindsOf([bar(0, 1.4, 9), bar(4, 1.4, 9)], { kind: "text" }, { textFillStroke: 0 })) && kindsOf([bar(0, 1.4, 9)], { kind: "text" }) === kindsOf([bar(0, 1.4, 9)], { kind: "text" }, oldText));
+  // the geometry helpers
+  const area = (rings) => { let a = 0; for (const is of islandsOf(rings)) a += ringArea(is.outer) - is.holes.reduce((q, h) => q + ringArea(h), 0); return a; };
+  check("thinShare: a stem with a hairline foot has a share of hairline, a plain bar has next to none (a crumb off a corner is hardly counted)", thinShare(serifLetter, 0.65) > 0.04 && thinShare([bar(0)], 0.5) < 0.03 && thinShare([], 0.5) === 0 && thinShare([bar(0)], 0) === 0);
+  check("letterHeight: the typical height of the letters, the pieces that are not a whole word", near(letterHeight(heavy), 5, 0.01) && letterHeight([]) === 0 && near(letterHeight([[[0, 0], [30, 0], [30, 2], [0, 2]]]), 2, 0.01));
+  const lighter = lightenHeavy(heavy, 0.1);
+  check("lightenHeavy shrinks every letter by the amount on every side, corners kept sharp: 1 x 5 mm bars become 0.8 x 4.8", near(area(lighter), 3 * 0.8 * 4.8, 0.05) && lightenHeavy(heavy, 0) === heavy && lightenHeavy([], 0.1).length === 0, `${area(lighter).toFixed(3)} vs ${(3 * 0.8 * 4.8).toFixed(3)} mm2`);
+  check("a letter too thin to be made lighter stays as it is", near(area(lightenHeavy([bar(0, 0.1, 5)], 0.1)), 0.5, 1e-9));
+  // lightenThick (the rows of dense letters stop short of the edge of a THICK stroke only, so the stitched letter is as heavy as the drawn one)
+  const bb = (rings) => { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; for (const r of rings) for (const p of r) { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); } return [x0, y0, x1, y1]; };
+  const ltk = { step: 0.05, core: 0.2, max: 0.2 };
+  const wThick = bb(lightenThick([bar(0, 1.2, 5)], ltk)), wMid = bb(lightenThick([bar(0, 0.6, 5)], ltk)), strip = lightenThick([bar(0, 0.25, 5)], ltk);
+  check("lightenThick: a heavy stem (1.2 mm) is taken in by 0.2 mm on each side, a 0.6 mm stroke to about 0.3 mm, and a hairline (0.25 mm) not at all", near(wThick[2] - wThick[0], 0.8, 0.03) && near(wMid[2] - wMid[0], 0.3, 0.06) && near(area(strip), 1.25, 0.01), `${(wThick[2] - wThick[0]).toFixed(2)} / ${(wMid[2] - wMid[0]).toFixed(2)} mm, hairline area ${area(strip).toFixed(2)}`);
+  check("lightenThick: a stem with a hairline foot (a serif) keeps the foot, to its very end", bb(lightenThick(serifLetter, ltk))[2] > 5.9, `${bb(lightenThick(serifLetter, ltk))[2].toFixed(2)} mm`);
+  check("lightenThick: nothing to do, or damaged rings, returns them as they are, no error", lightenThick([], ltk).length === 0 && lightenThick(null, ltk) === null && lightenThick(heavy, { step: 0 }) === heavy);
+  // the mark on a letter in a saved file: kept when sane, dropped when not
+  const round = (letters) => { const d = parseDesign(JSON.stringify({ v: 1, name: "t", hoop: { w: 100, h: 100 }, objects: [{ id: "x", name: "x", rings: [[[0, 0], [1, 0], [1, 1]]], letters }] })); return d.objects[0].letters; };
+  check("a saved letter keeps its mark (block, stroke, cap)", JSON.stringify(round({ block: 2, stroke: 0.6, cap: 4 })) === JSON.stringify({ block: 2, stroke: 0.6, cap: 4 }));
+  check("... and the finder's count of the block and whether the second tracing confirmed it (a short word); a damaged count is dropped", JSON.stringify(round({ block: 2, stroke: 0.6, cap: 4, n: 4, refined: 1 })) === JSON.stringify({ block: 2, stroke: 0.6, cap: 4, n: 4, refined: 1 }) && round({ block: 0, stroke: 0.6, cap: 4, n: -3 }).n === undefined && round({ block: 0, stroke: 0.6, cap: 4, n: "x" }).n === undefined);
+  check("a damaged mark (text, negative, absurd, missing numbers) is dropped, not sewn from", [round("x"), round({ stroke: -1 }), round({ stroke: 99 }), round({ cap: 5 }), round(null), round(7)].every((v) => v === undefined) && round({ stroke: 0.6, cap: -3 }).cap === 0);
+  // the advice: by height and by kind of face
+  check("plain lettering: 3 mm is good, 2.7 mm tight, 2 mm too small", letteringAdvice({ capMm: 3, strokeMm: 0.6 }).level === "good" && letteringAdvice({ capMm: 2.7, strokeMm: 0.6 }).level === "tight" && letteringAdvice({ capMm: 2, strokeMm: 0.6 }).level === "small");
+  check("a face with hairlines needs more: 3.5 mm is tight, 2.5 mm too small, 4 mm good", letteringAdvice({ capMm: 3.5, strokeMm: 0.7, hair: 0.09 }).level === "tight" && letteringAdvice({ capMm: 2.5, strokeMm: 0.7, hair: 0.09 }).level === "small" && letteringAdvice({ capMm: 4, strokeMm: 0.7, hair: 0.09 }).level === "good");
+  check("a heavy face at a small size is warned (the holes of an a, e, o close)", letteringAdvice({ capMm: 4, strokeMm: 1.5 }).kind === "heavy" && letteringAdvice({ capMm: 4, strokeMm: 1.5 }).level === "tight" && letteringAdvice({ capMm: 8, strokeMm: 1.5 }).kind === "plain");
+  check("the sentence names the size and the way out; nothing is said when the lettering is fine", /3\.0 mm/.test(adviceText(letteringAdvice({ capMm: 3, strokeMm: 0.7, hair: 0.09 }), { capMm: 3, font: "Times" })) && /Times/.test(adviceText(letteringAdvice({ capMm: 3, strokeMm: 0.7, hair: 0.09 }), { capMm: 3, font: "Times" })) && adviceText(letteringAdvice({ capMm: 6, strokeMm: 0.9 }), { capMm: 6 }) === null && adviceText(letteringAdvice({ capMm: 2.5, strokeMm: 0.7, hair: 0.09 }), { capMm: 2.5, font: "Times" }).includes("cannot be stitched"));
+  check("the panel's threshold for thin lettering is the engine's (pictureLineBelow): the note and the stitches say the same", THIN_RUN_MM === ENGINE_DEFAULTS.pictureLineBelow, `${THIN_RUN_MM} vs ${ENGINE_DEFAULTS.pictureLineBelow}`);
+  check("the panel's numbers for dense lettering are the engine's (denseCap, denseMinStroke)", DENSE_CAP_MM === ENGINE_DEFAULTS.denseCap && DENSE_STROKE_MM === ENGINE_DEFAULTS.denseMinStroke, `${DENSE_CAP_MM} / ${DENSE_STROKE_MM} vs ${ENGINE_DEFAULTS.denseCap} / ${ENGINE_DEFAULTS.denseMinStroke}`);
+  const textObj = (size, rings, sx = 1) => ({ kind: "text", text: { size }, rings, transform: { x: 0, y: 0, sx, sy: sx, rot: 0 } });
+  const adviceOfThin = adviceForTextObject(textObj(3, serifLetter.map((r) => r.map((p) => [p[0] * 0.5, p[1] * 0.5]))));
+  check("adviceForTextObject reads the letters themselves: hairlines found, the height is the text's, and scaling the object scales both", adviceOfThin.kind === "hairline" && near(adviceOfThin.capMm, 3, 1e-9) && near(adviceForTextObject(textObj(3, serifLetter, 2)).capMm, 6, 1e-9));
 }
 
 console.log("convert.js: fine details are ranked by the region of the person they lie in");
@@ -392,3 +483,8 @@ console.log("faces.js (the face landmarker's points as eyes, brows and lips for 
 
 console.log(failed ? `\n${failed} of ${total} checks FAILED` : `\nall ${total} checks passed`);
 process.exit(failed ? 1 : 0);
+
+
+
+
+

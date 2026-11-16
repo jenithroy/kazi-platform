@@ -7,6 +7,7 @@ import { nearestThread, rgbToHex, threadName, toLab, hexToRgb } from "../embroid
 import { offsetRings, intersectRings, unionShapes, differenceRings } from "../embroidery/geometry/clip.js";
 import { bboxOf, islandsOf, ringPerimeter } from "../embroidery/geometry/poly.js";
 import { detailLimits } from "../embroidery/trace/detail.js";
+import { findLettering } from "../embroidery/trace/lettering.js";
 import { applyLook, lookOptions } from "./look.js";
 
 export { detailLimits };
@@ -407,6 +408,35 @@ function fineObjects(traced, { palette, cloth, originX, originY, mmPerPx, snap, 
 }
 
 /**
+ * Mark the objects that are letters of a run of lettering with `letters: { block, stroke, cap, n }` (the block's number, the typical stroke width and the letter height in
+ * millimetres, how many letters the finder reckons the block holds, and `refined` when the second tracing of lettering (trace/refine.js) confirmed the block: letters that touch are one object, so a word of four letters may be two objects, and only a refined block's count is trusted for that). The engine sews the letters of a thin run (typical stroke under `pictureLineBelow`) as one text. Only logos and artwork are looked at: a photograph is all small
+ * patches, and nothing in it is text worth the name. Done on the objects in place.
+ */
+function tagLettering(objects, shapes, traced, mmPerPx, options = null) {
+  const kind = traced.stats?.kind;
+  if (kind !== "logo" && kind !== "art") return;
+  // artwork is full of small patches that look like letters by chance: it needs a long line of them (a logo, four or five letters)
+  // (the answer is kept with the trace, for the size it was found at: every change of the colour list asks again)
+  try { // (a guess that goes wrong must never cost the person their picture: without the marks the shapes are sewn as they always were)
+    let blocks = !options && traced.lettering && traced.lettering.mmPerPx === mmPerPx ? traced.lettering.blocks : null;
+    if (!blocks) {
+      // (the caller's own options are used as they are; asked for none, a logo also gets its short words, as the tracer does)
+      blocks = findLettering(traced.shapes, { mmPerPx, options: options ? { minLetters: kind === "art" ? 9 : 5, ...options } : kind === "art" ? { minLetters: 9 } : { minLetters: 5, shortLetters: 3, shortMaxPieces: 24, shortMaxShapes: 60 } });
+      if (!options) traced.lettering = { mmPerPx, blocks };
+    }
+    if (!blocks.length) return;
+    const blockOf = new Map();
+    for (const b of blocks) for (const id of b.shapes) blockOf.set(id, b);
+    shapes.forEach((s, k) => {
+      const b = blockOf.get(s.id);
+      if (b) objects[k].letters = { block: b.id, stroke: +b.strokeMm.toFixed(3), cap: +b.capMm.toFixed(2), n: Number.isFinite(b.letters) ? +b.letters.toFixed(1) : b.count, ...(b.refined ? { refined: 1 } : {}) };
+    });
+  } catch (e) {
+    for (const o of objects) delete o.letters;
+  }
+}
+
+/**
  * @param {object} traced  the tracer's result (palette, shapes, order)
  * @param {object} o  originX, originY (hoop mm of the traced image's top-left corner), mmPerPx (mm per traced-image pixel),
  *   skip (Set of palette indexes the person turned off), include (Set of indexes turned ON although they match the cloth),
@@ -418,7 +448,7 @@ function fineObjects(traced, { palette, cloth, originX, originY, mmPerPx, snap, 
  *   CLOTH_FIELD_MM) are stitched: they are not `skipped`.
  *   Every object carries `pal`, the palette entry it was made for, and `rank` says where each entry comes in the sewing order.
  */
-export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new Set(), include = new Set(), fabric = null, snap = false, bleed = 0.4, before = null, maxColors = 12, detailThick = false, detailTune = null }) {
+export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new Set(), include = new Set(), fabric = null, snap = false, bleed = 0.4, before = null, maxColors = 12, detailThick = false, detailTune = null, letteringOptions = null }) {
   const cloth = fabric ? toLab(...Object.values(hexToRgb(fabric))) : null;
   const matchDE = clothMatchOf(traced, fabric);
   // Which shapes have a hole that another shape sits in? Touching shapes share exactly the same boundary points, so a shape sits in the hole of
@@ -499,6 +529,8 @@ export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new
       pal: s.color,
     };
   });
+  // The letters of a run of lettering in the picture are marked, so the engine sews them as one text (see trace/lettering.js and engine.js `textLineBelow`).
+  tagLettering(objects, shapes, traced, mmPerPx, letteringOptions);
   // The fine lines and dots found on the picture itself go on top of everything the colour layer made (and of its angles and edge lines), last in the design.
   const onTop = traced.details || (traced.hairlines && traced.hairlines.length) ? fineObjects(traced, { palette, cloth: cloth || toLab(...Object.values(hexToRgb(DEFAULT_CLOTH))), originX, originY, mmPerPx, snap, maxColors, thick: detailThick, shapes, tune: detailTune }) : null;
   const looked = applyLook(objects, shapes, traced, mmPerPx); // (the colour layer's objects only: the look is worked out shape by shape)
@@ -585,3 +617,5 @@ export function mergeTraceObjects(current, made, { fresh = false, before = null,
   }
   return list;
 }
+
+
