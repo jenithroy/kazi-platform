@@ -13,6 +13,8 @@ import { REGION, REGION_COUNT, cutOutPerson, resampleClasses, importanceMap, DEF
 import { buildRegionalPalette, classifyByRegion } from "./regionPalette.js";
 import { rgbToLab } from "./color.js";
 import { removeFrame } from "./frame.js";
+import { findLettering, describePiece, summariseLettering } from "./lettering.js";
+import { refineBoxes, confirmedBoxes } from "./refine.js";
 import { HALO_RATIO } from "./details.js";
 import { buildPalette, missingNeutral, NEUTRAL_FAR, NEUTRAL_MIN_SHARE } from "./quantize.js";
 import { extractHairlines, HAIRLINE } from "./hairlines.js";
@@ -1070,6 +1072,182 @@ log("10. the colours of a picture do not change with the size it is sewn at");
   check("a picture that is not enlarged traces the same twice (nothing random, nothing kept between runs)", JSON.stringify(a.palette) === JSON.stringify(b.palette) && a.shapes.length === b.shapes.length);
 }
 
+log("11. lettering: runs of letter-shaped pieces are found, and patterns, blobs and clouds are not");
+{
+  const mm = 0.1; // 10 pixels to the millimetre: the letters below are 5 mm tall with strokes of 1 mm
+  const S = 50, T = 10;
+  const shapeOf = (id, color, rings) => {
+    const outer = rings[0];
+    let a = Math.abs(area(outer));
+    for (const h of rings.slice(1)) a -= Math.abs(area(h));
+    const xs = outer.map((p) => p[0]), ys = outer.map((p) => p[1]);
+    return { id, color, contours: rings, area: a, bbox: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] };
+  };
+  const E = (x, y) => [[[x, y], [x + 32, y], [x + 32, y + T], [x + T, y + T], [x + T, y + 20], [x + 28, y + 20], [x + 28, y + 30], [x + T, y + 30], [x + T, y + S - T], [x + 32, y + S - T], [x + 32, y + S], [x, y + S]]];
+  const L = (x, y) => [[[x, y], [x + T, y], [x + T, y + S - T], [x + 30, y + S - T], [x + 30, y + S], [x, y + S]]];
+  const Tt = (x, y) => [[[x, y], [x + 36, y], [x + 36, y + T], [x + 23, y + T], [x + 23, y + S], [x + 13, y + S], [x + 13, y + T], [x, y + T]]];
+  const H = (x, y) => [[[x, y], [x + T, y], [x + T, y + 20], [x + 26, y + 20], [x + 26, y], [x + 36, y], [x + 36, y + S], [x + 26, y + S], [x + 26, y + 30], [x + T, y + 30], [x + T, y + S], [x, y + S]]];
+  const I = (x, y) => [rect(x, y, T, S)];
+  const O = (x, y) => [circle(x + 22, y + 25, 25, 48), circle(x + 22, y + 25, 15, 48).reverse()];
+  const A_ = (x, y) => [[[x + 17, y], [x + 27, y], [x + 44, y + S], [x + 34, y + S], [x + 30, y + 38], [x + 14, y + 38], [x + 10, y + S], [x, y + S]], [[x + 17, y + 29], [x + 27, y + 29], [x + 22, y + 11]].reverse()];
+  const LETTERS = [E, L, Tt, H, I, O, A_];
+  /** a row of letters, `gap` pixels apart, starting at (x, y); `from` is the index into LETTERS to begin at */
+  const row = (x, y, n, { gap = 12, color = 0, id0 = 0, from = 0 } = {}) => {
+    const out = [];
+    let cx = x;
+    for (let i = 0; i < n; i++) {
+      const f = LETTERS[(from + i) % LETTERS.length];
+      const rings = f(cx, y);
+      out.push(shapeOf(id0 + i, typeof color === "function" ? color(i) : color, rings));
+      cx += Math.max(...rings[0].map((p) => p[0])) - cx + gap;
+    }
+    return out;
+  };
+  const find = (shapes, o) => findLettering(shapes, { mmPerPx: mm, options: o });
+  const word = row(100, 200, 6);
+  const found = find(word);
+  check("six different block letters in a row are one block of lettering", found.length === 1 && found[0].shapes.length === 6 && found[0].lines === 1, `${found.length} block(s), ${found[0] && found[0].shapes.length} shapes`);
+  check("its letter height (5 mm) and its stroke (about a millimetre) are measured", !!found[0] && Math.abs(found[0].capMm - 5) < 0.3 && found[0].strokeMm > 0.7 && found[0].strokeMm < 1.3, found[0] && `${found[0].capMm.toFixed(2)} mm tall, stroke ${found[0].strokeMm.toFixed(2)} mm`);
+  const sum = summariseLettering(found);
+  check("summariseLettering says how many letters in how many blocks and how small they are", !!sum && sum.blocks === 1 && sum.letters === 6 && Math.abs(sum.capMm - 5) < 0.3 && summariseLettering([]) === null);
+  check("letters of two colours alternating are not a run (three of each: under the four a line needs)", find(row(100, 200, 6, { color: (i) => i % 2 })).length === 0);
+  const bars = Array.from({ length: 8 }, (_, i) => shapeOf(i, 0, [rect(100 + i * 22, 200, T, S)]));
+  check("a row of eight identical bars is a pattern, not text (bar code, fence, stripes)", find(bars).length === 0);
+  const discs = Array.from({ length: 8 }, (_, i) => shapeOf(i, 0, [circle(120 + i * 60, 220, 20, 48)]));
+  check("a row of discs is not text: a blob is not a stroke", find(discs).length === 0);
+  const stars = Array.from({ length: 7 }, (_, i) => { const cx = 120 + i * 70, cy = 220; return shapeOf(i, 0, [Array.from({ length: 10 }, (_, k) => { const a = -Math.PI / 2 + (k * Math.PI) / 5, r = k % 2 ? 11 : 26; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; })]); });
+  check("a row of stars (the same piece seven times) is a pattern, not text", find(stars).length === 0);
+  let seed = 7;
+  const rnd = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
+  const cloud = Array.from({ length: 7 }, (_, i) => shapeOf(i, 0, LETTERS[i % LETTERS.length](200 + rnd() * 1500, 200 + rnd() * 1500)));
+  check("the same letters thrown about the page, far apart, are not a run", find(cloud).length === 0);
+  const two = [...row(100, 200, 6), ...row(100, 285, 6, { id0: 100, from: 3 })];
+  const f2 = find(two);
+  check("two lines of one text (alike in height and weight, close) are ONE block, so they are sewn alike", f2.length === 1 && f2[0].lines === 2 && f2[0].shapes.length === 12, `${f2.length} block(s), ${f2[0] && f2[0].lines} lines`);
+  // text round a badge: each letter turned to stand on a circle
+  const turn = (rings, ang, cx, cy) => rings.map((r) => r.map(([x, y]) => [cx + (x - cx) * Math.cos(ang) - (y - cy) * Math.sin(ang), cy + (x - cx) * Math.sin(ang) + (y - cy) * Math.cos(ang)]));
+  const ring = [];
+  for (let i = 0; i < 7; i++) {
+    const a = -Math.PI * 0.75 + i * 0.3, R = 250, px = 600 + R * Math.cos(a), py = 600 + R * Math.sin(a);
+    const f = LETTERS[i % LETTERS.length](px - 20, py - 25);
+    ring.push(shapeOf(i, 0, turn(f, a + Math.PI / 2, px, py)));
+  }
+  const fr = find(ring);
+  check("letters set round a circle (a seal's words) are a run too: the line bends smoothly", fr.length === 1 && fr[0].shapes.length === 7, `${fr.length} block(s), ${fr[0] && fr[0].shapes.length} shapes`);
+  // describePiece: why a piece is or is not letter-shaped
+  const dp = (rings) => describePiece(shapeOf(0, 0, rings), mm);
+  check("describePiece: a letter is letter-shaped, a speck, a disc and a big blob are not, and say why", dp(E(0, 0)).ok && dp([rect(0, 0, 3, 3)]).why === "speck" && dp([circle(30, 30, 25, 48)]).why === "blob (stroke / size)" && dp([rect(0, 0, 200, 200)]).why === "too big");
+  // a word whose letters touch is one shape to the tracer: it counts as the letters it has room for
+  const touching = makeImage(560, 120);
+  { let x = 20; for (let i = 0; i < 8; i++) { const rings = LETTERS[i % LETTERS.length](x, 35); paint(touching, rings, BLACK); x += Math.max(...rings[0].map((p) => p[0])) - x - 6; } }
+  const tt = traceImage(touching, { mmPerPx: mm, refineLettering: false }); // (the first tracing: the second would separate some of the letters, which is another test)
+  const tw = findLettering(tt.shapes, { mmPerPx: mm, options: { minLetters: 5 } });
+  const blackShapes = tt.shapes.filter((q) => tt.palette[q.color].r < 10);
+  check("a word whose letters touch (the tracer found only a shape or two for eight letters) is still lettering: a shape counts as the letters it has room for", blackShapes.length <= 3 && tw.length === 1 && tw[0].letters >= 5, `${blackShapes.length} black shape(s) -> ${tw.length} block(s), ${tw[0] && tw[0].letters} letters`);
+  check("a single plain smooth bar is not a word, however long", find([shapeOf(0, 0, [rect(100, 200, 700, 14)])], { minLetters: 4 }).length === 0);
+  // from a traced picture to the Digitizer's objects: the letters carry the run's numbers, the rest of the picture carries nothing
+  const logo = makeImage(700, 300);
+  paint(logo, [circle(120, 150, 90, 360)], NAVY);
+  for (const s of row(260, 120, 6)) for (const part of [s.contours]) paint(logo, part, BLACK);
+  const tl = traceImage(logo, { mmPerPx: mm, mode: "logo" });
+  const made = objectsFromTrace(tl, { originX: 0, originY: 0, mmPerPx: mm, fabric: "#ffffff" }).objects;
+  const marked = made.filter((o) => o.letters);
+  check("objectsFromTrace marks the six letters of the lettering and nothing else (not the disc)", marked.length === 6 && made.length > 6, `${marked.length} of ${made.length} objects marked`);
+  check("each mark carries the run's stroke and letter height (the same for every letter of the run)", marked.every((o) => Math.abs(o.letters.stroke - marked[0].letters.stroke) < 1e-9 && o.letters.stroke > 0.7 && o.letters.stroke < 1.3 && Math.abs(o.letters.cap - 5) < 0.3), JSON.stringify(marked[0] && marked[0].letters));
+  check("the trace itself reports the lettering (for the notes in the picture panel) and keeps it for the size it was found at", !!tl.stats.lettering && tl.stats.lettering.letters === 6 && !!tl.lettering && tl.lettering.mmPerPx === mm, JSON.stringify(tl.stats.lettering));
+  const plain = traceImage((() => { const im = makeImage(700, 300); for (let i = 0; i < 8; i++) paint(im, [rect(60 + i * 75, 100, 30, 120)], BLACK); return im; })(), { mmPerPx: mm, mode: "logo" });
+  check("a picture of eight bars has no lettering: none is found, none is marked", !plain.stats.lettering && !objectsFromTrace(plain, { originX: 0, originY: 0, mmPerPx: mm, fabric: "#ffffff" }).objects.some((o) => o.letters));
+  const photoLike = { ...tl, stats: { ...tl.stats, kind: "photo" }, lettering: undefined };
+  check("a photograph is never looked at (nothing in it is lettering worth the name)", !objectsFromTrace(photoLike, { originX: 0, originY: 0, mmPerPx: mm, fabric: "#ffffff" }).objects.some((o) => o.letters));
+  check("the finder's options can be changed by the caller (a longer line is asked for: nothing found)", objectsFromTrace(tl, { originX: 0, originY: 0, mmPerPx: mm, fabric: "#ffffff", letteringOptions: { minLetters: 12 } }).objects.every((o) => !o.letters));
+}
+
+log("12. lettering is traced a second time, finer: the thin strokes and the narrow gaps between small letters survive (refine.js)");
+{
+  const mm = 0.1; // 10 pixels to the millimetre: letters 3 mm tall with strokes of 0.4 mm and 0.3 mm between them (the Detail setting's own limit is 0.55 mm)
+  const page = { mmPerPx: mm, mode: "logo", thicken: true, ...detailLimits(0.75) }; // the tracer's options as the page sets them (convert.js traceOptions, the Detail slider at 0.75)
+  const shapes12 = {
+    I: [rect(0, 0, 4, 30)],
+    L: [[[0, 0], [4, 0], [4, 26], [18, 26], [18, 30], [0, 30]]],
+    T: [[[0, 0], [20, 0], [20, 4], [12, 4], [12, 30], [8, 30], [8, 4], [0, 4]]],
+    H: [[[0, 0], [4, 0], [4, 13], [16, 13], [16, 0], [20, 0], [20, 30], [16, 30], [16, 17], [4, 17], [4, 30], [0, 30]]],
+    E: [[[0, 0], [18, 0], [18, 4], [4, 4], [4, 13], [16, 13], [16, 17], [4, 17], [4, 26], [18, 26], [18, 30], [0, 30]]],
+    O: [circle(15, 15, 15, 96), circle(15, 15, 11, 96).reverse()],
+    A: [[[8, 0], [12, 0], [20, 30], [16, 30], [14, 22], [6, 22], [4, 30], [0, 30]], [[7, 18], [13, 18], [10, 7]].reverse()],
+  };
+  const FONT = ["E", "L", "T", "H", "I", "O", "A"].map((k) => shapes12[k]);
+  const place = (rings, x, y, k) => rings.map((r) => r.map(([px, py]) => [x + px * k, y + py * k]));
+  /** a word of `n` letters painted into `img`; returns the ink the drawing has (mm2) */
+  const word = (img, n, { x = 20, y = 35, gap = 3, k = 1, color = NAVY } = {}) => {
+    let cx = x, ink = 0;
+    for (let i = 0; i < n; i++) {
+      const rings = place(FONT[i % FONT.length], cx, y, k);
+      paint(img, rings, color);
+      ink += rings.reduce((t, r, j) => t + (j === 0 ? 1 : -1) * Math.abs(area(r)), 0);
+      cx = Math.max(...rings[0].map((p) => p[0])) + gap * k;
+    }
+    return ink * mm * mm;
+  };
+  const inkOf = (t, pred = (p) => p.r < 100) => t.shapes.filter((q) => { const p = t.palette[q.color]; return !p.background && pred(p); });
+  const sumArea = (list) => list.reduce((t, q) => t + q.area, 0) * mm * mm;
+  const img = makeImage(380, 100);
+  const trueInk = word(img, 12);
+  const off = traceImage(img, { ...page, refineLettering: false });
+  const on = traceImage(img, page);
+  const inkOff = inkOf(off), inkOn = inkOf(on);
+  check("the first tracing fills in the 0.3 mm gaps between 3 mm letters: the letters run together and the ink is over 1.4 times the drawing's", inkOff.length < 12 && sumArea(inkOff) > 1.4 * trueInk, `${inkOff.length} shapes, ${(sumArea(inkOff) / trueInk).toFixed(2)} times the ink`);
+  check("with the second tracing each of the 12 letters is a shape of its own and the ink is the drawing's (within a tenth)", inkOn.length === 12 && Math.abs(sumArea(inkOn) / trueInk - 1) < 0.1, `${inkOn.length} shapes, ${(sumArea(inkOn) / trueInk).toFixed(2)} times the ink`);
+  check("the finder finds the twelve letters in it, and the trace says what it did", on.lettering.blocks.length === 1 && on.lettering.blocks[0].letters === 12 && !!on.stats.refine && on.stats.refine.used === true && on.stats.refine.kept === 1, JSON.stringify(on.stats.refine));
+  check("refineLettering: false is the first tracing alone: it says nothing about a second one", !off.stats.refine);
+  // the counter of an O stays open: the hole is there
+  const oShape = inkOn.find((q) => q.contours.length === 2);
+  check("the counter of the O (0.8 mm across) is a hole in its shape, not filled in", !!oShape && Math.abs(ringArea(oShape.contours[1])) * mm * mm > 0.3, oShape ? `${(Math.abs(ringArea(oShape.contours[1])) * mm * mm).toFixed(2)} mm2` : "no shape with a hole");
+  // only the lettering's colour is touched: a red line beside it comes out as before
+  const withLine = makeImage(380, 100);
+  word(withLine, 12);
+  paint(withLine, [rect(20, 12, 340, 6)], RED);
+  const redOf = (t) => JSON.stringify(inkOf(t, (p) => p.r > 150 && p.g < 100).map((q) => q.contours));
+  const lOn = traceImage(withLine, page), lOff = traceImage(withLine, { ...page, refineLettering: false });
+  check("a red line close to the lettering comes out exactly as in the first tracing (only the lettering's own colour is relaxed)", !!lOn.stats.refine && lOn.stats.refine.used === true && redOf(lOn) === redOf(lOff) && redOf(lOn).length > 10, `${lOn.stats.refine && lOn.stats.refine.used}, ${redOf(lOn).length} characters of red outline`);
+  // a picture without lettering, and lettering taller than 8 mm, are left exactly as they were
+  const bars = makeImage(700, 300);
+  for (let i = 0; i < 8; i++) paint(bars, [rect(60 + i * 75, 100, 30, 120)], BLACK);
+  check("a picture without lettering comes out exactly as it did", JSON.stringify(traceImage(bars, page).shapes) === JSON.stringify(traceImage(bars, { ...page, refineLettering: false }).shapes));
+  const tall = makeImage(800, 200);
+  word(tall, 7, { x: 20, y: 40, k: 3 });
+  const tOn = traceImage(tall, page), tOff = traceImage(tall, { ...page, refineLettering: false });
+  check("lettering taller than 8 mm is left as the first tracing made it (it is found, and not refined)", tOn.lettering.blocks.length === 1 && tOn.lettering.blocks[0].capMm > 8 && !tOn.stats.refine && JSON.stringify(tOn.shapes) === JSON.stringify(tOff.shapes), `cap ${tOn.lettering.blocks[0] && tOn.lettering.blocks[0].capMm.toFixed(1)} mm, ${JSON.stringify(tOn.stats.refine)}`);
+  // a short word (KAZI, Open, BMW): lettering too, but only in a picture that is almost nothing else
+  const shortImg = makeImage(200, 100);
+  const shortInk = word(shortImg, 4);
+  const sOn = traceImage(shortImg, page), sOff = traceImage(shortImg, { ...page, letterShortLetters: 99 });
+  check("a short word (four letters, 3 mm tall, 0.3 mm apart) is lettering too: the finder finds it, the second tracing separates its letters and keeps their ink", sOn.lettering.blocks.length === 1 && sOn.lettering.blocks[0].letters === 4 && inkOf(sOn).length === 4 && Math.abs(sumArea(inkOf(sOn)) / shortInk - 1) < 0.1 && !!sOn.stats.refine && sOn.stats.refine.used === true, `${sOn.lettering.blocks.length} block(s), ${inkOf(sOn).length} pieces, ${(sumArea(inkOf(sOn)) / shortInk).toFixed(2)} times the ink, ${JSON.stringify(sOn.stats.refine)}`);
+  check("the word was found on the finer tracing (the first one has it as two blobs) and its block is marked as confirmed by the second tracing", !!sOn.stats.refine && sOn.stats.refine.found === "finer" && sOn.lettering.blocks[0].refined === true, JSON.stringify(sOn.stats.refine));
+  check("with letterShortLetters 99 (short words off) the same picture has no lettering and its letters run together, as before", sOff.lettering.blocks.length === 0 && inkOf(sOff).length < 4 && !sOff.stats.refine, `${sOff.lettering.blocks.length} block(s), ${inkOf(sOff).length} pieces`);
+  const fshort = (shapes, o) => findLettering(shapes, { mmPerPx: mm, options: o });
+  check("the finer tracing is only for a simple picture: with letterFinerMaxShapes 0 (a crest or a seal has hundreds of shapes) the word whose letters the first tracing runs together is not found", (() => { const t0 = traceImage(shortImg, { ...page, letterFinerMaxShapes: 0 }); return t0.lettering.blocks.length === 0 && !t0.stats.refine; })());
+  check("the finder asks for a short word only when told to, and at most shortMaxPieces letter-shaped pieces in all", fshort(sOn.shapes, { minLetters: 5 }).length === 0 && fshort(sOn.shapes, { minLetters: 5, shortLetters: 3 }).length === 1 && fshort(sOn.shapes, { minLetters: 5, shortLetters: 3, shortMaxPieces: 3 }).length === 0);
+  const crowd = makeImage(700, 300);
+  word(crowd, 4, { x: 20, y: 10 });
+  for (let i = 0; i < 30; i++) paint(crowd, [rect(20 + (i % 10) * 60, 100 + Math.floor(i / 10) * 60, 4, 30)], NAVY);
+  const cOn = traceImage(crowd, page);
+  check("the same word among thirty more letter-shaped pieces (a portrait taken for a logo, a drawing) is not taken for lettering", cOn.lettering.blocks.length === 0 && !cOn.stats.refine, `${cOn.lettering.blocks.length} block(s)`);
+  check("artwork never gets short words: a word of four letters in a picture read as artwork is not lettering (it needs nine)", (() => { const t = traceImage(shortImg, { ...page, mode: "art" }); return t.lettering.blocks.length === 0; })());
+  // refineBoxes and confirmedBoxes on their own
+  const blk = (letters, cap, box, colors = [2]) => ({ letters, count: letters, capMm: cap, box, colors });
+  const rb = refineBoxes([blk(12, 3, [100, 100, 300, 130]), blk(12, 9, [100, 300, 400, 380]), blk(3, 3, [100, 350, 150, 380]), blk(8, 4, [0, 0, 50, 40], [0])], { mmPerPx: 0.1, width: 400, height: 400, origin: [5, 6, 7] });
+  check("refineBoxes: lettering of 3 letters or more (a short word) and at most 8 mm tall only, a box a letter or so bigger than the lettering, named by the colour the tracer started from", rb.length === 3 && rb[0].block === 0 && rb[0].color === 7 && Math.abs(rb[0].box[0] - 76) < 1e-9 && Math.abs(rb[0].box[3] - 154) < 1e-9 && rb[1].block === 2 && rb[2].block === 3 && rb[2].color === 5 && rb[2].box[0] === 0, JSON.stringify(rb));
+  const first = { blocks: [blk(12, 3, [100, 100, 300, 130])] };
+  const second = (blocks, n, color = 2) => ({ lettering: { blocks }, shapes: Array.from({ length: n }, (_, i) => ({ color, bbox: [110 + (i % 40) * 4, 105 + Math.floor(i / 40) * 20, 113 + (i % 40) * 4, 115 + Math.floor(i / 40) * 20] })), _origin: [5, 6, 7] });
+  const conf = (sec) => confirmedBoxes(first, sec, rb.slice(0, 1), { mmPerPx: 0.1 })[0];
+  check("refineBoxes: a run of two letters is not lettering to refine, and the least asked for can be changed", refineBoxes([blk(2, 3, [100, 100, 200, 130])], { mmPerPx: 0.1, width: 400, height: 400, origin: [5, 6, 7] }).length === 0 && refineBoxes([blk(4, 3, [100, 100, 200, 130])], { mmPerPx: 0.1, width: 400, height: 400, origin: [5, 6, 7], options: { minLetters: 5 } }).length === 0);
+  check("confirmedBoxes: a block is confirmed when the second tracing finds its letters again", conf(second([blk(12, 3, [101, 101, 299, 129])], 12)) === true);
+  check("... and when it finds ten of the twelve (four fifths)", conf(second([blk(10, 3, [101, 101, 299, 129])], 10)) === true);
+  check("... not when it finds too few of them", conf(second([blk(6, 3, [101, 101, 299, 129])], 6)) === false);
+  check("... not when it finds none (the block is not lettering any more)", conf(second([], 12)) === false);
+  check("... not when the lettering's colour has turned into a crowd of pieces in its box (a noisy picture, a crown taken for lettering)", conf(second([blk(12, 3, [101, 101, 299, 129])], 80)) === false);
+}
+
 if (process.argv.includes("--perf")) {
   log("9. speed");
   const logo = (size) => {
@@ -1108,3 +1286,7 @@ log("numbers (palette entries incl. background, shapes, share of the picture the
 for (const [n, p, s, c, a] of numbers) log(`  ${n.padEnd(26)} ${String(p).padStart(2)} colours  ${String(s).padStart(2)} shapes  ${(c * 100).toFixed(1).padStart(5)} % covered  ${(a * 100).toFixed(2)} % agree`);
 log(failures ? `\n${failures} of ${checks} checks FAILED` : `\nall ${checks} checks passed`);
 process.exit(failures ? 1 : 0);
+
+
+
+
