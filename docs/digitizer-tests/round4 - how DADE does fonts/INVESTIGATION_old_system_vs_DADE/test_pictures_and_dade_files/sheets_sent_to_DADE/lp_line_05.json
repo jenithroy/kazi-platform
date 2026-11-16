@@ -1,0 +1,32 @@
+{
+ "sheet": "lp_line_05",
+ "w": 1000,
+ "h": 800,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "line_black_3mm_ave",
+   "x": 340,
+   "y": 79,
+   "w": 319,
+   "h": 85,
+   "value": "AVE MARIA"
+  },
+  {
+   "id": "line_black_3mm_ham",
+   "x": 232,
+   "y": 359,
+   "w": 535,
+   "h": 85,
+   "value": "Hamburgefonts 2026"
+  },
+  {
+   "id": "line_black_4mm_ave",
+   "x": 297,
+   "y": 632,
+   "w": 405,
+   "h": 100,
+   "value": "AVE MARIA"
+  }
+ ]
+}

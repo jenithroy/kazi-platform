@@ -1,0 +1,10 @@
+Tracing time on a quiet machine, the first tracing alone ('off') against the first plus the second ('on'); stats.refine of the 'on' run on the right. 'found' says which tracing the lettering blocks were found on.
+
+reg18/crest_manzanares                   off   758 ms (167 shapes)   on   972 ms (173 shapes)  {"used":true,"boxes":5,"kept":2,"firstMs":667.793,"found":"first"}
+new55/emblems_seal_torrance_bw           off  1107 ms (381 shapes)   on  1212 ms (387 shapes)  {"used":true,"boxes":4,"kept":3,"firstMs":779.6825999999996,"found":"first"}
+new55/emblems_logo_sdl                   off   380 ms (36 shapes)   on   458 ms (39 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":366.8851999999997,"found":"finer"}
+new55/emblems_flag_washington_island     off   397 ms (56 shapes)   on   539 ms (58 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":394.0589999999993,"found":"finer"}
+chart2/chart                             off   432 ms (111 shapes)   on   596 ms (112 shapes)  {"used":true,"boxes":6,"kept":2,"firstMs":413.42199999999957,"found":"first"}
+reg18/logo_harley                        off   216 ms (3 shapes)   on   331 ms (8 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":232.24309999999969,"found":"finer"}
+lpics/line_serif_3mm_ham                 off   116 ms (28 shapes)   on   180 ms (26 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":123.4992000000002,"found":"finer"}
+lpicss/sw_sans_3mm_kazi                  off    68 ms (3 shapes)   on   105 ms (4 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":71.44130000000041,"found":"finer"}

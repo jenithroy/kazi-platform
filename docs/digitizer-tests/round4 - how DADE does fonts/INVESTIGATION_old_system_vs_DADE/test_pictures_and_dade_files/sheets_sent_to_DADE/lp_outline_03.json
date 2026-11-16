@@ -1,0 +1,24 @@
+{
+ "sheet": "lp_outline_03",
+ "w": 1000,
+ "h": 520,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "outline_serif_8mm_ave",
+   "x": 121,
+   "y": 44,
+   "w": 757,
+   "h": 160,
+   "value": "AVE MARIA"
+  },
+  {
+   "id": "outline_serif_8mm_ham",
+   "x": 0,
+   "y": 324,
+   "w": 1000,
+   "h": 160,
+   "value": "Hamburgefonts 2026"
+  }
+ ]
+}

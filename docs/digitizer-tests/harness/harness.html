@@ -1,0 +1,91 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>digitizer capture harness</title>
+<body>harness</body>
+<script type="module">
+// Runs the site's REAL modules (lib/digitizer/image.js, segment.js) in a browser and saves what the tracer's inputs are:
+// the exact RGBA pixels the page would give the tracer, the person model's six 256x256 confidence maps, MediaPipe face landmarks, and the hair model's mask.
+import { loadPicture, extractImage } from "/lib/digitizer/image.js";
+import { segmentProbs } from "/lib/digitizer/segment.js";
+
+const FILES = { wasmBase: "/mediapipe/wasm", modelUrl: "/mediapipe/selfie_multiclass_256x256.tflite", visionUrl: "/vendor/vision_bundle.mjs" };
+let vision = null, fileset = null, faceLm = null, hairSeg = null;
+
+async function getVision() {
+  if (!vision) {
+    vision = await import("/vendor/vision_bundle.mjs");
+    fileset = await vision.FilesetResolver.forVisionTasks("/mediapipe/wasm", false);
+  }
+  return vision;
+}
+const save = (path, body) => fetch(`/save?path=${encodeURIComponent(path)}`, { method: "POST", body }).then((r) => { if (!r.ok) throw new Error("save failed " + path); });
+
+// the picture exactly as the page prepares it (loadPicture, then the whole picture as the crop, at most 1600 px)
+async function prepare(url, name) {
+  const blob = await (await fetch(url)).blob();
+  const file = new File([blob], name + ".png", { type: blob.type });
+  const pic = await loadPicture(file);
+  const { image, scale } = extractImage(pic.canvas, { x: 0, y: 0, w: pic.canvas.width, h: pic.canvas.height }, 1600);
+  return { pic, image, scale };
+}
+
+window.capture = async (name, url, outDir, what) => {
+  const t = {};
+  const { pic, image, scale } = await prepare(url, name);
+  const meta = { name, width: image.width, height: image.height, scale, canvasWidth: pic.canvas.width, canvasHeight: pic.canvas.height };
+  await save(`${outDir}/image.rgba`, image.data.slice().buffer);
+  if (what.includes("seg")) {
+    const t0 = performance.now();
+    const m = await segmentProbs({ width: image.width, height: image.height, data: image.data.slice() }, FILES);
+    const buf = new Float32Array(6 * m.w * m.h);
+    for (let c = 0; c < 6; c++) buf.set(m.probs[c], c * m.w * m.h);
+    await save(`${outDir}/probs.f32`, buf.buffer);
+    meta.seg = { w: m.w, h: m.h, ms: Math.round(performance.now() - t0) };
+  }
+  if (what.includes("faces")) {
+    const v = await getVision();
+    if (!faceLm) {
+      faceLm = await v.FaceLandmarker.createFromOptions(fileset, {
+        baseOptions: { modelAssetPath: "/models/face_landmarker.task", delegate: "CPU" },
+        runningMode: "IMAGE", numFaces: 6, minFaceDetectionConfidence: 0.3, minFacePresenceConfidence: 0.3, outputFaceBlendshapes: false,
+      });
+      const consts = {};
+      for (const k of Object.getOwnPropertyNames(v.FaceLandmarker)) if (k.startsWith("FACE_LANDMARKS_")) consts[k] = v.FaceLandmarker[k].map((c) => [c.start, c.end]);
+      await save("constants.json", new TextEncoder().encode(JSON.stringify(consts)));
+    }
+    const cv = document.createElement("canvas");
+    cv.width = image.width; cv.height = image.height;
+    cv.getContext("2d").putImageData(new ImageData(new Uint8ClampedArray(image.data), image.width, image.height), 0, 0);
+    const t0 = performance.now();
+    const r = faceLm.detect(cv);
+    meta.faces = { n: r.faceLandmarks.length, ms: Math.round(performance.now() - t0) };
+    await save(`${outDir}/landmarks.json`, new TextEncoder().encode(JSON.stringify(r.faceLandmarks.map((f) => f.map((p) => [+p.x.toFixed(5), +p.y.toFixed(5), +p.z.toFixed(5)])))));
+  }
+  if (what.includes("hair")) {
+    const v = await getVision();
+    if (!hairSeg) {
+      hairSeg = await v.ImageSegmenter.createFromOptions(fileset, {
+        baseOptions: { modelAssetPath: "/models/hair_segmenter.tflite", delegate: "CPU" },
+        runningMode: "IMAGE", outputConfidenceMasks: true, outputCategoryMask: false,
+      });
+    }
+    const cv = document.createElement("canvas");
+    cv.width = image.width; cv.height = image.height;
+    cv.getContext("2d").putImageData(new ImageData(new Uint8ClampedArray(image.data), image.width, image.height), 0, 0);
+    const t0 = performance.now();
+    const r = hairSeg.segment(cv);
+    const masks = r.confidenceMasks;
+    const labels = hairSeg.getLabels();
+    // the mask that is "hair" (the model lists background first, hair second)
+    const idx = labels.length ? labels.findIndex((l) => /hair/i.test(l)) : masks.length - 1;
+    const m = masks[idx >= 0 ? idx : masks.length - 1];
+    const arr = Float32Array.from(m.getAsFloat32Array());
+    meta.hair = { w: m.width, h: m.height, labels, ms: Math.round(performance.now() - t0) };
+    r.close();
+    await save(`${outDir}/hair.f32`, arr.buffer);
+  }
+  await save(`${outDir}/meta.json`, new TextEncoder().encode(JSON.stringify(meta)));
+  return meta;
+};
+window.ready = true;
+</script>

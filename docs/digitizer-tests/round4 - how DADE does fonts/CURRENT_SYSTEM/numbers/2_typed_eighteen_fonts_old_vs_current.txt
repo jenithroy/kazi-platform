@@ -1,0 +1,48 @@
+﻿set typed2: 144 cells read by both (fin2: 144, fin: 144); caps <= 6.0 mm
+all cells                      n=144  fin2  0.125  fin  0.043   fin2 clearly better   4, fin clearly better  61
+caps 3 mm                      n= 36  fin2  0.257  fin  0.091   fin2 clearly better   1, fin clearly better  26
+caps 4 mm                      n= 36  fin2  0.116  fin  0.042   fin2 clearly better   2, fin clearly better  17
+caps 5 mm                      n= 36  fin2  0.064  fin  0.007   fin2 clearly better   0, fin clearly better  12
+caps 6 mm                      n= 36  fin2  0.062  fin  0.031   fin2 clearly better   1, fin clearly better   6
+text 'ave'                     n= 72  fin2  0.111  fin  0.049   fin2 clearly better   3, fin clearly better  28
+text 'ham'                     n= 72  fin2  0.138  fin  0.037   fin2 clearly better   1, fin clearly better  33
+
+abril (fat face)               n=  8  fin2  0.288  fin  0.076   fin2 clearly better   0, fin clearly better   5
+anton (heavy condensed)        n=  8  fin2  0.097  fin  0.007   fin2 clearly better   0, fin clearly better   3
+archivoblack (heavy sans)      n=  8  fin2  0.037  fin  0.000   fin2 clearly better   0, fin clearly better   2
+baskerville (transitional serif) n=  8  fin2  0.189  fin  0.023   fin2 clearly better   1, fin clearly better   5
+bebas (condensed caps)         n=  8  fin2  0.045  fin  0.007   fin2 clearly better   0, fin clearly better   2
+caveat (handwriting)           n=  8  fin2  0.104  fin  0.015   fin2 clearly better   0, fin clearly better   4
+cinzel (roman caps)            n=  8  fin2  0.174  fin  0.061   fin2 clearly better   0, fin clearly better   5
+courierprime (typewriter)      n=  8  fin2  0.127  fin  0.007   fin2 clearly better   0, fin clearly better   2
+dancing (script)               n=  8  fin2  0.151  fin  0.166   fin2 clearly better   2, fin clearly better   2
+lora (serif)                   n=  8  fin2  0.145  fin  0.023   fin2 clearly better   0, fin clearly better   6
+merri (sturdy serif)           n=  8  fin2  0.120  fin  0.007   fin2 clearly better   0, fin clearly better   6
+montserrat (geometric sans)    n=  8  fin2  0.022  fin  0.000   fin2 clearly better   0, fin clearly better   1
+nunito (rounded sans)          n=  8  fin2  0.044  fin  0.000   fin2 clearly better   0, fin clearly better   2
+opensans (humanist sans)       n=  8  fin2  0.061  fin  0.101   fin2 clearly better   1, fin clearly better   2
+oswald (condensed sans)        n=  8  fin2  0.029  fin  0.022   fin2 clearly better   0, fin clearly better   1
+pacifico (brush script)        n=  8  fin2  0.135  fin  0.089   fin2 clearly better   0, fin clearly better   2
+playfair (high-contrast serif) n=  8  fin2  0.398  fin  0.148   fin2 clearly better   0, fin clearly better   7
+robotoslab (slab serif)        n=  8  fin2  0.075  fin  0.015   fin2 clearly better   0, fin clearly better   4
+
+fin2 much worse than fin (top 8):
+  courierprime_b_3mm_ham       fin2 0.77 'suoja6aaqwe 2026'   fin 0.06 'Hauburgefonts 2026'
+  abril_b_3mm_ave              fin2 1.00 ''   fin 0.38 'IENARIA'
+  playfair_b_3mm_ham           fin2 0.59 'tnbwgclals 2026'   fin 0.06 'Hamburgefonts 2020'
+  baskerville_b_6mm_ave        fin2 0.50 'IVIARI!'   fin 0.00 'AVE MARIA'
+  abril_b_3mm_ham              fin2 0.59 'Henlagcna 2026'   fin 0.12 'Hamlurgefonts 2020'
+  playfair_b_3mm_ave           fin2 1.00 ''   fin 0.62 '.!I'EALRIL'
+  baskerville_b_3mm_ham        fin2 0.35 'Harobucgeloois 2026'   fin 0.00 'Hamburgefonts 2026'
+  cinzel_b_3mm_ham             fin2 0.47 'HAMDc0tS 2026'   fin 0.18 'Hamdurcefon7's 2026'
+fin much worse than fin2 (top 8):
+  opensans_b_6mm_ave           fin2 0.00 'AVE MARIA'   fin 0.75 'MARIA AVE'
+  dancing_b_3mm_ave            fin2 0.12 'AVC MARIA'   fin 0.38 'RVC MARIN'
+  baskerville_b_4mm_ave        fin2 0.00 'AVE MARIA'   fin 0.12 'AVE MARLA'
+  dancing_b_4mm_ham            fin2 0.18 'Hanbungefants 2026'   fin 0.29 ' Hcmb:vgeionbs 2026'
+  dancing_b_3mm_ham            fin2 0.23 'Harbargefent 2026'   fin 0.29 'Hanbiragelants 2026'
+  oswald_b_3mm_ham             fin2 0.12 'Hamburgelon(s 2026'   fin 0.18 'Hainhur gefonts 2026'
+  playfair_b_6mm_ham           fin2 0.00 'Hamburgefonts 2026'   fin 0.00 'Hamburgefonts 2026'
+  merri_b_6mm_ave              fin2 0.00 'AVE MARIA'   fin 0.00 'AVE MARIA'
+
+cells with error >= 0.3:  fin2 10   fin 5  (of 144)

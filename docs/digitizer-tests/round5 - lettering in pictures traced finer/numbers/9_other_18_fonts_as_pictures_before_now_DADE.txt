@@ -1,0 +1,31 @@
+18 other open-licence fonts (not the 9 the engine was tuned on) drawn as pictures of lettering (navy on white, 10 px to the mm), 3-6 mm capitals, two texts, 144 pictures; DADE was run on the same glyphs (140 read).
+Characters the reader gets wrong, lower is better. 'before' = the page at the end of round 4, 'now' = round 5.
+
+character error (lower is better)      picture       before          now  DADE(typed2)
+all                                   0.014        0.109        0.061        0.069   n=144
+caps 3 mm                             0.009        0.275        0.133        0.150   n=36
+caps 4 mm                             0.003        0.055        0.037        0.050   n=36
+caps 5 mm                             0.008        0.061        0.046        0.030   n=36
+caps 6 mm                             0.036        0.043        0.029        0.042   n=36
+text 'ave'                            0.009        0.085        0.042        0.071   n=72
+text 'ham'                            0.020        0.132        0.081        0.067   n=72
+
+abril (fat face)                      0.000        0.266        0.090        0.106   n=8
+anton (heavy condensed)               0.000        0.145        0.074        0.214   n=8
+archivoblack (heavy sans)             0.007        0.030        0.007        0.107   n=8
+baskerville (transitional seri        0.000        0.085        0.054        0.000   n=8
+bebas (condensed caps)                0.000        0.150        0.039        0.107   n=8
+caveat (handwriting)                  0.000        0.141        0.059        0.073   n=8
+cinzel (roman caps)                   0.000        0.108        0.015        0.077   n=8
+courierprime (typewriter)             0.000        0.060        0.007        0.046   n=8
+dancing (script)                      0.047        0.157        0.143        0.159   n=8
+lora (serif)                          0.000        0.029        0.016        0.000   n=8
+merri (sturdy serif)                  0.000        0.119        0.045        0.031   n=8
+montserrat (geometric sans)           0.000        0.015        0.000        0.000   n=8
+nunito (rounded sans)                 0.000        0.007        0.000        0.015   n=8
+opensans (humanist sans)              0.000        0.045        0.000        0.016   n=8
+oswald (condensed sans)               0.000        0.083        0.022        0.015   n=8
+pacifico (brush script)               0.200        0.311        0.333        0.150   n=8
+playfair (high-contrast serif)        0.000        0.183        0.199        0.115   n=8
+robotoslab (slab serif)               0.000        0.022        0.000        0.000   n=8
+pictures read                           144          144          144          140

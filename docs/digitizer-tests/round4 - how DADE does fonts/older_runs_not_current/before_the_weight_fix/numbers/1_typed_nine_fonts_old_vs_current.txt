@@ -1,0 +1,42 @@
+﻿set typed: 96 cells read by both (fin2: 96, cur: 96); caps <= 6.0 mm
+all cells                      n= 96  fin2  0.098  cur  0.030   fin2 clearly better   2, cur clearly better  42
+caps 3 mm                      n= 24  fin2  0.188  cur  0.067   fin2 clearly better   1, cur clearly better  18
+caps 4 mm                      n= 24  fin2  0.108  cur  0.010   fin2 clearly better   0, cur clearly better  12
+caps 5 mm                      n= 24  fin2  0.068  cur  0.010   fin2 clearly better   0, cur clearly better   8
+caps 6 mm                      n= 24  fin2  0.030  cur  0.031   fin2 clearly better   1, cur clearly better   4
+text 'ave'                     n= 48  fin2  0.068  cur  0.029   fin2 clearly better   1, cur clearly better  16
+text 'ham'                     n= 48  fin2  0.129  cur  0.031   fin2 clearly better   1, cur clearly better  26
+
+black                          n=  8  fin2  0.044  cur  0.007   fin2 clearly better   0, cur clearly better   2
+condensed                      n=  8  fin2  0.269  cur  0.151   fin2 clearly better   0, cur clearly better   4
+humanist                       n=  8  fin2  0.060  cur  0.000   fin2 clearly better   0, cur clearly better   4
+mono                           n=  8  fin2  0.091  cur  0.000   fin2 clearly better   0, cur clearly better   4
+round                          n=  8  fin2  0.038  cur  0.000   fin2 clearly better   0, cur clearly better   2
+sans (regular)                 n=  8  fin2  0.044  cur  0.000   fin2 clearly better   0, cur clearly better   3
+sans                           n=  8  fin2  0.037  cur  0.000   fin2 clearly better   0, cur clearly better   2
+script                         n=  8  fin2  0.103  cur  0.015   fin2 clearly better   0, cur clearly better   3
+serif (regular)                n=  8  fin2  0.098  cur  0.000   fin2 clearly better   0, cur clearly better   4
+serif                          n=  8  fin2  0.090  cur  0.094   fin2 clearly better   1, cur clearly better   4
+times (regular)                n=  8  fin2  0.130  cur  0.073   fin2 clearly better   1, cur clearly better   4
+times                          n=  8  fin2  0.175  cur  0.016   fin2 clearly better   0, cur clearly better   6
+
+fin2 much worse than cur (top 8):
+  condensed_b_3mm_ham          fin2 1.00 ''   cur 0.41 'burgolowts 2028'
+  serif_r_3mm_ham              fin2 0.29 'Harobvrgelonls 2026'   cur 0.00 'Hamburgefonts 2026'
+  mono_b_3mm_ave               fin2 0.25 'AVB MAAIA'   cur 0.00 'AVE MARIA'
+  times_r_5mm_ave              fin2 0.25 'AYE MARA'   cur 0.00 'AVE MARIA'
+  times_r_4mm_ave              fin2 0.25 'AYE MAR[A'   cur 0.00 'AVE MARIA'
+  times_b_5mm_ave              fin2 0.25 'AYE MARlA'   cur 0.00 'AVE MARIA'
+  times_b_4mm_ave              fin2 0.25 'AYE MARLA'   cur 0.00 'AVE MARIA'
+  script_b_6mm_ham             fin2 0.23 'Han: brtrgcfonts 2026'   cur 0.00 'Hamburgefonts 2026'
+cur much worse than fin2 (top 8):
+  serif_b_6mm_ave              fin2 0.00 'AVEMARIA'   cur 0.75 'LIVE MLIRLI'
+  times_r_3mm_ham              fin2 0.18 'Hanmbvrgelonts 2026'   cur 0.59 '1lumhuaclont 206'
+  sans_b_3mm_ave               fin2 0.00 'AVE MARIA'   cur 0.00 'AVE MARIA'
+  sans_b_4mm_ave               fin2 0.00 'AVE MARIA'   cur 0.00 'AVE MARIA'
+  sans_b_5mm_ave               fin2 0.00 'AVE MARIA'   cur 0.00 'AVE MARIA'
+  sans_b_6mm_ave               fin2 0.00 'AVE  MARIA'   cur 0.00 'AVE MARIA'
+  sans_b_6mm_ham               fin2 0.00 'Hamburgefonts 2026'   cur 0.00 'Hamburgefonts 2026'
+  sans_r_3mm_ave               fin2 0.00 'AVE MARIA'   cur 0.00 'AVE MARIA'
+
+cells with error >= 0.3:  fin2 2   cur 4  (of 96)

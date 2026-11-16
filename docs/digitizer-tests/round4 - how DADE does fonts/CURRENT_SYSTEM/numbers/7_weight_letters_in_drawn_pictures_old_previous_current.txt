@@ -1,0 +1,21 @@
+﻿##### weights, pictures: old, previous current, final
+108 line pictures. W = stitched ink area / the picture's text area, S = stroke width ratio (1.00 = as drawn)
+                                   now             cur             fin
+                              W      S        W      S        W      S
+all line pictures          1.11   1.11     1.43   1.51     1.15   1.18   n=108
+caps 3 mm                  1.10   1.27     1.90   2.29     1.34   1.50   n=18
+caps 4 mm                  1.05   1.10     1.65   1.77     1.18   1.25   n=18
+caps 5 mm                  1.15   1.10     1.49   1.51     1.12   1.14   n=18
+caps 6 mm                  1.17   1.10     1.30   1.29     1.11   1.11   n=18
+caps 8 mm                  1.11   1.08     1.18   1.15     1.09   1.06   n=18
+caps 12 mm                 1.05   1.03     1.05   1.03     1.05   1.03   n=18
+font black (3-6 mm)        1.05   0.97     1.28   1.31     1.00   1.02   n=8
+font condensed (3-6 mm)     1.04   1.17     1.09   1.24     1.02   1.17   n=8
+font humanist (3-6 mm)     1.11   1.06     1.68   1.76     1.17   1.20   n=8
+font mono (3-6 mm)         1.06   1.13     1.79   2.01     1.22   1.31   n=8
+font round (3-6 mm)        1.11   1.06     1.48   1.52     1.10   1.12   n=8
+font sans (3-6 mm)         1.05   1.01     1.53   1.62     1.10   1.12   n=8
+font script (3-6 mm)       1.10   1.13     1.80   1.92     1.25   1.29   n=8
+font serif (3-6 mm)        1.24   1.38     1.65   1.86     1.35   1.45   n=8
+font times (3-6 mm)        1.28   1.38     1.98   2.21     1.46   1.57   n=8
+

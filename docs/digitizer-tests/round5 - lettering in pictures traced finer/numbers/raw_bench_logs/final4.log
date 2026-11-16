@@ -1,0 +1,42 @@
+##### mixed backgrounds by kind of mess (picture | before | now)
+gradient  n 36 picture 0.035 before 0.053 now 0.017
+shadow    n 36 picture 0.064 before 0.083 now 0.022
+texture   n 36 picture 0.010 before 0.095 now 0.036
+##### real pictures
+73 pictures sewn into out/r73v in 57 s, 0 failed  (engine options {})
+7 pictures sewn into out/realN in 6 s, 0 failed  (engine options {})
+##### timing on the quiet machine (first tracing alone | first + the rest)
+reg18/crest_manzanares                   off   758 ms (167 shapes)   on   972 ms (173 shapes)  {"used":true,"boxes":5,"kept":2,"firstMs":667.793,"found":"first"}
+new55/emblems_seal_torrance_bw           off  1107 ms (381 shapes)   on  1212 ms (387 shapes)  {"used":true,"boxes":4,"kept":3,"firstMs":779.6825999999996,"found":"first"}
+new55/emblems_logo_sdl                   off   380 ms (36 shapes)   on   458 ms (39 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":366.8851999999997,"found":"finer"}
+new55/emblems_flag_washington_island     off   397 ms (56 shapes)   on   539 ms (58 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":394.0589999999993,"found":"finer"}
+chart2/chart                             off   432 ms (111 shapes)   on   596 ms (112 shapes)  {"used":true,"boxes":6,"kept":2,"firstMs":413.42199999999957,"found":"first"}
+reg18/logo_harley                        off   216 ms (3 shapes)   on   331 ms (8 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":232.24309999999969,"found":"finer"}
+lpics/line_serif_3mm_ham                 off   116 ms (28 shapes)   on   180 ms (26 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":123.4992000000002,"found":"finer"}
+lpicss/sw_sans_3mm_kazi                  off    68 ms (3 shapes)   on   105 ms (4 shapes)  {"used":true,"boxes":1,"kept":1,"firstMs":71.44130000000041,"found":"finer"}
+##### how often the second tracing is used (clean, JPEG 50, half size)
+cache {"used":104,"refused":0,"none":30}  
+deg_jpg50 {"used":103,"refused":0,"none":31}  
+deg_low {"used":103,"refused":3,"none":28} 3x the second tracing did not find the letters again refused: line_humanist_5mm_ham, line_mono_5mm_ave, line_mono_5mm_ham
+##### where lettering is found: first tracing against the final, per set
+lpicss {"refined":94,"refused":2,"none":12} {"3mm":{"refined":31,"refused":2,"none":3},"4mm":{"refined":32,"refused":0,"none":4},"6mm":{"refined":31,"refused":0,"none":5}}
+lpicsx {"refined":143,"refused":1,"none":0} {"3mm":{"refined":36,"refused":0,"none":0},"4mm":{"refined":36,"refused":0,"none":0},"5mm":{"refined":36,"refused":0,"none":0},"6mm":{"refined":35,"refused":1,"none":0}}
+lpicsm {"refined":107,"refused":1,"none":0} {"3mm":{"refined":35,"refused":1,"none":0},"4mm":{"refined":36,"refused":0,"none":0},"6mm":{"refined":36,"refused":0,"none":0}}
+##### shape accuracy by stage, before and now
+### before (the first tracing alone, no short words)
+means by cap height (mm):  recall / precision / weight(ink area vs true) / edge error mm / pieces vs true
+  3 mm n=18  true pieces 11.2 | trace 0.90 0.79 1.17 0.079 9.8 | stitch 0.89 0.69 1.33 0.114 8.8
+  4 mm n=18  true pieces 10.9 | trace 0.93 0.88 1.08 0.060 10.9 | stitch 0.92 0.79 1.17 0.095 10.8
+  5 mm n=18  true pieces 11.2 | trace 0.96 0.93 1.04 0.042 11.3 | stitch 0.94 0.85 1.11 0.079 11.2
+  6 mm n=18  true pieces 11.3 | trace 0.98 0.96 1.02 0.030 11.3 | stitch 0.96 0.88 1.10 0.074 11.1
+  8 mm n=18  true pieces 11.1 | trace 0.98 0.98 1.00 0.023 11.1 | stitch 0.97 0.90 1.09 0.077 11.2
+ 12 mm n=18  true pieces 8.9 | trace 0.99 0.99 1.00 0.016 8.9 | stitch 0.98 0.94 1.05 0.068 9.2
+### now
+means by cap height (mm):  recall / precision / weight(ink area vs true) / edge error mm / pieces vs true
+  3 mm n=18  true pieces 11.2 | trace 0.97 0.97 1.01 0.012 11.4 | stitch 0.95 0.73 1.33 0.089 9.3
+  4 mm n=18  true pieces 10.9 | trace 0.98 0.98 1.00 0.010 11.1 | stitch 0.95 0.82 1.18 0.072 10.0
+  5 mm n=18  true pieces 11.2 | trace 0.99 0.98 1.00 0.010 11.3 | stitch 0.96 0.86 1.13 0.069 10.3
+  6 mm n=18  true pieces 11.3 | trace 0.99 0.98 1.00 0.014 11.3 | stitch 0.97 0.88 1.11 0.068 10.4
+  8 mm n=18  true pieces 11.1 | trace 0.99 0.99 1.00 0.016 11.1 | stitch 0.98 0.90 1.09 0.075 10.9
+ 12 mm n=18  true pieces 8.9 | trace 0.99 0.99 1.00 0.016 8.9 | stitch 0.98 0.94 1.05 0.068 9.2
+##### done

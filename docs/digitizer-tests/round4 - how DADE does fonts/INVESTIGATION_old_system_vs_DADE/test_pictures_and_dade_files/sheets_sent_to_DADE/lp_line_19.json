@@ -1,0 +1,32 @@
+{
+ "sheet": "lp_line_19",
+ "w": 1000,
+ "h": 800,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "line_serif_6mm_ave",
+   "x": 208,
+   "y": 58,
+   "w": 583,
+   "h": 130,
+   "value": "AVE MARIA"
+  },
+  {
+   "id": "line_serif_6mm_ham",
+   "x": 11,
+   "y": 338,
+   "w": 977,
+   "h": 130,
+   "value": "Hamburgefonts 2026"
+  },
+  {
+   "id": "line_serif_8mm_ave",
+   "x": 121,
+   "y": 604,
+   "w": 757,
+   "h": 160,
+   "value": "AVE MARIA"
+  }
+ ]
+}

@@ -1,0 +1,71 @@
+{
+ "sheet": "typed2_14",
+ "w": 1000,
+ "h": 1000,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "courierprime_b_3mm_ave",
+   "x": 24,
+   "y": 24,
+   "w": 251,
+   "h": 66
+  },
+  {
+   "id": "courierprime_b_3mm_ham",
+   "x": 311,
+   "y": 24,
+   "w": 476,
+   "h": 76
+  },
+  {
+   "id": "courierprime_b_4mm_ave",
+   "x": 24,
+   "y": 136,
+   "w": 334,
+   "h": 74
+  },
+  {
+   "id": "courierprime_b_4mm_ham",
+   "x": 24,
+   "y": 246,
+   "w": 633,
+   "h": 88
+  },
+  {
+   "id": "courierprime_b_5mm_ave",
+   "x": 24,
+   "y": 370,
+   "w": 417,
+   "h": 82
+  },
+  {
+   "id": "courierprime_b_5mm_ham",
+   "x": 24,
+   "y": 488,
+   "w": 784,
+   "h": 99
+  },
+  {
+   "id": "courierprime_b_6mm_ave",
+   "x": 24,
+   "y": 623,
+   "w": 492,
+   "h": 90
+  },
+  {
+   "id": "courierprime_b_6mm_ham",
+   "x": 24,
+   "y": 749,
+   "w": 933,
+   "h": 111
+  },
+  {
+   "id": "abril_b_3mm_ave",
+   "x": 24,
+   "y": 896,
+   "w": 249,
+   "h": 71
+  }
+ ]
+}

@@ -1,0 +1,117 @@
+[
+ {
+  "name": "chart: the lettering is found and the Picture panel says so, with how tall the smallest is",
+  "ok": true,
+  "extra": "Lettering found: 85 letters in 7 lines, the smallest about 1.8 mm tall. Lettering this thin is sewn as one line of stitches from end to end, so its letters match. Letters 1.8 mm tall are too small for thread to read. Make them at least 4 mm tall. (Make the whole design about 2.2 times bigger; it needs a bigger hoop.)"
+ },
+ {
+  "name": "chart: stitched (18,333) and a DST was written",
+  "ok": true,
+  "extra": "18,333 stitches, 60410 bytes"
+ },
+ {
+  "name": "chart: no console errors",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "crest: the lettering is found and the Picture panel says so, with how tall the smallest is",
+  "ok": true,
+  "extra": "Lettering found: 24 letters in 3 lines, the smallest about 3.7 mm tall. Lettering this thin is sewn as one line of stitches from end to end, so its letters match. Letters 3.7 mm tall can be read, but 4 mm or taller is cleaner. (Make the whole design about 1.1 times bigger; it needs a bigger hoop.)"
+ },
+ {
+  "name": "crest: stitched (11,856) and a DST was written",
+  "ok": true,
+  "extra": "11,856 stitches, 38465 bytes"
+ },
+ {
+  "name": "crest: no console errors",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "sdl: the lettering is found and the Picture panel says so, with how tall the smallest is",
+  "ok": true,
+  "extra": "Lettering found: 19 letters in 1 line, the smallest about 2.5 mm tall. Letters 2.5 mm tall can be read, but 4 mm or taller is cleaner. (Make the whole design about 1.6 times bigger; it needs a bigger hoop.)"
+ },
+ {
+  "name": "sdl: stitched (3,056) and a DST was written",
+  "ok": true,
+  "extra": "3,056 stitches, 10433 bytes"
+ },
+ {
+  "name": "sdl: no console errors",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "nike: no lettering is found, no note",
+  "ok": true,
+  "extra": "This picture is read as a logo (flat colours), so it has no fine details on top. | Very thin lines and lettering were made about half a millimetre wide, the thi"
+ },
+ {
+  "name": "nike: stitched (1,041) and a DST was written",
+  "ok": true,
+  "extra": "1,041 stitches, 3761 bytes"
+ },
+ {
+  "name": "nike: no console errors",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "Times at 2.5 mm: the note says the thin strokes cannot be stitched and offers Sans",
+  "ok": true,
+  "extra": "At 2.5 mm the thin strokes and serifs of Times cannot be stitched: the letters will not read. Make them at least 6 mm tall, or use a plain sans."
+ },
+ {
+  "name": "Times at 4 mm: still a note (tight: the thin strokes are stitched heavier than drawn), and the way out is offered",
+  "ok": true,
+  "extra": "At 4.0 mm the thin strokes of Times are stitched heavier than drawn, so the letters look rough. 6 mm or taller is clean, or use a plain sans."
+ },
+ {
+  "name": "the Use Sans button switches the font to Sans",
+  "ok": true,
+  "extra": "Sans"
+ },
+ {
+  "name": "Sans at 5 mm: no note",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "Times at 8 mm: no note (it is big enough for its hairlines)",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "Condensed (heavy) at 4 mm: the note says the holes of a, e, o close up",
+  "ok": true,
+  "extra": "At 4.0 mm a heavy face closes up the holes of letters like a, e and o. 5 mm or taller keeps them open, or choose a lighter font."
+ },
+ {
+  "name": "Sans at 2 mm: too small to read, said plainly",
+  "ok": true,
+  "extra": "Letters 2.0 mm tall are too small for thread to read. Make them at least 4 mm tall."
+ },
+ {
+  "name": "the four look-alike fonts were fetched and loaded (HTTP 200) when a text used those faces",
+  "ok": true,
+  "extra": "[\"200 kazi-condensed.woff2\",\"200 kazi-heavy.woff2\",\"200 kazi-script.woff2\",\"200 kazi-round-700.woff2\"]"
+ },
+ {
+  "name": "document.fonts knows the four look-alikes as loaded",
+  "ok": true,
+  "extra": "[[\"Kazi Heavy\",true],[\"Kazi Condensed\",true],[\"Kazi Script\",true],[\"Kazi Round\",true]]"
+ },
+ {
+  "name": "the text is stitched",
+  "ok": true,
+  "extra": "807"
+ },
+ {
+  "name": "no console errors in the text tool",
+  "ok": true,
+  "extra": ""
+ }
+]

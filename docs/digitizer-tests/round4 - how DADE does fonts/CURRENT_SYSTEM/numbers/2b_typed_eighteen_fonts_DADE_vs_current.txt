@@ -1,0 +1,7 @@
+﻿set typed2: 140 cells read by both (dade: 140, fin: 144); caps <= 6.0 mm
+all cells                      n=140  dade  0.069  fin  0.044   dade clearly better  10, fin clearly better  22
+caps 3 mm                      n= 36  dade  0.150  fin  0.091   dade clearly better   6, fin clearly better  11
+caps 4 mm                      n= 36  dade  0.050  fin  0.042   dade clearly better   3, fin clearly better   6
+caps 5 mm                      n= 36  dade  0.030  fin  0.007   dade clearly better   0, fin clearly better   4
+caps 6 mm                      n= 32  dade  0.042  fin  0.035   dade clearly better   1, fin clearly better   1
+text 'ave'                     n= 72  dade  0.071  fin  0.049   dade clearly better   8, fin clearly better  13

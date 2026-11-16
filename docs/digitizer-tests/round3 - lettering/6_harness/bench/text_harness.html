@@ -1,0 +1,40 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>lettering capture harness</title>
+<body>text harness</body>
+<script type="module">
+// Runs the site's REAL lib/digitizer/text.js in a browser (drawText, FONTS, CAP_HEIGHT) and saves what the tracer is given: the canvas's alpha plane
+// (the text is drawn in black, so the alpha is all there is: the page's RGBA is (0, 0, 0, alpha)) and the pixels-per-millimetre it was drawn at.
+import { drawText, FONTS, CAP_HEIGHT } from "/lib/digitizer/text.js";
+
+const save = (path, body) => fetch(`/save?path=${encodeURIComponent(path)}`, { method: "POST", body }).then((r) => { if (!r.ok) throw new Error("save failed " + path); });
+
+// is a family installed? (its width differs from the generic fallbacks)
+function installed(family) {
+  const c = document.createElement("canvas").getContext("2d");
+  const s = "mmmmmmmmmmlli1WwQq@#";
+  const w = (f) => { c.font = `700 72px ${f}`; return c.measureText(s).width; };
+  return w(`"${family}", monospace`) !== w("monospace") || w(`"${family}", serif`) !== w("serif") || w(`"${family}", sans-serif`) !== w("sans-serif");
+}
+window.fontReport = () => FONTS.map((f) => {
+  const generic = new Set(["serif", "sans-serif", "monospace", "cursive", "fantasy"]);
+  const names = f.css.split(",").map((x) => x.trim().replace(/^"|"$/g, ""));
+  const cands = names.filter((n) => !generic.has(n)).map((n) => ({ name: n, installed: installed(n) }));
+  return { id: f.id, label: f.label, css: f.css, candidates: cands, used: (cands.find((c) => c.installed) || { name: "(generic " + names[names.length - 1] + ")" }).name };
+});
+
+window.captureText = async (cell, outDir) => {
+  const text = { value: cell.value, font: cell.font, size: cell.size, bold: cell.bold };
+  const drawn = await drawText(text, 14); // exactly the page's retext(): drawText(o.text, 14)
+  const ctx = drawn.canvas.getContext("2d");
+  const img = ctx.getImageData(0, 0, drawn.width, drawn.height);
+  const a = new Uint8Array(drawn.width * drawn.height);
+  let colourLeak = 0;
+  for (let i = 0, p = 0; i < a.length; i++, p += 4) { a[i] = img.data[p + 3]; if (img.data[p + 3] && (img.data[p] | img.data[p + 1] | img.data[p + 2])) colourLeak++; }
+  await save(`${outDir}/alpha.u8`, a.buffer);
+  const meta = { id: cell.id, text, width: drawn.width, height: drawn.height, pxPerMm: drawn.pxPerMm, capHeight: CAP_HEIGHT, colourLeak };
+  await save(`${outDir}/meta.json`, new TextEncoder().encode(JSON.stringify(meta)));
+  return meta;
+};
+window.ready = true;
+</script>

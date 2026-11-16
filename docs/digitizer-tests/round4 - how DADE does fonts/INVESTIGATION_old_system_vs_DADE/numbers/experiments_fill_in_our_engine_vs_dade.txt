@@ -1,0 +1,36 @@
+﻿== dl1
+set typed: 94 cells read by both (dl1: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  dl1  0.319  dade  0.068   dl1 clearly better   8, dade clearly better  48
+caps 3 mm                      n= 24  dl1  0.680  dade  0.131   dl1 clearly better   2, dade clearly better  19
+caps 4 mm                      n= 24  dl1  0.335  dade  0.066   dl1 clearly better   2, dade clearly better  15
+caps 5 mm                      n= 24  dl1  0.138  dade  0.035   dl1 clearly better   2, dade clearly better   8
+== dl2
+set typed: 94 cells read by both (dl2: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  dl2  0.110  dade  0.068   dl2 clearly better  10, dade clearly better  21
+caps 3 mm                      n= 24  dl2  0.251  dade  0.131   dl2 clearly better   4, dade clearly better   8
+caps 4 mm                      n= 24  dl2  0.105  dade  0.066   dl2 clearly better   2, dade clearly better   7
+caps 5 mm                      n= 24  dl2  0.061  dade  0.035   dl2 clearly better   2, dade clearly better   4
+== dl3
+set typed: 94 cells read by both (dl3: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  dl3  0.094  dade  0.068   dl3 clearly better  12, dade clearly better  21
+caps 3 mm                      n= 24  dl3  0.291  dade  0.131   dl3 clearly better   5, dade clearly better  15
+caps 4 mm                      n= 24  dl3  0.050  dade  0.066   dl3 clearly better   3, dade clearly better   4
+caps 5 mm                      n= 24  dl3  0.015  dade  0.035   dl3 clearly better   2, dade clearly better   1
+== dl4
+set typed: 94 cells read by both (dl4: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  dl4  0.137  dade  0.068   dl4 clearly better  11, dade clearly better  16
+caps 3 mm                      n= 24  dl4  0.385  dade  0.131   dl4 clearly better   5, dade clearly better  11
+caps 4 mm                      n= 24  dl4  0.145  dade  0.066   dl4 clearly better   2, dade clearly better   5
+caps 5 mm                      n= 24  dl4  0.007  dade  0.035   dl4 clearly better   2, dade clearly better   0
+== dl5
+set typed: 94 cells read by both (dl5: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  dl5  0.222  dade  0.068   dl5 clearly better   4, dade clearly better  30
+caps 3 mm                      n= 24  dl5  0.543  dade  0.131   dl5 clearly better   1, dade clearly better  18
+caps 4 mm                      n= 24  dl5  0.209  dade  0.066   dl5 clearly better   1, dade clearly better   8
+caps 5 mm                      n= 24  dl5  0.097  dade  0.035   dl5 clearly better   1, dade clearly better   4
+== dl6
+set typed: 94 cells read by both (dl6: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  dl6  0.274  dade  0.068   dl6 clearly better   9, dade clearly better  47
+caps 3 mm                      n= 24  dl6  0.593  dade  0.131   dl6 clearly better   3, dade clearly better  18
+caps 4 mm                      n= 24  dl6  0.320  dade  0.066   dl6 clearly better   2, dade clearly better  15
+caps 5 mm                      n= 24  dl6  0.087  dade  0.035   dl6 clearly better   2, dade clearly better   8

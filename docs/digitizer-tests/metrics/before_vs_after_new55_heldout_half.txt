@@ -1,0 +1,31 @@
+﻿animals_butterfly_plate_1898               -  10144-> 10144 tr  231-> 231 th 10->10
+animals_owl_portrait                       -  19699-> 19699 tr  336-> 336 th 16->16
+animals_westie_dog_face                    -  23457-> 23457 tr  431-> 431 th 17->17 | face  42.3mm eye 7.7: corrL 0.977->0.977 dE  10.0-> 10.0 eyes c 1.13->1.13 tones 7->7
+cartoon_anime_girl_flat_colours            -   6998->  6998 tr   56->  56 th  7-> 7
+emblems_logo_sdl                           -   3323->  3323 tr   51->  51 th  3-> 3
+emblems_seal_torrance_bw                   -  13669-> 13669 tr  150-> 150 th  1-> 1
+faces_angle_face_closeup_three_quarter     P   9902->  9902 tr  149-> 149 th 11->11 | face  34.4mm eye 13.2: corrL 0.961->0.961 dE   7.9->  7.9 eyes c 1.4->1.4 tones 8->8
+faces_angle_woman_profile_sad              P   8902->  8961 tr  158-> 163 th 16->16 | PERSON dE   7.9->  8.0 corrL 0.962->0.962 | face  28.4mm eye 2.0: corrL 0.956->0.955 dE   6.8->  6.8 eyes c 0.77->0.9 tones 9->8
+faces_art_ghirlandaio_man_renaissance      P   8400->  8296 tr  120-> 115 th 12->12 | PERSON dE   7.6->  7.6 corrL 0.936->0.936 | face  21.3mm eye 3.9: corrL 0.917->0.879 dE   8.0->  8.6 eyes c 0.93->0.82 tones 6->4
+faces_art_pencil_elderly_lady              -   8801->  8801 tr  159-> 159 th  6-> 6 | face  30.9mm eye 3.0: corrL 0.931->0.931 dE   8.2->  8.2 eyes c 1.55->1.55 tones 4->4
+faces_bw_bessie_smith                      -  27457-> 27457 tr  471-> 471 th 10->10 | face  22.1mm eye 3.3: corrL 0.950->0.950 dE   4.2->  4.2 eyes c 0.75->0.75 tones 4->4
+faces_colour_boy_madagascar                P   9065->  9179 tr  160-> 153 th 10->13 | PERSON dE   7.3->  7.4 corrL 0.956->0.952 | face  30.0mm eye 6.8: corrL 0.935->0.908 dE   7.8->  8.3 eyes c 0.84->0.81 tones 6->7
+faces_colour_indian_woman_elder            P  11592-> 11664 tr  240-> 259 th 15->16 | PERSON dE  14.5-> 14.4 corrL 0.808->0.804 | face  27.2mm eye 5.8: corrL 0.922->0.911 dE  10.2-> 10.0 eyes c 0.34->0.42 tones 5->5
+faces_colour_poroshenko_official           P  11354-> 11281 tr  178-> 178 th 14->14 | PERSON dE   7.4->  7.5 corrL 0.975->0.974 | face  34.1mm eye 6.6: corrL 0.953->0.938 dE   9.1->  9.2 eyes c 0.89->0.95 tones 6->5
+faces_colour_young_woman_rose              P  11908-> 11810 tr  191-> 181 th 14->15 | PERSON dE  11.2-> 11.6 corrL 0.907->0.897 | face  31.2mm eye 7.0: corrL 0.867->0.943 dE   9.4->  9.4 eyes c 0.77->0.87 tones 4->6
+faces_small_artemis2_crew_four             -  16659-> 16659 tr  416-> 416 th 15->15
+faces_small_football_header_action         -  18791-> 18791 tr  323-> 323 th 14->14
+icons_flat_programming_icon                -   3543->  3543 tr   25->  25 th  2-> 2
+lineart_woodcut_print_frog                 -  11268-> 11268 tr  183-> 183 th  2-> 2
+nature_blueberries_bowl                    -  18222-> 18222 tr  397-> 397 th 13->13
+nature_sunflower_bee_black                 -  29224-> 29224 tr  635-> 635 th 15->15
+objects_spices_on_white                    -   9282->  9282 tr  221-> 221 th  8-> 8
+objects_teapot_cups_white                  -  17569-> 17569 tr  289-> 289 th 16->16
+scenes_swayambhunath_stupa                 -  14907-> 14907 tr  292-> 292 th 15->15
+sculpture_nefertiti_bust                   -  14419-> 14419 tr  283-> 283 th 14->14 | face  22.7mm eye 3.3: corrL 0.967->0.967 dE   9.5->  9.5 eyes c 1.1->1.1 tones 8->8
+text_kufic_calligraphy_folio               -   6954->  6954 tr  247-> 247 th 14->14
+text_sans_sign_medstead                    -  24090-> 24090 tr  463-> 463 th 16->16
+
+27 pictures: 21 identical to the baseline (stitches, trims, threads), 6 changed
+whole person (6 changed pictures): mean change in dE +0.11, corrL -0.003, stitches -0.0 %, trims -0.4 %
+faces that changed (6): mean change in face corrL -0.003, face dE +0.17, eye contrast +0.04, eye corrL +0.044, brow contrast +0.03, lips contrast -0.14, tones in face -0.2

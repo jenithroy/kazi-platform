@@ -1,0 +1,32 @@
+{
+ "sheet": "lp_outline_01",
+ "w": 1000,
+ "h": 800,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "outline_sans_5mm_ave",
+   "x": 277,
+   "y": 65,
+   "w": 445,
+   "h": 115,
+   "value": "AVE MARIA"
+  },
+  {
+   "id": "outline_sans_5mm_ham",
+   "x": 126,
+   "y": 345,
+   "w": 747,
+   "h": 115,
+   "value": "Hamburgefonts 2026"
+  },
+  {
+   "id": "outline_sans_8mm_ave",
+   "x": 162,
+   "y": 604,
+   "w": 675,
+   "h": 160,
+   "value": "AVE MARIA"
+  }
+ ]
+}

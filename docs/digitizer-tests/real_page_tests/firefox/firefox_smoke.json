@@ -1,0 +1,15 @@
+{
+ "browser": "firefox/160.0",
+ "convertMs": 6972,
+ "faceNote": "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+ "models": [
+  "200 selfie_multiclass_256x256.tflite",
+  "200 wasm/vision_wasm_internal.js",
+  "200 wasm/vision_wasm_internal.wasm",
+  "200 face_landmarker.task"
+ ],
+ "cropButton": true,
+ "stitches": "11,821",
+ "afterCrop": "The face is about 34 mm wide, so each eye is about 6.2 mm.",
+ "errors": []
+}

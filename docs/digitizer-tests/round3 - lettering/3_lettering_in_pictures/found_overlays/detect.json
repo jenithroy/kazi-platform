@@ -1,0 +1,20 @@
+{
+ "reg18/emblem_nepal": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 323,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 35,
+  "msFind": 152
+ },
+ "new55/lineart_bellin_ionian_sea_map": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 550,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 13,
+  "msFind": 165
+ }
+}

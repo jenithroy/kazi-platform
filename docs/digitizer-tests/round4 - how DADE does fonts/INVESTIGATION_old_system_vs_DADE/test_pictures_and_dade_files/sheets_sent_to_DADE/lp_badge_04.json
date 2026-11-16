@@ -1,0 +1,32 @@
+{
+ "sheet": "lp_badge_04",
+ "w": 1000,
+ "h": 800,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "badge_serif_6mm_ham",
+   "x": 11,
+   "y": 58,
+   "w": 977,
+   "h": 130,
+   "value": "Hamburgefonts 2026"
+  },
+  {
+   "id": "badge_serif_10mm_ave",
+   "x": 33,
+   "y": 310,
+   "w": 933,
+   "h": 190,
+   "value": "AVE MARIA"
+  },
+  {
+   "id": "badge_serif_10mm_ham",
+   "x": 0,
+   "y": 590,
+   "w": 1000,
+   "h": 190,
+   "value": "Hamburgefonts 2026"
+  }
+ ]
+}

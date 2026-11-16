@@ -1,0 +1,21 @@
+// which URLs of the digitizer page answer 404 in the isolated build (and in the build the user will deploy)?
+import path from "node:path";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
+import { startOut } from "./serve_out.mjs";
+const FACES = path.dirname(fileURLToPath(import.meta.url));
+const SCRATCH = path.dirname(FACES);
+const require = createRequire(path.join(SCRATCH, "node_modules", "x.js"));
+const { chromium } = require("playwright-core");
+const [, , OUTDIR] = process.argv;
+const exe = path.join(process.env.LOCALAPPDATA, "ms-playwright", "chromium-1243", "chrome-win64", "chrome.exe");
+const { server, port } = await startOut(OUTDIR, 0);
+const browser = await chromium.launch({ executablePath: exe, headless: true });
+const page = await (await browser.newContext()).newPage();
+const bad = [];
+page.on("response", (r) => { if (r.status() >= 400) bad.push(`${r.status()} ${r.url().replace(`http://127.0.0.1:${port}`, "")}`); });
+await page.goto(`http://127.0.0.1:${port}/digitizer/`, { waitUntil: "networkidle" });
+await page.waitForTimeout(1500);
+console.log(bad.length ? bad.join("\n") : "no failing requests");
+await browser.close();
+server.close();

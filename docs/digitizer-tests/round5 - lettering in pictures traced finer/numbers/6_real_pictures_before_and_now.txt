@@ -1,0 +1,21 @@
+Real pictures (Wikimedia and others), stitch counts before (the page at the end of round 4) -> now (round 5, final code), from the sewn files.
+
+### all 73 real pictures of the benchmark
+73 pictures in both runs: 5 change, 68 are stitch for stitch what they were.
+  new55__emblems_flag_washington_island      stitches   8962 ->   8955   trims   80 ->   77
+  new55__emblems_logo_sdl                    stitches   3495 ->   3836   trims   50 ->   52
+  new55__emblems_seal_torrance_bw            stitches  14852 ->  14760   trims  152 ->  152
+  reg18__crest_manzanares                    stitches  14126 ->  13634   trims  156 ->  159
+  reg18__logo_harley                         stitches   4043 ->   4075   trims   26 ->   26
+
+### the 7 real pictures of the lettering bench
+7 pictures in both runs: 5 change, 2 are stitch for stitch what they were.
+  chart2__chart                              stitches   9616 ->   9719   trims  116 ->  111
+  new55__emblems_flag_washington_island      stitches   8962 ->   8955   trims   80 ->   77
+  new55__emblems_logo_sdl                    stitches   3495 ->   3836   trims   50 ->   52
+  new55__emblems_seal_torrance_bw            stitches  14852 ->  14760   trims  152 ->  152
+  reg18__crest_manzanares                    stitches  14126 ->  13634   trims  156 ->  159
+  (the other two of the seven, the two photographs of signs, are stitch for stitch what they were: no lettering is found in a photograph)
+
+What the second tracing did on each (stats.refine, final code): flag 1 box, used, lettering found on the finer tracing; SDL 1 box, used, finer; harley 1 box, used, finer;
+seal 4 boxes, 3 kept; crest 5 boxes, 2 kept (the two mottos; the three outlines of its crown are refused); chart 6 boxes, 2 kept. The seal, crest and chart keep the first tracing's lettering blocks (they have more than 100 shapes, so no finer detection pass is made on them).

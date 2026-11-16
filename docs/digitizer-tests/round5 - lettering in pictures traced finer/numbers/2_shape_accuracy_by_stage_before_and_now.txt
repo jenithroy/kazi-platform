@@ -1,0 +1,20 @@
+Shape accuracy by stage on the 108 one-line drawn pictures (10 px to the mm; true ink from the drawing). recall = share of the true ink covered, precision = share of the covered that is true ink,
+weight = area against the true ink, edge = mean distance the edge is out by (mm), pieces = ink pieces found against the true count.
+'trace' = the tracer's shapes, 'stitch' = the stitched render (a 0.45 mm thread; its floor is about 0.07 mm). (The 'objects' columns of the script are not meaningful and are left out.)
+
+### before (the first tracing alone, no short words)
+means by cap height (mm):  recall / precision / weight(ink area vs true) / edge error mm / pieces vs true
+  3 mm n=18  true pieces 11.2 | trace 0.90 0.79 1.17 0.079 9.8 | stitch 0.89 0.69 1.33 0.114 8.8
+  4 mm n=18  true pieces 10.9 | trace 0.93 0.88 1.08 0.060 10.9 | stitch 0.92 0.79 1.17 0.095 10.8
+  5 mm n=18  true pieces 11.2 | trace 0.96 0.93 1.04 0.042 11.3 | stitch 0.94 0.85 1.11 0.079 11.2
+  6 mm n=18  true pieces 11.3 | trace 0.98 0.96 1.02 0.030 11.3 | stitch 0.96 0.88 1.10 0.074 11.1
+  8 mm n=18  true pieces 11.1 | trace 0.98 0.98 1.00 0.023 11.1 | stitch 0.97 0.90 1.09 0.077 11.2
+ 12 mm n=18  true pieces 8.9 | trace 0.99 0.99 1.00 0.016 8.9 | stitch 0.98 0.94 1.05 0.068 9.2
+### now
+means by cap height (mm):  recall / precision / weight(ink area vs true) / edge error mm / pieces vs true
+  3 mm n=18  true pieces 11.2 | trace 0.97 0.97 1.01 0.012 11.4 | stitch 0.95 0.73 1.33 0.089 9.3
+  4 mm n=18  true pieces 10.9 | trace 0.98 0.98 1.00 0.010 11.1 | stitch 0.95 0.82 1.18 0.072 10.0
+  5 mm n=18  true pieces 11.2 | trace 0.99 0.98 1.00 0.010 11.3 | stitch 0.96 0.86 1.13 0.069 10.3
+  6 mm n=18  true pieces 11.3 | trace 0.99 0.98 1.00 0.014 11.3 | stitch 0.97 0.88 1.11 0.068 10.4
+  8 mm n=18  true pieces 11.1 | trace 0.99 0.99 1.00 0.016 11.1 | stitch 0.98 0.90 1.09 0.075 10.9
+ 12 mm n=18  true pieces 8.9 | trace 0.99 0.99 1.00 0.016 8.9 | stitch 0.98 0.94 1.05 0.068 9.2

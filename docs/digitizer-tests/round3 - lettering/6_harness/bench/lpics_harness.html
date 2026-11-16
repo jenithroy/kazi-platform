@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>lettering pictures harness</title>
+<body>lpics harness</body>
+<script type="module">
+// Draws PICTURES with lettering in them (as a logo would have it), with the page's own fonts (lib/digitizer/text.js FONTS): 10 pixels to the millimetre, so a 1000 px picture is a 100 mm design.
+import { FONTS, CAP_HEIGHT } from "/lib/digitizer/text.js";
+const save = (path, body) => fetch(`/save?path=${encodeURIComponent(path)}`, { method: "POST", body }).then((r) => { if (!r.ok) throw new Error("save failed " + path); });
+const cssOf = (id) => (FONTS.find((f) => f.id === id) || FONTS[0]).css;
+
+/**
+ * spec: { id, w, h (px), bg (css colour), badge?: { color }, texts: [{ value, font, capMm, bold, ink, outline?: { color, mm }, x, y (px of the text's centre), arcRadiusMm?, arcSpanDeg? }], extras?: [ "stars" | "bars" | "rope" | "dots" ] }
+ */
+window.capturePicture = async (spec, outDir) => {
+  const PXMM = 10;
+  const c = document.createElement("canvas");
+  c.width = spec.w; c.height = spec.h;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  ctx.fillStyle = spec.bg; ctx.fillRect(0, 0, spec.w, spec.h);
+  if (spec.badge) { ctx.fillStyle = spec.badge.color; ctx.fillRect(spec.badge.x, spec.badge.y, spec.badge.w, spec.badge.h); }
+  const boxes = [];
+  for (const t of spec.texts) {
+    const emPx = (t.capMm / CAP_HEIGHT) * PXMM;
+    const font = `${t.italic ? "italic " : ""}${t.bold === false ? 400 : 700} ${emPx}px ${cssOf(t.font)}`;
+    try { await document.fonts.load(font, t.value); } catch {}
+    ctx.font = font; ctx.textBaseline = "alphabetic"; ctx.textAlign = "center";
+    const capPx = t.capMm * PXMM;
+    if (t.arcRadiusMm) {
+      // letters set round a circle (a badge): each one turned to stand on it
+      const R = t.arcRadiusMm * PXMM;
+      const chars = [...t.value];
+      const widths = chars.map((ch) => ctx.measureText(ch).width);
+      const total = widths.reduce((a, b) => a + b, 0);
+      let ang = -total / R / 2 - Math.PI / 2; // centred on the top
+      for (let i = 0; i < chars.length; i++) {
+        const a = ang + widths[i] / R / 2;
+        ctx.save(); ctx.translate(t.x + R * Math.cos(a), t.y + R * Math.sin(a)); ctx.rotate(a + Math.PI / 2);
+        if (t.outline) { ctx.lineWidth = t.outline.mm * PXMM * 2; ctx.lineJoin = "round"; ctx.strokeStyle = t.outline.color; ctx.strokeText(chars[i], 0, 0); }
+        ctx.fillStyle = t.ink; ctx.fillText(chars[i], 0, 0); ctx.restore();
+        ang += widths[i] / R;
+      }
+      boxes.push({ value: t.value, arc: true, cx: t.x, cy: t.y, r: R });
+    } else {
+      const w = ctx.measureText(t.value).width;
+      if (t.outline) { ctx.lineWidth = t.outline.mm * PXMM * 2; ctx.lineJoin = "round"; ctx.strokeStyle = t.outline.color; ctx.strokeText(t.value, t.x, t.y + capPx / 2); }
+      ctx.fillStyle = t.ink; ctx.fillText(t.value, t.x, t.y + capPx / 2);
+      boxes.push({ value: t.value, x0: t.x - w / 2, x1: t.x + w / 2, y0: t.y - capPx / 2 - capPx * 0.2, y1: t.y + capPx / 2 + capPx * 0.3 });
+    }
+  }
+  for (const e of spec.extras || []) {
+    ctx.fillStyle = e.ink || "#16285e";
+    if (e.kind === "stars") {
+      for (let i = 0; i < e.n; i++) {
+        const cx = e.x + i * e.step, cy = e.y, R = e.r;
+        ctx.beginPath();
+        for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + (k * Math.PI) / 5, rr = k % 2 ? R * 0.42 : R; ctx.lineTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a)); }
+        ctx.closePath(); ctx.fill();
+      }
+    } else if (e.kind === "bars") {
+      for (let i = 0; i < e.n; i++) ctx.fillRect(e.x + i * e.step, e.y, e.w, e.h);
+    } else if (e.kind === "dots") {
+      for (let i = 0; i < e.n; i++) { ctx.beginPath(); ctx.arc(e.x + i * e.step, e.y, e.r, 0, Math.PI * 2); ctx.fill(); }
+    } else if (e.kind === "rope") {
+      // the strands of a rope round a ring: the same slanted oval, turned a little each time
+      for (let i = 0; i < e.n; i++) {
+        const a = (i / e.n) * Math.PI * 2;
+        ctx.save(); ctx.translate(e.x + e.R * Math.cos(a), e.y + e.R * Math.sin(a)); ctx.rotate(a + 0.5);
+        ctx.beginPath(); ctx.ellipse(0, 0, e.ra, e.rb, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      }
+    }
+  }
+  const img = ctx.getImageData(0, 0, spec.w, spec.h);
+  await save(`${outDir}/image.rgba`, img.data.buffer);
+  const meta = { id: spec.id, width: spec.w, height: spec.h, spec: { texts: spec.texts, extras: spec.extras || [], bg: spec.bg, badge: spec.badge || null }, boxes };
+  await save(`${outDir}/meta.json`, new TextEncoder().encode(JSON.stringify(meta)));
+  return meta;
+};
+window.ready = true;
+</script>

@@ -1,0 +1,5 @@
+﻿cat                        dE   7.2 corrL 0.986   FACE  19.3 mm dE   9.7 corrL 0.970 thr 10   eyes c 0.73 r 0.81
+face_armstrong             dE  48.1 corrL -0.218   FACE  13.1 mm dE   8.0 corrL 0.889 thr 6   eyes c 0.80 r 0.84
+face_einstein              dE   7.4 corrL 0.943   FACE  34.0 mm dE   6.4 corrL 0.964 thr 9   eyes c 0.80 r 0.89
+face_woman                 dE   5.4 corrL 0.987   FACE  36.9 mm dE   7.8 corrL 0.983 thr 6   eyes c 0.87 r 0.71
+painting_pearl             dE  60.0 corrL -0.499   FACE  23.9 mm dE   8.2 corrL 0.960 thr 8   eyes c 0.87 r 0.83

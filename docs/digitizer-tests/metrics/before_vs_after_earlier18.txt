@@ -1,0 +1,22 @@
+﻿cat                                        -  24874-> 24874 tr  431-> 431 th 15->15 | face  19.3mm eye 4.1: corrL 0.970->0.970 dE   9.7->  9.7 eyes c 0.73->0.73 tones 10->10
+crest_manzanares                           -  13689-> 13689 tr  154-> 154 th  5-> 5
+dog                                        P   9797->  9797 tr  155-> 155 th  9-> 9
+eagle                                      -   9336->  9336 tr  158-> 158 th 13->13
+emblem_nepal                               -  18091-> 18091 tr  308-> 308 th 13->13
+engraving_hummingbird                      -   6356->  6356 tr  157-> 157 th 13->13
+engraving_rhino                            -  23623-> 23623 tr  501-> 501 th  9-> 9
+face_armstrong                             P  11142-> 10259 tr  256-> 233 th 16->14 | PERSON dE  10.6-> 11.0 corrL 0.945->0.937 | face  13.1mm eye 2.3: corrL 0.490->0.889 dE  10.4->  8.0 eyes c 0.08->0.8 tones 3->6
+face_einstein                              -  28485-> 28485 tr  552-> 552 th 14->14 | face  34.0mm eye 6.8: corrL 0.964->0.964 dE   6.4->  6.4 eyes c 0.8->0.8 tones 9->9
+face_woman                                 -  13507-> 13507 tr  294-> 294 th  8-> 8 | face  36.9mm eye 5.3: corrL 0.983->0.983 dE   7.8->  7.8 eyes c 0.87->0.87 tones 6->6
+flower_rose                                -  26005-> 26005 tr  646-> 646 th 15->15
+landscape_everest                          -  19953-> 19953 tr  359-> 359 th 16->16
+logo_adidas                                -   3736->  3736 tr   44->  44 th  1-> 1
+logo_harley                                -   4043->  4043 tr   26->  26 th  1-> 1
+logo_mercedes                              -  11445-> 11445 tr  167-> 167 th 12->12
+logo_nike                                  -   1177->  1177 tr    6->   6 th  1-> 1
+logo_olympic                               -   2610->  2610 tr   26->  26 th  5-> 5
+painting_pearl                             P   9588->  9611 tr  176-> 178 th 14->15 | PERSON dE  10.0->  9.9 corrL 0.933->0.935 | face  23.9mm eye 3.6: corrL 0.963->0.959 dE   8.7->  8.2 eyes c 0.83->0.84 tones 7->8
+
+18 pictures: 16 identical to the baseline (stitches, trims, threads), 2 changed
+whole person (2 changed pictures): mean change in dE +0.13, corrL -0.003, stitches -3.8 %, trims -3.9 %
+faces that changed (2): mean change in face corrL +0.198, face dE -1.42, eye contrast +0.37, eye corrL +0.396, brow contrast +0.26, lips contrast +0.10, tones in face +2.0

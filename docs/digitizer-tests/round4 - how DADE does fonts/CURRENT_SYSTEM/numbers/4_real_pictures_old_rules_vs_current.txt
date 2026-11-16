@@ -1,0 +1,16 @@
+﻿##### real pictures
+73 pictures sewn into <SESSION>\scratchpad\text\out\r73fin in 55 s, 0 failed  (engine options {})
+7 pictures sewn into <SESSION>\scratchpad\text\out\realH in 7 s, 0 failed  (engine options {})
+73 real pictures, the older rules against the final system: 4 changed
+new55__emblems_flag_washington_island            stitches   8820 ->   8962  trims   79 ->   80
+new55__emblems_logo_sdl                          stitches   3323 ->   3495  trims   51 ->   50
+new55__emblems_seal_torrance_bw                  stitches  13669 ->  14852  trims  150 ->  152
+reg18__crest_manzanares                          stitches  13683 ->  14126  trims  150 ->  156
+the 7 real pictures of the lettering bench (older rules -> final):
+chart2__chart                                 stitches   8321 ->   9616
+new55__emblems_flag_washington_island         stitches   8820 ->   8962
+new55__emblems_logo_sdl                       stitches   3323 ->   3495
+new55__emblems_seal_torrance_bw               stitches  13669 ->  14852
+new55__text_sans_sign_medstead                stitches  24090 ->  24090
+new55__text_serif_sign_st_xavier              stitches  13072 ->  13072
+reg18__crest_manzanares                       stitches  13683 ->  14126

@@ -1,0 +1,42 @@
+Short words (BMW, KAZI, OPEN, SALE) in 9 fonts, 3, 4 and 6 mm capitals, 108 pictures. Characters the reader gets wrong, lower is better. 'before' = the page at the end of round 4, 'now' = round 5.
+
+character error (lower is better)      picture       before          now
+all                                   0.000        0.276        0.121   n=108
+caps 3 mm                             0.000        0.451        0.220   n=36
+caps 4 mm                             0.000        0.266        0.102   n=36
+caps 6 mm                             0.000        0.111        0.042   n=36
+text 'bmw'                            0.000        0.309        0.160   n=27
+text 'kazi'                           0.000        0.231        0.120   n=27
+text 'open'                           0.000        0.370        0.111   n=27
+text 'sale'                           0.000        0.194        0.093   n=27
+
+black ()                              0.000        0.069        0.000   n=12
+condensed ()                          0.000        0.667        0.549   n=12
+humanist ()                           0.000        0.021        0.021   n=12
+mono ()                               0.000        0.465        0.215   n=12
+round ()                              0.000        0.125        0.000   n=12
+sans ()                               0.000        0.090        0.000   n=12
+script ()                             0.000        0.215        0.208   n=12
+serif ()                              0.000        0.410        0.028   n=12
+times ()                              0.000        0.424        0.069   n=12
+pictures read                           108          108          108
+
+The 48 of these that the reader could also read on DADE's stitches (3 and 4 mm only):
+lpicss: 48 pictures read by all of: ours_before, ours_now, DADE
+                             ours_before  ours_now       DADE
+all                               0.345      0.104      0.174   n=48
+caps 3 mm                         0.458      0.153      0.243   n=24
+caps 4 mm                         0.233      0.056      0.104   n=24
+word 'bmw'                        0.361      0.167      0.361   n=12
+word 'kazi'                       0.271      0.062      0.167   n=12
+word 'open'                       0.479      0.146      0.083   n=12
+word 'sale'                       0.271      0.042      0.083   n=12
+
+font black                        0.104      0.000      0.031   n=8
+font mono                         0.573      0.198      0.427   n=8
+font sans                         0.104      0.000      0.000   n=8
+font script                       0.292      0.281      0.156   n=8
+font serif                        0.490      0.042      0.250   n=8
+font times                        0.510      0.104      0.177   n=8
+
+Still weak (said plainly): the heavy condensed font's short words (0.667 -> 0.549: most of them are still not found as lettering), the script font's (0.215 -> 0.208; on the 8 script pictures both could be read, DADE gets 0.156 and we get 0.281) and the word 'Open' (0.146 against DADE's 0.083).

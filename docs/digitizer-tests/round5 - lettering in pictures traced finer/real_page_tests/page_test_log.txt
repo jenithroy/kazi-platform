@@ -1,0 +1,42 @@
+﻿[13:43:39] removing the old copy
+[13:43:55] git archive HEAD app
+[13:43:56] extracted: 480 files
+[13:43:56] overlaid 13 files and the fonts
+[13:43:56] copying node_modules (robocopy)
+[13:44:12] node_modules copied: True
+[13:44:12] npm run build
+[13:44:23] build exit code: 0
+[13:44:23] out exists: True; digitizer page: True; font: True
+[13:44:23] DONE
+    chart -> Lettering found: 95 letters in 8 lines, the smallest about 1.8 mm tall. Lettering up to 8 mm tall with strokes of 0.35 mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under 0.55 mm) is sewn as one line of stitches from end to end. At 1.8 mm the thin strokes and serifs of this lettering cannot be stitched: the letters will not read. Make them at least 4 mm tall, or use a plain sans. (Make the whole design about 2.2 times bigger; it needs a bigger hoop.)
+ok   chart: the lettering is found and the Picture panel says so, with how tall the smallest is Lettering found: 95 letters in 8 lines, the smallest about 1.8 mm tall. Lettering up to 8 mm tall with strokes of 0.35 mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under 0.55 mm) is sewn as one line of stitches from end to end. At 1.8 mm the thin strokes and serifs of this lettering cannot be stitched: the letters will not read. Make them at least 4 mm tall, or use a plain sans. (Make the whole design about 2.2 times bigger; it needs a bigger hoop.)
+ok   chart: stitched (19,297) and a DST was written 19,297 stitches, 63278 bytes
+ok   chart: no console errors 
+    crest -> Lettering found: 25 letters in 3 lines, the smallest about 3.8 mm tall. Lettering up to 8 mm tall with strokes of 0.35 mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under 0.55 mm) is sewn as one line of stitches from end to end.
+ok   crest: the lettering is found and the Picture panel says so, with how tall the smallest is Lettering found: 25 letters in 3 lines, the smallest about 3.8 mm tall. Lettering up to 8 mm tall with strokes of 0.35 mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under 0.55 mm) is sewn as one line of stitches from end to end.
+ok   crest: stitched (11,607) and a DST was written 11,607 stitches, 37718 bytes
+ok   crest: no console errors 
+    sdl -> Lettering found: 19 letters in 1 line, the smallest about 2.5 mm tall. Lettering up to 8 mm tall with strokes of 0.35 mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under 0.55 mm) is sewn as one line of stitches from end to end. Letters 2.5 mm tall can be read, but 3 mm or taller is cleaner. (Make the whole design about 1.2 times bigger; it needs a bigger hoop.)
+ok   sdl: the lettering is found and the Picture panel says so, with how tall the smallest is Lettering found: 19 letters in 1 line, the smallest about 2.5 mm tall. Lettering up to 8 mm tall with strokes of 0.35 mm or more is sewn as a close fill that keeps the drawn weight (thin strokes and serifs are filled to their edge, heavy strokes stop a little short of it so the thread does not make them thicker); thinner lettering (under 0.55 mm) is sewn as one line of stitches from end to end. Letters 2.5 mm tall can be read, but 3 mm or taller is cleaner. (Make the whole design about 1.2 times bigger; it needs a bigger hoop.)
+ok   sdl: stitched (3,432) and a DST was written 3,432 stitches, 11723 bytes
+ok   sdl: no console errors 
+    nike -> (no lettering note)
+ok   nike: no lettering is found, no note This picture is read as a logo (flat colours), so it has no fine details on top. | Very thin lines and lettering were made about half a millimetre wide, the thi
+ok   nike: stitched (1,041) and a DST was written 1,041 stitches, 3761 bytes
+ok   nike: no console errors 
+ok   Times at 2.5 mm: the note says the thin strokes cannot be stitched and offers Sans At 2.5 mm the thin strokes and serifs of Times cannot be stitched: the letters will not read. Make them at least 4 mm tall, or use a plain sans.
+ok   Times at 3.5 mm: still a note (tight: the thin strokes are stitched heavier than drawn), and the way out is offered At 3.5 mm the thin strokes of Times are stitched heavier than drawn, so the letters look rough. 4 mm or taller is clean, or use a plain sans.
+ok   the Use Sans button switches the font to Sans Sans
+ok   Sans at 5 mm: no note 
+ok   Times at 8 mm: no note (it is big enough for its hairlines) 
+ok   Condensed (heavy) at 4 mm: the note says the holes of a, e, o close up At 4.0 mm a heavy face closes up the holes of letters like a, e and o. 5 mm or taller keeps them open, or choose a lighter font.
+ok   Sans at 2 mm: too small to read, said plainly Letters 2.0 mm tall are too small for thread to read. Make them at least 3 mm tall.
+   font files: ["200 kazi-condensed.woff2","200 kazi-heavy.woff2","200 kazi-script.woff2","200 kazi-round-700.woff2"]
+ok   the four look-alike fonts were fetched and loaded (HTTP 200) when a text used those faces ["200 kazi-condensed.woff2","200 kazi-heavy.woff2","200 kazi-script.woff2","200 kazi-round-700.woff2"]
+ok   document.fonts knows the four look-alikes as loaded [["Kazi Heavy",true],["Kazi Condensed",true],["Kazi Script",true],["Kazi Round",true]]
+ok   the text is stitched 807
+ok   no console errors in the text tool 
+
+23 of 23 checks passed
+
+##### done

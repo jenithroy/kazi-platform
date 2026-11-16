@@ -1,0 +1,26 @@
+[
+ {
+  "case": "logo (no models)",
+  "idleBeforeMB": 528,
+  "afterMB": 621,
+  "privateAfterMB": 459
+ },
+ {
+  "case": "person model only (landmarker file blocked)",
+  "idleBeforeMB": 542,
+  "afterMB": 1093,
+  "privateAfterMB": 929
+ },
+ {
+  "case": "person model + face landmarker",
+  "idleBeforeMB": 524,
+  "afterMB": 1094,
+  "privateAfterMB": 905
+ },
+ {
+  "case": "person model + face landmarker, second picture of the visit",
+  "idleBeforeMB": 529,
+  "afterMB": 1179,
+  "privateAfterMB": 999
+ }
+]

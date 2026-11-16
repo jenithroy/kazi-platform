@@ -1,0 +1,71 @@
+{
+ "sheet": "typed_04",
+ "w": 1000,
+ "h": 1000,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "condensed_b_5mm_ham",
+   "x": 24,
+   "y": 24,
+   "w": 637,
+   "h": 107
+  },
+  {
+   "id": "condensed_b_6mm_ave",
+   "x": 24,
+   "y": 167,
+   "w": 392,
+   "h": 109
+  },
+  {
+   "id": "condensed_b_6mm_ham",
+   "x": 24,
+   "y": 312,
+   "w": 757,
+   "h": 120
+  },
+  {
+   "id": "humanist_b_3mm_ave",
+   "x": 24,
+   "y": 468,
+   "w": 232,
+   "h": 71
+  },
+  {
+   "id": "humanist_b_3mm_ham",
+   "x": 292,
+   "y": 468,
+   "w": 432,
+   "h": 80
+  },
+  {
+   "id": "humanist_b_4mm_ave",
+   "x": 24,
+   "y": 584,
+   "w": 310,
+   "h": 81
+  },
+  {
+   "id": "humanist_b_4mm_ham",
+   "x": 370,
+   "y": 584,
+   "w": 575,
+   "h": 94
+  },
+  {
+   "id": "humanist_b_5mm_ave",
+   "x": 24,
+   "y": 714,
+   "w": 384,
+   "h": 92
+  },
+  {
+   "id": "humanist_b_5mm_ham",
+   "x": 24,
+   "y": 842,
+   "w": 710,
+   "h": 107
+  }
+ ]
+}

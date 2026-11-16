@@ -1,0 +1,29 @@
+{
+ "phone": {
+  "note": "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+  "noteFitsWidth": true,
+  "buttonVisible": true,
+  "buttonFitsWidth": true,
+  "overflowX": 0,
+  "errors": []
+ },
+ "axe": {
+  "violations": [],
+  "count": 0,
+  "errors": []
+ },
+ "undo": {
+  "before": "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+  "cropped": "The face is about 34 mm wide, so each eye is about 6.2 mm.",
+  "afterUndo": [
+   "The face is about 14 mm wide, so each eye is about 2.6 mm.",
+   "The face is about 14 mm wide, so each eye is about 2.6 mm.",
+   "The face is about 14 mm wide, so each eye is about 2.6 mm.",
+   "The face is only about 11 mm wide, so each eye is about 1.9 mm. Eyes that small sew as dark marks, not as eyes. Make the picture bigger.",
+   null
+  ],
+  "returnedToBefore": true,
+  "everyNoteMatchesThePicture": false,
+  "errors": []
+ }
+}

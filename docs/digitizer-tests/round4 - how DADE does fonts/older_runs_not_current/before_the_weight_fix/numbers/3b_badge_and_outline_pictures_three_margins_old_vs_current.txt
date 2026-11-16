@@ -1,0 +1,10 @@
+﻿now        outline: 8 pictures, mean error (three margins) 0.160
+cur        outline: 8 pictures, mean error (three margins) 0.203
+
+cur much worse than now: [('outline_sans_5mm_ham', 0.08, 0.69), ('outline_sans_8mm_ave', 0.0, 0.25)]
+cur much better than now: [('outline_serif_5mm_ham', 0.69, 0.16)]
+now        badge: 18 pictures, mean error (three margins) 0.165
+cur        badge: 18 pictures, mean error (three margins) 0.124
+
+cur much worse than now: []
+cur much better than now: [('badge_humanist_4mm_ham', 0.31, 0.0), ('badge_serif_4mm_ham', 0.53, 0.39), ('badge_humanist_4mm_ave', 0.12, 0.0)]

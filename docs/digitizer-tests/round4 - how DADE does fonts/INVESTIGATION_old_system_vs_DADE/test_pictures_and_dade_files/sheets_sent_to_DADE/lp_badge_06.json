@@ -1,0 +1,32 @@
+{
+ "sheet": "lp_badge_06",
+ "w": 1000,
+ "h": 800,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "badge_humanist_6mm_ham",
+   "x": 63,
+   "y": 58,
+   "w": 873,
+   "h": 130,
+   "value": "Hamburgefonts 2026"
+  },
+  {
+   "id": "badge_humanist_10mm_ave",
+   "x": 126,
+   "y": 310,
+   "w": 747,
+   "h": 190,
+   "value": "AVE MARIA"
+  },
+  {
+   "id": "badge_humanist_10mm_ham",
+   "x": 0,
+   "y": 590,
+   "w": 1000,
+   "h": 190,
+   "value": "Hamburgefonts 2026"
+  }
+ ]
+}

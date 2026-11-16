@@ -1,0 +1,46 @@
+﻿== p0 read in 114 s
+== p1 read in 116 s
+== p2 read in 115 s
+character error (lower is better)   picture        p0        p1        p2
+all                                  0.101     0.167     0.218     0.207
+line (all sizes)                     0.087     0.176     0.214     0.207
+badge (all sizes)                    0.170     0.114     0.269     0.181
+outline (all sizes)                  0.140     0.162     0.162     0.272
+line, caps 3 mm                      0.000     0.385     0.370     0.387
+line, caps 4 mm                      0.072     0.225     0.403     0.289
+line, caps 5 mm                      0.010     0.124     0.162     0.177
+line, caps 6 mm                      0.065     0.054     0.037     0.064
+line, caps 8 mm                      0.114     0.069     0.069     0.079
+line, caps 12 mm                     0.258     0.197     0.244     0.244
+line sans, 3-6 mm                    0.000     0.075     0.045     0.060
+line black, 3-6 mm                   0.007     0.114     0.325     0.097
+line condensed, 3-6 mm               0.000     0.444     0.591     0.532
+line humanist, 3-6 mm                0.022     0.090     0.106     0.106
+line serif, 3-6 mm                   0.250     0.390     0.299     0.384
+line times, 3-6 mm                   0.007     0.218     0.294     0.371
+line mono, 3-6 mm                    0.016     0.198     0.236     0.221
+line script, 3-6 mm                  0.007     0.126     0.141     0.148
+line round, 3-6 mm                   0.022     0.120     0.152     0.144
+badge, 4-6 mm                        0.187     0.097     0.281     0.199
+outline                              0.140     0.162     0.162     0.272
+pictures read                          134       134       134       134
+crop                        source          p0          p1          p2
+chart sans row 1              0.00        0.00        0.00        0.00
+chart sans row 2              0.00        0.14        0.00        0.00
+chart sans row 3              0.14        0.00        0.00        0.00
+chart sans row 4              0.29        0.14        0.00        0.00
+chart sans row 5              0.29        0.00        0.14        0.14
+chart sans row 6              0.14        0.14        0.14        0.14
+chart sans row 7              0.00        1.00        1.00        1.00
+chart serif row 1             0.00        0.00        0.00        0.00
+chart serif row 2             0.00        0.00        0.00        0.00
+chart serif row 3             0.00        0.14        0.14        0.14
+chart serif row 4             0.00        0.43        0.43        0.43
+chart serif row 5             0.00        0.43        0.43        0.43
+chart serif row 6             0.00        1.00        1.00        1.00
+chart serif row 7             0.00        0.86        0.86        0.86
+crest AVE MARIA               0.00        0.75        0.12        0.12
+crest GRATIA PLENA            0.00        0.09        0.00        0.00
+SDL small line                0.00        0.36        0.68        0.68
+flag two lines                0.00        0.39        0.72        0.72
+mean                         0.048       0.327       0.315       0.315

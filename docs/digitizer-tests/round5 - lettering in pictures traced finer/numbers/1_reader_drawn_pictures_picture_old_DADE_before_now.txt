@@ -1,0 +1,27 @@
+Characters the reader gets wrong, lower is better. 143 drawn pictures of lettering (134 of them are read: the rest are patterns).
+Columns: 'picture' = the drawing itself read by the reader (the ceiling), 'old' = the old rules (before round 4), 'DADE' = DADE's own stitches,
+'before' = the page as it was at the end of round 4, 'now' = the page with the second, finer tracing of lettering and short words (round 5, final code).
+
+character error (lower is better)   picture       old      DADE    before       now
+all                                  0.101     0.167     0.179     0.110     0.064
+line (all sizes)                     0.087     0.176     0.121     0.109     0.068
+badge (all sizes)                    0.170     0.114     0.178     0.084     0.049
+outline (all sizes)                  0.140     0.162     0.963     0.177     0.052
+line, caps 3 mm                      0.000     0.385     0.168     0.237     0.075
+line, caps 4 mm                      0.072     0.225     0.105     0.132     0.013
+line, caps 5 mm                      0.010     0.124     0.057     0.024     0.013
+line, caps 6 mm                      0.065     0.054     0.040     0.017     0.007
+line, caps 8 mm                      0.114     0.069     0.128     0.049     0.101
+line, caps 12 mm                     0.258     0.197     0.229     0.197     0.197
+line sans, 3-6 mm                    0.000     0.075     0.015     0.038     0.015
+line black, 3-6 mm                   0.007     0.114     0.015     0.007     0.000
+line condensed, 3-6 mm               0.000     0.444     0.565     0.400     0.146
+line humanist, 3-6 mm                0.022     0.090     0.015     0.016     0.000
+line serif, 3-6 mm                   0.250     0.390     0.046     0.183     0.016
+line times, 3-6 mm                   0.007     0.218     0.082     0.136     0.030
+line mono, 3-6 mm                    0.016     0.198     0.046     0.029     0.030
+line script, 3-6 mm                  0.007     0.126     0.051     0.074     0.007
+line round, 3-6 mm                   0.022     0.120     0.000     0.038     0.000
+badge, 4-6 mm                        0.187     0.097     0.130     0.052     0.000
+outline                              0.140     0.162     0.963     0.177     0.052
+pictures read                          134       134       134       134       134

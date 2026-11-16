@@ -1,0 +1,48 @@
+﻿set typed2: 140 cells read by both (fin2: 144, dade: 140); caps <= 6.0 mm
+all cells                      n=140  fin2  0.126  dade  0.069   fin2 clearly better  12, dade clearly better  49
+caps 3 mm                      n= 36  fin2  0.257  dade  0.150   fin2 clearly better   5, dade clearly better  20
+caps 4 mm                      n= 36  fin2  0.116  dade  0.050   fin2 clearly better   3, dade clearly better  14
+caps 5 mm                      n= 36  fin2  0.064  dade  0.030   fin2 clearly better   2, dade clearly better   9
+caps 6 mm                      n= 32  fin2  0.063  dade  0.042   fin2 clearly better   2, dade clearly better   6
+text 'ave'                     n= 72  fin2  0.111  dade  0.071   fin2 clearly better   9, dade clearly better  21
+text 'ham'                     n= 68  fin2  0.143  dade  0.067   fin2 clearly better   3, dade clearly better  28
+
+abril (fat face)               n=  8  fin2  0.288  dade  0.106   fin2 clearly better   0, dade clearly better   5
+anton (heavy condensed)        n=  8  fin2  0.097  dade  0.214   fin2 clearly better   4, dade clearly better   2
+archivoblack (heavy sans)      n=  7  fin2  0.042  dade  0.107   fin2 clearly better   1, dade clearly better   2
+baskerville (transitional serif) n=  7  fin2  0.183  dade  0.000   fin2 clearly better   0, dade clearly better   5
+bebas (condensed caps)         n=  8  fin2  0.045  dade  0.107   fin2 clearly better   1, dade clearly better   0
+caveat (handwriting)           n=  8  fin2  0.104  dade  0.073   fin2 clearly better   0, dade clearly better   2
+cinzel (roman caps)            n=  7  fin2  0.199  dade  0.077   fin2 clearly better   0, dade clearly better   3
+courierprime (typewriter)      n=  8  fin2  0.127  dade  0.046   fin2 clearly better   1, dade clearly better   2
+dancing (script)               n=  8  fin2  0.151  dade  0.159   fin2 clearly better   2, dade clearly better   1
+lora (serif)                   n=  8  fin2  0.145  dade  0.000   fin2 clearly better   0, dade clearly better   6
+merri (sturdy serif)           n=  8  fin2  0.120  dade  0.031   fin2 clearly better   0, dade clearly better   4
+montserrat (geometric sans)    n=  7  fin2  0.025  dade  0.000   fin2 clearly better   0, dade clearly better   1
+nunito (rounded sans)          n=  8  fin2  0.044  dade  0.015   fin2 clearly better   0, dade clearly better   1
+opensans (humanist sans)       n=  8  fin2  0.061  dade  0.016   fin2 clearly better   1, dade clearly better   3
+oswald (condensed sans)        n=  8  fin2  0.029  dade  0.015   fin2 clearly better   0, dade clearly better   1
+pacifico (brush script)        n=  8  fin2  0.135  dade  0.150   fin2 clearly better   2, dade clearly better   1
+playfair (high-contrast serif) n=  8  fin2  0.398  dade  0.115   fin2 clearly better   0, dade clearly better   6
+robotoslab (slab serif)        n=  8  fin2  0.075  dade  0.000   fin2 clearly better   0, dade clearly better   4
+
+fin2 much worse than dade (top 8):
+  courierprime_b_3mm_ham       fin2 0.77 'suoja6aaqwe 2026'   dade 0.06 'Hamburgafonts 2026'
+  abril_b_3mm_ave              fin2 1.00 ''   dade 0.38 'NE VARIA'
+  playfair_b_4mm_ave           fin2 0.75 'AI'GNSIRA'   dade 0.12 'AVE MARLA'
+  playfair_b_3mm_ave           fin2 1.00 ''   dade 0.38 '.NE MARIL!'
+  baskerville_b_6mm_ave        fin2 0.50 'IVIARI!'   dade 0.00 'AVE MARIA'
+  playfair_b_3mm_ham           fin2 0.59 'tnbwgclals 2026'   dade 0.18 'Hamharxefonts 2026'
+  cinzel_b_3mm_ave             fin2 0.38 'AYE MAUa'   dade 0.00 'AVE MARIA'
+  cinzel_b_3mm_ham             fin2 0.47 'HAMDc0tS 2026'   dade 0.12 'HAMBURGLFONI'S 2026'
+dade much worse than fin2 (top 8):
+  archivoblack_b_6mm_ave       fin2 0.00 'AVE  MARIA'   dade 0.75 ' MaRIA AVE'
+  anton_b_3mm_ave              fin2 0.25 'AYE MARtA'   dade 0.88 'ME 咖N'
+  anton_b_3mm_ham              fin2 0.18 'Hamdurgelonls 2026'   dade 0.59 'nts 2026'
+  bebas_b_3mm_ave              fin2 0.12 'AYE MARIA'   dade 0.50 'JIE MABA'
+  courierprime_b_3mm_ave       fin2 0.00 'AVE MARIA'   dade 0.25 'AYD MARIA'
+  opensans_b_6mm_ave           fin2 0.00 'AVE MARIA'   dade 0.12 'AVE E MARIA'
+  anton_b_4mm_ave              fin2 0.00 'AVE MARIA'   dade 0.12 'AVE MANIA'
+  anton_b_5mm_ave              fin2 0.00 'AVE MARIA'   dade 0.12 'AVE MARA'
+
+cells with error >= 0.3:  fin2 10   dade 8  (of 140)

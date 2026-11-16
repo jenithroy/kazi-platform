@@ -1,0 +1,27 @@
+﻿FONTS USED BY THE BENCH (not shipped, except the four marked SHIPPED)
+
+The nine fonts of the page are the ones Windows has: Arial, Arial Black, Impact, Trebuchet MS, Georgia, Times New Roman, Courier New, Brush Script MT, Comic Sans MS (text.js FONTS).
+
+The wider bench (matrix2.mjs) uses eighteen fonts from the Google Fonts repository (github.com/google/fonts), downloaded for the test only:
+  Playfair Display   ofl/playfairdisplay     SIL OFL 1.1   high-contrast serif
+  Merriweather       ofl/merriweather        SIL OFL 1.1   sturdy serif
+  Libre Baskerville  ofl/librebaskerville    SIL OFL 1.1   transitional serif
+  Roboto Slab        apache/robotoslab       Apache 2.0    slab serif
+  Lora               ofl/lora                SIL OFL 1.1   serif
+  Montserrat         ofl/montserrat          SIL OFL 1.1   geometric sans
+  Open Sans          ofl/opensans            SIL OFL 1.1   humanist sans
+  Oswald             ofl/oswald              SIL OFL 1.1   condensed sans
+  Bebas Neue         ofl/bebasneue           SIL OFL 1.1   condensed caps
+  Anton              ofl/anton               SIL OFL 1.1   heavy condensed          SHIPPED (look-alike for Impact)
+  Archivo Black      ofl/archivoblack        SIL OFL 1.1   heavy sans               SHIPPED (look-alike for Arial Black)
+  Pacifico           ofl/pacifico            SIL OFL 1.1   brush script             SHIPPED (look-alike for Brush Script MT)
+  Dancing Script     ofl/dancingscript       SIL OFL 1.1   script
+  Cinzel             ofl/cinzel              SIL OFL 1.1   Roman caps
+  Nunito             ofl/nunito              SIL OFL 1.1   rounded sans             SHIPPED (look-alike for Comic Sans MS, weights 400 and 700)
+  Courier Prime      ofl/courierprime        SIL OFL 1.1   typewriter
+  Abril Fatface      ofl/abrilfatface        SIL OFL 1.1   fat face
+  Caveat             ofl/caveat              SIL OFL 1.1   handwriting
+
+The four SHIPPED fonts are in app/public/fonts/digitizer/ as Latin subsets (woff2, 8.6 to 18.9 KB each, 62 KB in all) with their OFL.txt beside them, and are declared in app/components/Digitizer/digitizer.css. They are used only when the device has none of the fonts named before them in the stack (lib/digitizer/text.js). The subsets were made with fontTools (pyftsubset; Nunito's two weights with the variable-font instancer): Basic Latin, Latin-1, Latin Extended-A letters used in names, general punctuation, euro and trade mark. The OFL asks that the copyright notice and the licence travel with the fonts: they do (OFL-anton.txt, OFL-archivoblack.txt, OFL-pacifico.txt, OFL-nunito.txt). None of the four declares a Reserved Font Name.
+
+THE TEXT READER used as the judge: RapidOCR (rapidocr-onnxruntime 1.4.4, Apache 2.0; the PaddleOCR detection and recognition models in ONNX), in a Python venv in the scratchpad. It is not in the repo and not on the site.

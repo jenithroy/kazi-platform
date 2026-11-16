@@ -1,0 +1,1639 @@
+{
+ "reg18/cat": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 310,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 61,
+  "msFind": 254
+ },
+ "reg18/crest_manzanares": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 167,
+  "runs": [
+   {
+    "count": 11,
+    "strokeMm": 0.44,
+    "capMm": 4.1,
+    "kinds": 10,
+    "straight": 1,
+    "steady": 1.92,
+    "box": [
+     603,
+     377,
+     651,
+     829
+    ]
+   },
+   {
+    "count": 8,
+    "strokeMm": 0.48,
+    "capMm": 4.3,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 2,
+    "box": [
+     112,
+     434,
+     158,
+     807
+    ]
+   },
+   {
+    "count": 3,
+    "strokeMm": 0.51,
+    "capMm": 6.3,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.3,
+    "box": [
+     498,
+     14,
+     606,
+     230
+    ]
+   },
+   {
+    "count": 1,
+    "strokeMm": 1.15,
+    "capMm": 11,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 2.94,
+    "box": [
+     102,
+     175,
+     660,
+     285
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.32,
+    "capMm": 4.8,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.91,
+    "box": [
+     110,
+     475,
+     159,
+     719
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.31,
+    "capMm": 4.2,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.99,
+    "box": [
+     604,
+     627,
+     651,
+     788
+    ]
+   }
+  ],
+  "tagged": 33,
+  "msTrace": 72,
+  "msFind": 75
+ },
+ "reg18/dog": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 377,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 40,
+  "msFind": 139
+ },
+ "reg18/eagle": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 96,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 3,
+  "msFind": 45
+ },
+ "reg18/emblem_nepal": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 323,
+  "runs": [
+   {
+    "count": 11,
+    "strokeMm": 1.13,
+    "capMm": 10.8,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.27,
+    "box": [
+     65,
+     17,
+     917,
+     622
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 1.32,
+    "capMm": 6.3,
+    "kinds": 3,
+    "straight": 1,
+    "steady": 1.77,
+    "box": [
+     130,
+     68,
+     407,
+     334
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 1.25,
+    "capMm": 6.3,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.82,
+    "box": [
+     575,
+     68,
+     847,
+     323
+    ]
+   }
+  ],
+  "tagged": 21,
+  "msTrace": 6,
+  "msFind": 179
+ },
+ "reg18/engraving_hummingbird": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 178,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 4,
+  "msFind": 70
+ },
+ "reg18/engraving_rhino": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 590,
+  "runs": [
+   {
+    "count": 7,
+    "strokeMm": 0.51,
+    "capMm": 1.3,
+    "kinds": 7,
+    "straight": 1,
+    "steady": 1.73,
+    "box": [
+     627,
+     5,
+     823,
+     78
+    ]
+   },
+   {
+    "count": 6,
+    "strokeMm": 0.5,
+    "capMm": 2.2,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.81,
+    "box": [
+     46,
+     266,
+     142,
+     312
+    ]
+   }
+  ],
+  "tagged": 13,
+  "msTrace": 21,
+  "msFind": 152
+ },
+ "reg18/face_armstrong": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 276,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 77,
+  "msFind": 89
+ },
+ "reg18/face_einstein": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 474,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.94,
+    "capMm": 3.5,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.98,
+    "box": [
+     130,
+     34,
+     248,
+     165
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 1.15,
+    "capMm": 2.5,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 2.01,
+    "box": [
+     591,
+     765,
+     730,
+     997
+    ]
+   }
+  ],
+  "tagged": 10,
+  "msTrace": 38,
+  "msFind": 212
+ },
+ "reg18/face_woman": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 287,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.61,
+    "capMm": 1.7,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.69,
+    "box": [
+     142,
+     826,
+     215,
+     940
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 7,
+  "msFind": 152
+ },
+ "reg18/flower_rose": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 905,
+  "runs": [
+   {
+    "count": 6,
+    "strokeMm": 0.79,
+    "capMm": 2.4,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.82,
+    "box": [
+     781,
+     163,
+     938,
+     283
+    ]
+   }
+  ],
+  "tagged": 6,
+  "msTrace": 11,
+  "msFind": 264
+ },
+ "reg18/landscape_everest": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 431,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.91,
+    "capMm": 3.5,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.03,
+    "box": [
+     232,
+     242,
+     408,
+     355
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 84,
+  "msFind": 130
+ },
+ "reg18/logo_adidas": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 9,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 1,
+  "msFind": 0
+ },
+ "reg18/logo_harley": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 3,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 2,
+  "msFind": 0
+ },
+ "reg18/logo_mercedes": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 174,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 5,
+  "msFind": 56
+ },
+ "reg18/logo_nike": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 1,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 41,
+  "msFind": 0
+ },
+ "reg18/logo_olympic": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 8,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 1,
+  "msFind": 0
+ },
+ "reg18/painting_pearl": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 155,
+  "runs": [
+   {
+    "count": 3,
+    "strokeMm": 1.03,
+    "capMm": 7.7,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 2.19,
+    "box": [
+     669,
+     635,
+     793,
+     777
+    ]
+   }
+  ],
+  "tagged": 3,
+  "msTrace": 8,
+  "msFind": 52
+ },
+ "new55/animals_butterfly_plate_1898": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 279,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 45,
+  "msFind": 121
+ },
+ "new55/animals_cat_gazing_up": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 214,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 27,
+  "msFind": 79
+ },
+ "new55/animals_horse_portrait": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 207,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 68,
+  "msFind": 85
+ },
+ "new55/animals_owl_portrait": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 349,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.8,
+    "capMm": 3.1,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.66,
+    "box": [
+     197,
+     112,
+     280,
+     310
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 6,
+  "msFind": 137
+ },
+ "new55/animals_westie_dog_face": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 317,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 1.4,
+    "capMm": 5.5,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.89,
+    "box": [
+     739,
+     327,
+     949,
+     551
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 16,
+  "msFind": 112
+ },
+ "new55/animals_whale_shark_aquarium": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 230,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 48,
+  "msFind": 26
+ },
+ "new55/cartoon_anime_girl_flat_colours": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 24,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 41,
+  "msFind": 7
+ },
+ "new55/cartoon_anime_portrait_shaded": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 290,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 53,
+  "msFind": 98
+ },
+ "new55/cartoon_wikipetan_angry_vector": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 162,
+  "runs": [
+   {
+    "count": 7,
+    "strokeMm": 1.74,
+    "capMm": 4.6,
+    "kinds": 7,
+    "straight": 1,
+    "steady": 1.72,
+    "box": [
+     354,
+     613,
+     689,
+     778
+    ]
+   }
+  ],
+  "tagged": 7,
+  "msTrace": 54,
+  "msFind": 42
+ },
+ "new55/emblems_coat_of_arms_mexico": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 341,
+  "runs": [
+   {
+    "count": 8,
+    "strokeMm": 0.48,
+    "capMm": 2.6,
+    "kinds": 7,
+    "straight": 1,
+    "steady": 1.51,
+    "box": [
+     194,
+     306,
+     283,
+     468
+    ]
+   }
+  ],
+  "tagged": 8,
+  "msTrace": 83,
+  "msFind": 142
+ },
+ "new55/emblems_flag_washington_island": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 56,
+  "runs": [
+   {
+    "count": 10,
+    "strokeMm": 0.75,
+    "capMm": 2.4,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.72,
+    "box": [
+     327,
+     527,
+     501,
+     599
+    ]
+   }
+  ],
+  "tagged": 10,
+  "msTrace": 3,
+  "msFind": 15
+ },
+ "new55/emblems_logo_sdl": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 36,
+  "runs": [
+   {
+    "count": 16,
+    "strokeMm": 0.65,
+    "capMm": 2.8,
+    "kinds": 18,
+    "straight": 1,
+    "steady": 1.7,
+    "box": [
+     257,
+     339,
+     751,
+     379
+    ]
+   }
+  ],
+  "tagged": 16,
+  "msTrace": 102,
+  "msFind": 5
+ },
+ "new55/emblems_seal_torrance_bw": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 381,
+  "runs": [
+   {
+    "count": 14,
+    "strokeMm": 0.74,
+    "capMm": 4.2,
+    "kinds": 10,
+    "straight": 1,
+    "steady": 1.41,
+    "box": [
+     282,
+     709,
+     715,
+     827
+    ]
+   },
+   {
+    "count": 9,
+    "strokeMm": 1.16,
+    "capMm": 6.6,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.71,
+    "box": [
+     74,
+     59,
+     644,
+     410
+    ]
+   },
+   {
+    "count": 9,
+    "strokeMm": 1.18,
+    "capMm": 7,
+    "kinds": 8,
+    "straight": 1,
+    "steady": 1.77,
+    "box": [
+     190,
+     767,
+     836,
+     942
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 1.13,
+    "capMm": 3.8,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.76,
+    "box": [
+     406,
+     306,
+     668,
+     393
+    ]
+   }
+  ],
+  "tagged": 37,
+  "msTrace": 15,
+  "msFind": 146
+ },
+ "new55/faces_angle_face_closeup_three_quarter": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 89,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 106,
+  "msFind": 23
+ },
+ "new55/faces_angle_woman_profile_sad": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 162,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 5,
+  "msFind": 112
+ },
+ "new55/faces_angle_wwii_aircraft_worker_looking_down": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 237,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 79,
+  "msFind": 69
+ },
+ "new55/faces_art_ghirlandaio_man_renaissance": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 135,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 64,
+  "msFind": 23
+ },
+ "new55/faces_art_pencil_elderly_lady": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 59,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 55,
+  "msFind": 12
+ },
+ "new55/faces_art_rembrandt_self_portrait_oil": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 107,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 70,
+  "msFind": 55
+ },
+ "new55/faces_art_renoir_jean_impressionist": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 160,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.91,
+    "capMm": 2.3,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.73,
+    "box": [
+     691,
+     303,
+     741,
+     577
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 84,
+  "msFind": 74
+ },
+ "new55/faces_bw_bessie_smith": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 234,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 48,
+  "msFind": 65
+ },
+ "new55/faces_bw_elder_shemagh": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 639,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 77,
+  "msFind": 223
+ },
+ "new55/faces_bw_inouye_senator": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 147,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 80,
+  "msFind": 97
+ },
+ "new55/faces_colour_boy_madagascar": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 318,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 9,
+  "msFind": 91
+ },
+ "new55/faces_colour_chawla_nasa_portrait": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 266,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 24,
+  "msFind": 89
+ },
+ "new55/faces_colour_indian_woman_elder": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 392,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 40,
+  "msFind": 91
+ },
+ "new55/faces_colour_laotian_man_hat": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 292,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 53,
+  "msFind": 85
+ },
+ "new55/faces_colour_man_beard_dark_skin": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 215,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 44,
+  "msFind": 71
+ },
+ "new55/faces_colour_poroshenko_official": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 86,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 3,
+  "msFind": 28
+ },
+ "new55/faces_colour_woman_glasses_headshot": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 213,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 6,
+  "msFind": 107
+ },
+ "new55/faces_colour_young_woman_rose": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 230,
+  "runs": [
+   {
+    "count": 1,
+    "strokeMm": 1.94,
+    "capMm": 8.2,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 2.17,
+    "box": [
+     686,
+     169,
+     768,
+     533
+    ]
+   }
+  ],
+  "tagged": 1,
+  "msTrace": 67,
+  "msFind": 67
+ },
+ "new55/faces_small_artemis2_crew_four": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 559,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.96,
+    "capMm": 4.3,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.66,
+    "box": [
+     290,
+     514,
+     463,
+     651
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 72,
+  "msFind": 174
+ },
+ "new55/faces_small_football_header_action": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 289,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 57,
+  "msFind": 92
+ },
+ "new55/faces_small_meir_full_length": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 93,
+  "runs": [
+   {
+    "count": 2,
+    "strokeMm": 0.97,
+    "capMm": 5.2,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.22,
+    "box": [
+     309,
+     200,
+     379,
+     417
+    ]
+   }
+  ],
+  "tagged": 2,
+  "msTrace": 53,
+  "msFind": 52
+ },
+ "new55/faces_small_street_crowd": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 651,
+  "runs": [
+   {
+    "count": 3,
+    "strokeMm": 1.08,
+    "capMm": 3.9,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 2.39,
+    "box": [
+     107,
+     0,
+     457,
+     40
+    ]
+   },
+   {
+    "count": 6,
+    "strokeMm": 0.82,
+    "capMm": 2.6,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.96,
+    "box": [
+     54,
+     163,
+     260,
+     267
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 1.47,
+    "capMm": 4.9,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.95,
+    "box": [
+     392,
+     0,
+     817,
+     51
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.83,
+    "capMm": 2.2,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.68,
+    "box": [
+     351,
+     210,
+     404,
+     339
+    ]
+   }
+  ],
+  "tagged": 19,
+  "msTrace": 76,
+  "msFind": 183
+ },
+ "new55/icons_flat_programming_icon": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 7,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 56,
+  "msFind": 0
+ },
+ "new55/icons_pixel_sprites_xbr": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 74,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 78,
+  "msFind": 8
+ },
+ "new55/lineart_bellin_ionian_sea_map": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 550,
+  "runs": [
+   {
+    "count": 6,
+    "strokeMm": 0.48,
+    "capMm": 1.9,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.75,
+    "box": [
+     491,
+     178,
+     726,
+     214
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.92,
+    "capMm": 3.6,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.84,
+    "box": [
+     69,
+     413,
+     221,
+     576
+    ]
+   }
+  ],
+  "tagged": 11,
+  "msTrace": 64,
+  "msFind": 184
+ },
+ "new55/lineart_durer_promenade_engraving": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 315,
+  "runs": [
+   {
+    "count": 3,
+    "strokeMm": 1.56,
+    "capMm": 8.7,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 2.71,
+    "box": [
+     506,
+     14,
+     638,
+     684
+    ]
+   },
+   {
+    "count": 1,
+    "strokeMm": 2.75,
+    "capMm": 12.2,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 2.44,
+    "box": [
+     504,
+     17,
+     625,
+     659
+    ]
+   }
+  ],
+  "tagged": 4,
+  "msTrace": 87,
+  "msFind": 84
+ },
+ "new55/lineart_woodcut_print_frog": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 131,
+  "runs": [
+   {
+    "count": 14,
+    "strokeMm": 2.4,
+    "capMm": 12.5,
+    "kinds": 11,
+    "straight": 1,
+    "steady": 1.58,
+    "box": [
+     208,
+     42,
+     959,
+     954
+    ]
+   },
+   {
+    "count": 8,
+    "strokeMm": 0.66,
+    "capMm": 3.8,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.99,
+    "box": [
+     288,
+     566,
+     650,
+     739
+    ]
+   }
+  ],
+  "tagged": 22,
+  "msTrace": 71,
+  "msFind": 33
+ },
+ "new55/nature_blueberries_bowl": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 537,
+  "runs": [
+   {
+    "count": 6,
+    "strokeMm": 1.16,
+    "capMm": 4.4,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.99,
+    "box": [
+     291,
+     9,
+     544,
+     153
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.99,
+    "capMm": 4.8,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.05,
+    "box": [
+     7,
+     141,
+     316,
+     294
+    ]
+   }
+  ],
+  "tagged": 11,
+  "msTrace": 9,
+  "msFind": 230
+ },
+ "new55/nature_leaf_skeleton_veins": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 1260,
+  "runs": [
+   {
+    "count": 24,
+    "strokeMm": 1.42,
+    "capMm": 5.2,
+    "kinds": 8,
+    "straight": 1,
+    "steady": 1.82,
+    "box": [
+     48,
+     0,
+     624,
+     511
+    ]
+   },
+   {
+    "count": 6,
+    "strokeMm": 0.92,
+    "capMm": 3.1,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.85,
+    "box": [
+     876,
+     73,
+     976,
+     280
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.57,
+    "capMm": 1.5,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.86,
+    "box": [
+     667,
+     46,
+     775,
+     133
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.81,
+    "capMm": 4.2,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.75,
+    "box": [
+     907,
+     321,
+     1000,
+     547
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.71,
+    "capMm": 2.9,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.82,
+    "box": [
+     352,
+     499,
+     436,
+     667
+    ]
+   },
+   {
+    "count": 3,
+    "strokeMm": 0.58,
+    "capMm": 3.8,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.83,
+    "box": [
+     414,
+     619,
+     618,
+     667
+    ]
+   }
+  ],
+  "tagged": 48,
+  "msTrace": 54,
+  "msFind": 438
+ },
+ "new55/nature_sunflower_bee_black": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 817,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.88,
+    "capMm": 7.9,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.14,
+    "box": [
+     213,
+     254,
+     377,
+     681
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 1.17,
+    "capMm": 4.6,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.77,
+    "box": [
+     512,
+     276,
+     676,
+     383
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.62,
+    "capMm": 10.1,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.09,
+    "box": [
+     152,
+     444,
+     320,
+     689
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.75,
+    "capMm": 4.7,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2,
+    "box": [
+     577,
+     634,
+     676,
+     810
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.71,
+    "capMm": 4.6,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.17,
+    "box": [
+     491,
+     756,
+     725,
+     906
+    ]
+   }
+  ],
+  "tagged": 25,
+  "msTrace": 25,
+  "msFind": 296
+ },
+ "new55/objects_spices_on_white": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 284,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 0.39,
+    "capMm": 2.5,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.84,
+    "box": [
+     190,
+     99,
+     264,
+     227
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 43,
+  "msFind": 53
+ },
+ "new55/objects_teapot_cups_white": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 188,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 5,
+  "msFind": 48
+ },
+ "new55/objects_zenit_camera_tripod": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 338,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 69,
+  "msFind": 62
+ },
+ "new55/scenes_cathedral_st_patricks": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 295,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 18,
+  "msFind": 93
+ },
+ "new55/scenes_mountain_lake_zagedan": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 487,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 1.03,
+    "capMm": 4.4,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.76,
+    "box": [
+     574,
+     319,
+     773,
+     482
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 12,
+  "msFind": 139
+ },
+ "new55/scenes_swayambhunath_stupa": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 260,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 20,
+  "msFind": 76
+ },
+ "new55/sculpture_herodotos_marble_bust": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 218,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 55,
+  "msFind": 86
+ },
+ "new55/sculpture_nefertiti_bust": {
+  "expected": null,
+  "kind": "art",
+  "shapes": 296,
+  "runs": [],
+  "tagged": 0,
+  "msTrace": 6,
+  "msFind": 102
+ },
+ "new55/text_devanagari_nepali_plaque": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 188,
+  "runs": [
+   {
+    "count": 2,
+    "strokeMm": 0.8,
+    "capMm": 13.5,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 2.16,
+    "box": [
+     294,
+     580,
+     600,
+     725
+    ]
+   },
+   {
+    "count": 6,
+    "strokeMm": 0.67,
+    "capMm": 3.5,
+    "kinds": 6,
+    "straight": 1,
+    "steady": 1.82,
+    "box": [
+     316,
+     759,
+     490,
+     803
+    ]
+   }
+  ],
+  "tagged": 8,
+  "msTrace": 5,
+  "msFind": 60
+ },
+ "new55/text_kufic_calligraphy_folio": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 213,
+  "runs": [
+   {
+    "count": 5,
+    "strokeMm": 1.22,
+    "capMm": 5.9,
+    "kinds": 4,
+    "straight": 1,
+    "steady": 1.87,
+    "box": [
+     853,
+     184,
+     939,
+     630
+    ]
+   }
+  ],
+  "tagged": 5,
+  "msTrace": 37,
+  "msFind": 94
+ },
+ "new55/text_sans_sign_medstead": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 322,
+  "runs": [
+   {
+    "count": 18,
+    "strokeMm": 1.16,
+    "capMm": 5.6,
+    "kinds": 8,
+    "straight": 1,
+    "steady": 1.41,
+    "box": [
+     173,
+     173,
+     800,
+     304
+    ]
+   }
+  ],
+  "tagged": 18,
+  "msTrace": 9,
+  "msFind": 136
+ },
+ "new55/text_serif_sign_st_xavier": {
+  "expected": null,
+  "kind": "photo",
+  "shapes": 94,
+  "runs": [
+   {
+    "count": 12,
+    "strokeMm": 0.83,
+    "capMm": 5.7,
+    "kinds": 11,
+    "straight": 1,
+    "steady": 1.58,
+    "box": [
+     342,
+     433,
+     726,
+     525
+    ]
+   }
+  ],
+  "tagged": 12,
+  "msTrace": 48,
+  "msFind": 28
+ },
+ "chart2/chart": {
+  "expected": null,
+  "kind": "logo",
+  "shapes": 111,
+  "runs": [
+   {
+    "count": 20,
+    "strokeMm": 0.63,
+    "capMm": 3.5,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.76,
+    "box": [
+     118,
+     224,
+     338,
+     433
+    ]
+   },
+   {
+    "count": 14,
+    "strokeMm": 1.03,
+    "capMm": 5.5,
+    "kinds": 7,
+    "straight": 1,
+    "steady": 1.54,
+    "box": [
+     75,
+     61,
+     472,
+     198
+    ]
+   },
+   {
+    "count": 12,
+    "strokeMm": 0.57,
+    "capMm": 4.5,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.82,
+    "box": [
+     540,
+     61,
+     882,
+     201
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.47,
+    "capMm": 3.2,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.78,
+    "box": [
+     605,
+     223,
+     768,
+     268
+    ]
+   },
+   {
+    "count": 3,
+    "strokeMm": 0.62,
+    "capMm": 7.1,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 2.38,
+    "box": [
+     538,
+     299,
+     677,
+     435
+    ]
+   },
+   {
+    "count": 5,
+    "strokeMm": 0.57,
+    "capMm": 2.4,
+    "kinds": 5,
+    "straight": 1,
+    "steady": 1.88,
+    "box": [
+     72,
+     454,
+     204,
+     480
+    ]
+   }
+  ],
+  "tagged": 59,
+  "msTrace": 22,
+  "msFind": 53
+ }
+}

@@ -1,0 +1,32 @@
+﻿animals_cat_gazing_up                      -  19932-> 19932 tr  311-> 311 th 15->15
+animals_horse_portrait                     -  18842-> 18842 tr  320-> 320 th 16->16
+animals_whale_shark_aquarium               -  19549-> 19549 tr  406-> 406 th 14->14
+cartoon_anime_portrait_shaded              -  26256-> 26256 tr  492-> 492 th 16->16 | face  46.3mm eye 9.8: corrL 0.973->0.973 dE  11.5-> 11.5 eyes c 0.83->0.83 tones 8->8
+cartoon_wikipetan_angry_vector             -  16245-> 16245 tr  280-> 280 th 10->10
+emblems_coat_of_arms_mexico                -  18050-> 18050 tr  401-> 401 th 15->15
+emblems_flag_washington_island             -   8820->  8820 tr   79->  79 th  3-> 3
+faces_angle_wwii_aircraft_worker_looking_d P   9041->  8966 tr  182-> 173 th 14->15 | PERSON dE   7.4->  8.1 corrL 0.966->0.960 | face  20.9mm eye 4.4: corrL 0.916->0.960 dE   9.7->  9.1 eyes c 0.96->0.75 tones 6->8
+faces_art_rembrandt_self_portrait_oil      P   7816->  7770 tr   92->  99 th 13->13 | PERSON dE   4.3->  4.4 corrL 0.954->0.954 | face  19.7mm eye 3.6: corrL 0.965->0.968 dE   9.4->  9.5 eyes c 1.1->0.88 tones 9->10
+faces_art_renoir_jean_impressionist        P  18263-> 18283 tr  313-> 312 th 12->13 | PERSON dE   7.0->  7.0 corrL 0.981->0.982 | face  25.0mm eye 4.6: corrL 0.876->0.912 dE   8.5->  8.1 eyes c 0.51->0.78 tones 7->7
+faces_bw_elder_shemagh                     -  22642-> 22642 tr  497-> 497 th 12->12 | face  24.6mm eye 5.1: corrL 0.880->0.880 dE   4.4->  4.4 eyes c 1.26->1.26 tones 5->5
+faces_bw_inouye_senator                    -  12022-> 12022 tr  209-> 209 th  4-> 4 | face  34.3mm eye 5.7: corrL 0.907->0.907 dE   9.2->  9.2 eyes c 1.06->1.06 tones 3->3
+faces_colour_chawla_nasa_portrait          P  11045-> 10885 tr  228-> 214 th 15->16 | PERSON dE  10.0-> 10.0 corrL 0.967->0.964 | face  17.5mm eye 3.5: corrL 0.938->0.965 dE   8.9->  8.3 eyes c 1.07->1.07 tones 5->6
+faces_colour_laotian_man_hat               P   9780->  9369 tr  183-> 173 th 16->14 | PERSON dE   8.5->  8.7 corrL 0.953->0.951 | face  26.0mm eye 5.0: corrL 0.966->0.954 dE   7.8->  8.1 eyes c 1.09->1.13 tones 7->8
+faces_colour_man_beard_dark_skin           P  14426-> 13170 tr  265-> 257 th 11->13 | PERSON dE   7.0->  6.7 corrL 0.975->0.974 | face  54.0mm eye 10.6: corrL 0.975->0.970 dE   7.4->  7.9 eyes c 0.51->0.58 tones 8->8
+faces_colour_woman_glasses_headshot        P  13315-> 12985 tr  238-> 239 th 15->14 | PERSON dE   6.5->  6.8 corrL 0.983->0.979 | face  25.6mm eye 4.7: corrL 0.958->0.956 dE   9.0->  9.8 eyes c 0.88->0.77 tones 8->9
+faces_small_meir_full_length               -   6173->  6173 tr  122-> 122 th  5-> 5
+faces_small_street_crowd                   P   8635->  8780 tr  186-> 197 th 13->13 | PERSON dE   8.7->  8.6 corrL 0.910->0.919
+icons_pixel_sprites_xbr                    -   7222->  7222 tr  104-> 104 th  6-> 6
+lineart_bellin_ionian_sea_map              -  31484-> 31484 tr  523-> 523 th 11->11
+lineart_durer_promenade_engraving          -  23774-> 23774 tr  371-> 371 th  5-> 5
+nature_leaf_skeleton_veins                 -  36983-> 36983 tr  815-> 815 th 14->14
+objects_zenit_camera_tripod                -  15469-> 15469 tr  343-> 343 th  9-> 9
+scenes_cathedral_st_patricks               -  19852-> 19852 tr  358-> 358 th 14->14
+scenes_mountain_lake_zagedan               -  24146-> 24146 tr  516-> 516 th 16->16
+sculpture_herodotos_marble_bust            P  10420-> 10008 tr  204-> 187 th  8-> 7 | PERSON dE   8.9->  9.0 corrL 0.933->0.929 | face  29.1mm eye 5.7: corrL 0.971->0.961 dE   8.8->  8.5 eyes c 0.97->0.79 tones 6->5
+text_devanagari_nepali_plaque              -  17055-> 17055 tr  322-> 322 th 11->11
+text_serif_sign_st_xavier                  -  13072-> 13072 tr  162-> 162 th 13->13
+
+28 pictures: 19 identical to the baseline (stitches, trims, threads), 9 changed
+whole person (9 changed pictures): mean change in dE +0.09, corrL -0.001, stitches -2.3 %, trims -1.6 %
+faces that changed (8): mean change in face corrL +0.010, face dE -0.03, eye contrast -0.04, eye corrL +0.045, brow contrast -0.10, lips contrast -0.05, tones in face +0.6

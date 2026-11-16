@@ -1,0 +1,58 @@
+﻿HOW WELL EACH KIND OF LETTERING IS READ BACK, BY HEIGHT (what the advice in legible.js is read off)
+
+== nine fonts
+96 cells (typed) of variant fin2
+
+by kind of face and cap height: mean character error (cells)
+  plain     3 mm 0.13 (17)   4 mm 0.08 (18)   5 mm 0.06 (17)   6 mm 0.03 (20)
+  heavy     3 mm 0.69 (2)   4 mm 0.24 (2)   5 mm 0.06 (3)   6 mm -
+  hairline  3 mm 0.19 (5)   4 mm 0.18 (4)   5 mm 0.12 (4)   6 mm 0.01 (4)
+
+by the advice the page gives today (level): mean error
+  good   0.052 (62 cells)
+  tight  0.151 (32 cells)
+  small  0.688 (2 cells)
+
+by font (all sizes 3-6): hair share, mean stroke at 5 mm, error at 3/4/5/6 mm
+  black         hair 0.010  stroke5 1.18  0.06 / 0.09 / 0.03 / 0.00
+  condensed     hair 0.014  stroke5 1.64  0.69 / 0.24 / 0.09 / 0.06
+  humanist      hair 0.008  stroke5 0.79  0.12 / 0.06 / 0.06 / 0.00
+  mono          hair 0.005  stroke5 0.73  0.21 / 0.09 / 0.06 / 0.00
+  round         hair 0.003  stroke5 0.94  0.12 / 0.03 / 0.00 / 0.00
+  sans          hair 0.007  stroke5 0.74  0.06 / 0.04 / 0.03 / 0.03
+  script        hair 0.004  stroke5 0.74  0.15 / 0.12 / 0.03 / 0.12
+  serif         hair 0.047  stroke5 0.61  0.19 / 0.07 / 0.08 / 0.03
+  times         hair 0.060  stroke5 0.54  0.20 / 0.21 / 0.17 / 0.03
+
+== eighteen fonts
+144 cells (typed2) of variant fin2
+
+by kind of face and cap height: mean character error (cells)
+  plain     3 mm 0.17 (30)   4 mm 0.09 (31)   5 mm 0.04 (27)   6 mm 0.06 (28)
+  heavy     3 mm -   4 mm -   5 mm 0.00 (1)   6 mm -
+  hairline  3 mm 0.67 (6)   4 mm 0.29 (5)   5 mm 0.17 (8)   6 mm 0.05 (8)
+
+by the advice the page gives today (level): mean error
+  good   0.062 (95 cells)
+  tight  0.245 (49 cells)
+  small  0.000 (0 cells)
+
+by font (all sizes 3-6): hair share, mean stroke at 5 mm, error at 3/4/5/6 mm
+  abril         hair 0.066  stroke5 0.76  0.79 / 0.12 / 0.21 / 0.03
+  anton         hair 0.009  stroke5 1.11  0.21 / 0.09 / 0.03 / 0.06
+  archivoblack  hair 0.010  stroke5 1.21  0.06 / 0.09 / 0.00 / 0.00
+  baskerville   hair 0.027  stroke5 0.70  0.24 / 0.06 / 0.09 / 0.37
+  bebas         hair 0.008  stroke5 0.73  0.15 / 0.00 / 0.00 / 0.03
+  caveat        hair 0.006  stroke5 0.60  0.21 / 0.09 / 0.03 / 0.09
+  cinzel        hair 0.055  stroke5 0.65  0.42 / 0.15 / 0.12 / 0.00
+  courierprime  hair 0.009  stroke5 0.78  0.38 / 0.13 / 0.00 / 0.00
+  dancing       hair 0.017  stroke5 0.46  0.18 / 0.15 / 0.12 / 0.15
+  lora          hair 0.009  stroke5 0.74  0.21 / 0.12 / 0.09 / 0.15
+  merri         hair 0.046  stroke5 0.70  0.15 / 0.09 / 0.18 / 0.06
+  montserrat    hair 0.009  stroke5 0.96  0.06 / 0.03 / 0.00 / 0.00
+  nunito        hair 0.004  stroke5 0.80  0.06 / 0.03 / 0.06 / 0.03
+  opensans      hair 0.008  stroke5 0.90  0.18 / 0.06 / 0.00 / 0.00
+  oswald        hair 0.009  stroke5 1.01  0.06 / 0.06 / 0.00 / 0.00
+  pacifico      hair 0.003  stroke5 0.84  0.27 / 0.18 / 0.06 / 0.03
+  playfair      hair 0.069  stroke5 0.62  0.79 / 0.52 / 0.15 / 0.13
+  robotoslab    hair 0.009  stroke5 0.85  0.18 / 0.12 / 0.00 / 0.00

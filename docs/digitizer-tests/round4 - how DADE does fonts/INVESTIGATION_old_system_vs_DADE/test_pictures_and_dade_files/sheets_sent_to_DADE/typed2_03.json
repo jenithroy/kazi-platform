@@ -1,0 +1,71 @@
+{
+ "sheet": "typed2_03",
+ "w": 1000,
+ "h": 1000,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "baskerville_b_4mm_ave",
+   "x": 24,
+   "y": 24,
+   "w": 399,
+   "h": 85
+  },
+  {
+   "id": "baskerville_b_4mm_ham",
+   "x": 24,
+   "y": 145,
+   "w": 666,
+   "h": 102
+  },
+  {
+   "id": "baskerville_b_5mm_ave",
+   "x": 24,
+   "y": 283,
+   "w": 499,
+   "h": 97
+  },
+  {
+   "id": "baskerville_b_5mm_ham",
+   "x": 24,
+   "y": 416,
+   "w": 824,
+   "h": 117
+  },
+  {
+   "id": "baskerville_b_6mm_ave",
+   "x": 24,
+   "y": 569,
+   "w": 593,
+   "h": 106
+  },
+  {
+   "id": "robotoslab_b_3mm_ave",
+   "x": 653,
+   "y": 569,
+   "w": 264,
+   "h": 71
+  },
+  {
+   "id": "robotoslab_b_3mm_ham",
+   "x": 24,
+   "y": 711,
+   "w": 440,
+   "h": 82
+  },
+  {
+   "id": "robotoslab_b_4mm_ave",
+   "x": 500,
+   "y": 711,
+   "w": 351,
+   "h": 81
+  },
+  {
+   "id": "robotoslab_b_4mm_ham",
+   "x": 24,
+   "y": 829,
+   "w": 586,
+   "h": 96
+  }
+ ]
+}

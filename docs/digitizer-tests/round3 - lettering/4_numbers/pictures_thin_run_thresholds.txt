@@ -1,0 +1,56 @@
+﻿143 pictures sewn into <SESSION>\scratchpad\text\out\q50 in 75 s, 0 failed  (engine options {"pictureLineBelow":0.5})
+7 pictures sewn into <SESSION>\scratchpad\text\out\q50 in 50 s, 0 failed  (engine options {"pictureLineBelow":0.5})
+143 pictures sewn into <SESSION>\scratchpad\text\out\q55 in 59 s, 0 failed  (engine options {"pictureLineBelow":0.55})
+7 pictures sewn into <SESSION>\scratchpad\text\out\q55 in 53 s, 0 failed  (engine options {"pictureLineBelow":0.55})
+143 pictures sewn into <SESSION>\scratchpad\text\out\q60 in 62 s, 0 failed  (engine options {"pictureLineBelow":0.6})
+7 pictures sewn into <SESSION>\scratchpad\text\out\q60 in 21 s, 0 failed  (engine options {"pictureLineBelow":0.6})
+143 pictures sewn into <SESSION>\scratchpad\text\out\q65 in 27 s, 0 failed  (engine options {"pictureLineBelow":0.65})
+7 pictures sewn into <SESSION>\scratchpad\text\out\q65 in 20 s, 0 failed  (engine options {"pictureLineBelow":0.65})
+== p0 read in 236 s
+== q50 read in 271 s
+== q55 read in 254 s
+== q60 read in 278 s
+== q65 read in 233 s
+character error (lower is better)   picture        p0       q50       q55       q60       q65
+all                                  0.101     0.167     0.167     0.167     0.166     0.163
+line (all sizes)                     0.087     0.176     0.176     0.176     0.174     0.170
+badge (all sizes)                    0.170     0.114     0.114     0.114     0.114     0.114
+outline (all sizes)                  0.140     0.162     0.162     0.162     0.177     0.177
+line, caps 3 mm                      0.000     0.385     0.385     0.385     0.385     0.364
+line, caps 4 mm                      0.072     0.225     0.225     0.225     0.216     0.209
+line, caps 5 mm                      0.010     0.124     0.124     0.124     0.124     0.124
+line, caps 6 mm                      0.065     0.054     0.054     0.054     0.054     0.054
+line, caps 8 mm                      0.114     0.069     0.069     0.069     0.069     0.069
+line, caps 12 mm                     0.258     0.197     0.197     0.197     0.197     0.197
+line sans, 3-6 mm                    0.000     0.075     0.075     0.075     0.075     0.068
+line black, 3-6 mm                   0.007     0.114     0.114     0.114     0.114     0.067
+line condensed, 3-6 mm               0.000     0.444     0.444     0.444     0.444     0.444
+line humanist, 3-6 mm                0.022     0.090     0.090     0.090     0.090     0.083
+line serif, 3-6 mm                   0.250     0.390     0.390     0.390     0.390     0.390
+line times, 3-6 mm                   0.007     0.218     0.218     0.218     0.196     0.196
+line mono, 3-6 mm                    0.016     0.198     0.198     0.198     0.198     0.198
+line script, 3-6 mm                  0.007     0.126     0.126     0.126     0.126     0.126
+line round, 3-6 mm                   0.022     0.120     0.120     0.120     0.120     0.120
+badge, 4-6 mm                        0.187     0.097     0.097     0.097     0.097     0.097
+outline                              0.140     0.162     0.162     0.162     0.177     0.177
+pictures read                          134       134       134       134       134       134
+crop                        source          p0         q50         q55         q60         q65
+chart sans row 1              0.00        0.00        0.00        0.00        0.00        0.00
+chart sans row 2              0.00        0.14        0.14        0.14        0.14        0.14
+chart sans row 3              0.14        0.00        0.00        0.00        0.00        0.00
+chart sans row 4              0.29        0.14        0.14        0.14        0.14        0.00
+chart sans row 5              0.29        0.00        0.00        0.00        0.00        0.14
+chart sans row 6              0.14        0.14        0.14        0.14        0.14        0.14
+chart sans row 7              0.00        1.00        1.00        1.00        1.00        1.00
+chart serif row 1             0.00        0.00        0.00        0.00        0.00        0.00
+chart serif row 2             0.00        0.00        0.00        0.00        0.00        0.00
+chart serif row 3             0.00        0.14        0.14        0.14        0.14        0.14
+chart serif row 4             0.00        0.43        0.43        0.43        0.43        0.43
+chart serif row 5             0.00        0.43        0.43        0.43        0.43        0.43
+chart serif row 6             0.00        1.00        1.00        1.00        1.00        1.00
+chart serif row 7             0.00        0.86        0.86        0.86        0.86        0.86
+crest AVE MARIA               0.00        0.75        0.12        0.12        0.12        0.12
+crest GRATIA PLENA            0.00        0.09        0.00        0.00        0.00        0.00
+SDL small line                0.00        0.36        0.36        0.36        0.36        0.68
+flag two lines                0.00        0.39        0.39        0.39        0.39        0.39
+mean                         0.048       0.327       0.287       0.287       0.287       0.305

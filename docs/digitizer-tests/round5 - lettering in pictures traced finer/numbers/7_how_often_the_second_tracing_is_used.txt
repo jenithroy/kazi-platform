@@ -1,0 +1,13 @@
+How often the second tracing is used, refused, or not tried, counted on the 134 drawn pictures of one line, a badge or outlined letters (the rest of the 143 are patterns). Final code.
+  'used'    = the letters were found again and the second tracing replaced the first for the lettering's colour
+  'refused' = the letters were not found again, or the lettering's colour turned into a crowd of pieces: the picture keeps the first tracing
+  'none'    = the first tracing finds no lettering to look at again (lettering over 8 mm, patterns, ...)
+
+cache {"used":104,"refused":0,"none":30}  
+deg_jpg50 {"used":103,"refused":0,"none":31}  
+deg_low {"used":103,"refused":3,"none":28} 3x the second tracing did not find the letters again refused: line_humanist_5mm_ham, line_mono_5mm_ave, line_mono_5mm_ham
+
+Where lettering is found in the other benches (first tracing against the final code; refined = found and used, refused, none):
+lpicss {"refined":94,"refused":2,"none":12} {"3mm":{"refined":31,"refused":2,"none":3},"4mm":{"refined":32,"refused":0,"none":4},"6mm":{"refined":31,"refused":0,"none":5}}
+lpicsx {"refined":143,"refused":1,"none":0} {"3mm":{"refined":36,"refused":0,"none":0},"4mm":{"refined":36,"refused":0,"none":0},"5mm":{"refined":36,"refused":0,"none":0},"6mm":{"refined":35,"refused":1,"none":0}}
+lpicsm {"refined":107,"refused":1,"none":0} {"3mm":{"refined":35,"refused":1,"none":0},"4mm":{"refined":36,"refused":0,"none":0},"6mm":{"refined":36,"refused":0,"none":0}}

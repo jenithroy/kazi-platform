@@ -1,0 +1,35 @@
+﻿picture                                         ours st/tr/th    DADE st/tr/th |  whole corrL ours/DADE           dE | face corrL ours/DADE   eyes contrast ours/DADE   lips c
+cat                                           24874/ 431/15  29788/ 368/ 4 |    0.986/ 0.735    7.2/ 22.7 |  0.970/ 0.214  0.73/0.58  0.97/1.07
+crest_manzanares                              13689/ 154/ 5  20563/  96/ 4 |    0.932/ 0.934    9.0/  4.5 |
+dog                                            9797/ 155/ 9  30349/ 229/ 4 |    0.453/ 0.942   34.0/ 13.2 |
+eagle                                          9336/ 158/13  28503/ 439/ 4 |    0.986/ 0.980    5.0/  5.0 |
+emblem_nepal                                  18091/ 308/13  22773/  90/ 4 |    0.990/ 0.959    6.7/  7.7 |
+engraving_hummingbird                          6356/ 157/13  12382/ 194/ 4 |    0.973/ 0.974   12.8/ 12.3 |
+face_armstrong                                10259/ 233/14  25494/ 213/ 5 |   -0.218/ 0.011   48.1/ 30.3 |  0.889/ 0.694  0.8/0.53  1.55/0.0
+face_einstein                                 28485/ 552/14  42085/ 931/ 4 |    0.943/ 0.093    7.4/ 26.5 |  0.964/-0.139  0.8/0.7  0.57/1.86
+face_woman                                    13507/ 294/ 8  24814/ 212/ 4 |    0.987/ 0.973    5.4/  5.4 |  0.983/ 0.976  0.87/0.5  0.91/0.9
+flower_rose                                   26005/ 646/15  30951/ 360/ 5 |    0.953/ 0.759   10.8/ 17.1 |
+landscape_everest                             19953/ 359/16  28180/ 366/ 4 |    0.940/ 0.659    7.7/ 12.0 |
+logo_adidas                                    3736/  44/ 1   5239/  16/ 1 |    0.998/ 0.489    1.1/ 24.2 |
+logo_harley                                    4043/  26/ 1   4799/  17/ 1 |    0.998/ 0.995    1.0/  1.2 |
+logo_mercedes                                 11445/ 167/12  20219/ 199/ 4 |    0.950/ 0.984    3.8/  1.9 |
+logo_nike                                      1177/   6/ 1   2152/   4/ 1 |    0.999/ 0.558    0.5/ 17.1 |
+logo_olympic                                   2610/  26/ 5   3574/  17/ 4 |    0.993/ 0.924    2.2/  4.7 |
+painting_pearl                                 9611/ 178/15  21303/ 190/ 4 |   -0.493/-0.572   59.8/ 62.2 |  0.959/ 0.892  0.84/0.57  0.64/0.67
+
+FACES (5 with a face region): face-region correlation ours 0.953 vs DADE 0.527; ours higher on 5 of 5; face dE ours 8.02 vs DADE 15.41 (lower is better; ours lower on 4); eye-region correlation ours 0.822 vs DADE 0.200
+
+BY CATEGORY (whole frame; ours | DADE):
+  cat            n= 1  corrL 0.986 | 0.735   dE  7.22 | 22.73   stitches   24874 |   29788   trims   431 |   368
+  crest          n= 1  corrL 0.932 | 0.934   dE  9.02 |  4.54   stitches   13689 |   20563   trims   154 |    96
+  dog            n= 1  corrL 0.453 | 0.942   dE 34.01 | 13.18   stitches    9797 |   30349   trims   155 |   229
+  eagle          n= 1  corrL 0.986 | 0.980   dE  5.03 |  5.03   stitches    9336 |   28503   trims   158 |   439
+  emblem         n= 1  corrL 0.990 | 0.959   dE  6.65 |  7.73   stitches   18091 |   22773   trims   308 |    90
+  engraving      n= 1  corrL 0.973 | 0.974   dE 12.77 | 12.35   stitches    6356 |   12382   trims   157 |   194
+  face           n= 3  corrL 0.571 | 0.359   dE 20.31 | 20.71   stitches   17417 |   30798   trims   360 |   452
+  flower         n= 1  corrL 0.953 | 0.759   dE 10.76 | 17.06   stitches   26005 |   30951   trims   646 |   360
+  landscape      n= 1  corrL 0.940 | 0.659   dE  7.66 | 11.96   stitches   19953 |   28180   trims   359 |   366
+  logo           n= 5  corrL 0.988 | 0.790   dE  1.71 |  9.83   stitches    4602 |    7197   trims    54 |    51
+  painting       n= 1  corrL -0.493 | -0.572   dE 59.77 | 62.19   stitches    9611 |   21303   trims   178 |   190
+
+ALL 17: corrL ours 0.786 vs DADE 0.670 (ours higher on 12); dE ours 13.08 vs 15.77 (ours lower on 10); stitches ours 212974 vs DADE 353168; trims median ours 167 vs DADE 199

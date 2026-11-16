@@ -1,0 +1,62 @@
+##### typed + typed2, caps 3-6 mm (f2 = the repository defaults)
+typed: 168 cells done, 0 failed, 27.2 s  (lib <REPO>\app\lib; hook plan=true engine=true)
+== f2 read in 95 s
+set typed: 94 cells read by both (f2: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  f2  0.034  dade  0.068   f2 clearly better  15, dade clearly better   8
+caps 3 mm                      n= 24  f2  0.060  dade  0.131   f2 clearly better   8, dade clearly better   4
+caps 4 mm                      n= 24  f2  0.028  dade  0.066   f2 clearly better   3, dade clearly better   2
+caps 5 mm                      n= 24  f2  0.015  dade  0.035   f2 clearly better   2, dade clearly better   1
+set typed: 96 cells read by both (f2: 96, fin2: 96); caps <= 6.0 mm
+all cells                      n= 96  f2  0.034  fin2  0.098   f2 clearly better  37, fin2 clearly better   5
+caps 3 mm                      n= 24  f2  0.060  fin2  0.188   f2 clearly better  17, fin2 clearly better   2
+caps 4 mm                      n= 24  f2  0.028  fin2  0.108   f2 clearly better  10, fin2 clearly better   2
+caps 5 mm                      n= 24  f2  0.015  fin2  0.068   f2 clearly better   7, fin2 clearly better   0
+== f2 / typed done in 122 s  (engine {}, fill {})
+typed: 180 cells done, 0 failed, 19.7 s  (lib <REPO>\app\lib; hook plan=true engine=true)
+== f2 read in 134 s
+set typed2: 140 cells read by both (f2: 144, dade: 140); caps <= 6.0 mm
+all cells                      n=140  f2  0.045  dade  0.069   f2 clearly better  23, dade clearly better  12
+caps 3 mm                      n= 36  f2  0.123  dade  0.150   f2 clearly better   9, dade clearly better   7
+caps 4 mm                      n= 36  f2  0.032  dade  0.050   f2 clearly better   8, dade clearly better   3
+caps 5 mm                      n= 36  f2  0.010  dade  0.030   f2 clearly better   4, dade clearly better   1
+set typed2: 144 cells read by both (f2: 144, fin2: 144); caps <= 6.0 mm
+all cells                      n=144  f2  0.044  fin2  0.125   f2 clearly better  56, fin2 clearly better   4
+caps 3 mm                      n= 36  f2  0.123  fin2  0.257   f2 clearly better  20, fin2 clearly better   2
+caps 4 mm                      n= 36  f2  0.032  fin2  0.116   f2 clearly better  18, fin2 clearly better   1
+caps 5 mm                      n= 36  f2  0.010  fin2  0.064   f2 clearly better  11, fin2 clearly better   0
+== f2 / typed2 done in 154 s  (engine {}, fill {})
+
+##### lettering pictures
+143 pictures sewn into <SESSION>\scratchpad\text\out\f2 in 8 s, 0 failed  (engine options {})
+character error (lower is better)   picture       now      dade        f2
+all                                  0.101     0.167     0.179     0.111
+line (all sizes)                     0.087     0.176     0.121     0.120
+badge (all sizes)                    0.170     0.114     0.178     0.097
+outline (all sizes)                  0.140     0.162     0.963     0.029
+line, caps 3 mm                      0.000     0.385     0.168     0.283
+line, caps 4 mm                      0.072     0.225     0.105     0.155
+line, caps 5 mm                      0.010     0.124     0.057     0.020
+line, caps 6 mm                      0.065     0.054     0.040     0.010
+line, caps 8 mm                      0.114     0.069     0.128     0.052
+line, caps 12 mm                     0.258     0.197     0.229     0.197
+line sans, 3-6 mm                    0.000     0.075     0.015     0.031
+line black, 3-6 mm                   0.007     0.114     0.015     0.000
+line condensed, 3-6 mm               0.000     0.444     0.565     0.400
+line humanist, 3-6 mm                0.022     0.090     0.015     0.023
+line serif, 3-6 mm                   0.250     0.390     0.046     0.300
+line times, 3-6 mm                   0.007     0.218     0.082     0.136
+line mono, 3-6 mm                    0.016     0.198     0.046     0.076
+line script, 3-6 mm                  0.007     0.126     0.051     0.022
+line round, 3-6 mm                   0.022     0.120     0.000     0.067
+badge, 4-6 mm                        0.187     0.097     0.130     0.072
+outline                              0.140     0.162     0.963     0.029
+pictures read                          134       134       134       134
+
+##### 73 real pictures: old rules against new
+73 pictures sewn into <SESSION>\scratchpad\text\out\r73f2 in 44 s, 0 failed  (engine options {})
+pictures: 73; changed: 4
+new55__emblems_flag_washington_island            stitches   8820 ->   9022  trims   79 ->   79
+new55__emblems_logo_sdl                          stitches   3323 ->   3575  trims   51 ->   49
+new55__emblems_seal_torrance_bw                  stitches  13669 ->  14622  trims  150 ->  146
+reg18__crest_manzanares                          stitches  13683 ->  14127  trims  150 ->  158
+##### done

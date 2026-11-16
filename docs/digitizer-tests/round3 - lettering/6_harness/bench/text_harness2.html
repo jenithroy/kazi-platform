@@ -1,0 +1,37 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>lettering capture harness, the wider font set</title>
+<body>text harness 2</body>
+<script type="module">
+// Like text_harness.html, but the fonts are the open-licence set of matrix2.mjs, loaded from /fonts/: the SITE's text.js (drawText) draws them (FONTS is a plain array: the faces are added to it).
+import { drawText, FONTS, CAP_HEIGHT } from "/lib/digitizer/text.js";
+import { FONTS2 } from "/matrix2.mjs";
+
+const save = (path, body) => fetch(`/save?path=${encodeURIComponent(path)}`, { method: "POST", body }).then((r) => { if (!r.ok) throw new Error("save failed " + path); });
+
+window.loadFonts = async () => {
+  const out = [];
+  for (const f of FONTS2) {
+    const face = new FontFace(f.family, `url(/fonts/${f.file})`, f.variable ? { weight: "100 900" } : {});
+    await face.load();
+    document.fonts.add(face);
+    FONTS.push({ id: f.id, label: f.family, css: `"${f.family}", sans-serif` });
+    out.push(f.family);
+  }
+  return out;
+};
+
+window.captureText = async (cell, outDir) => {
+  const text = { value: cell.value, font: cell.font, size: cell.size, bold: cell.bold };
+  const drawn = await drawText(text, 14);
+  const ctx = drawn.canvas.getContext("2d");
+  const img = ctx.getImageData(0, 0, drawn.width, drawn.height);
+  const a = new Uint8Array(drawn.width * drawn.height);
+  for (let i = 0, p = 0; i < a.length; i++, p += 4) a[i] = img.data[p + 3];
+  await save(`${outDir}/alpha.u8`, a.buffer);
+  const meta = { id: cell.id, text, width: drawn.width, height: drawn.height, pxPerMm: drawn.pxPerMm, capHeight: CAP_HEIGHT };
+  await save(`${outDir}/meta.json`, new TextEncoder().encode(JSON.stringify(meta)));
+  return meta;
+};
+window.ready = true;
+</script>

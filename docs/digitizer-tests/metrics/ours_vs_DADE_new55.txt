@@ -1,0 +1,74 @@
+﻿picture                                         ours st/tr/th    DADE st/tr/th |  whole corrL ours/DADE           dE | face corrL ours/DADE   eyes contrast ours/DADE   lips c
+animals_butterfly_plate_1898                  10144/ 231/10  24606/ 819/ 4 |    0.982/ 0.980   11.3/ 10.8 |
+animals_cat_gazing_up                         19932/ 311/15  24806/ 280/ 4 |    0.976/ 0.623    8.1/ 11.9 |
+animals_horse_portrait                        18842/ 320/16  21119/ 126/ 4 |    0.982/ 0.948    9.0/ 11.7 |
+animals_owl_portrait                          19699/ 336/16  31825/ 549/ 5 |    0.969/ 0.772    6.8/ 12.4 |
+animals_westie_dog_face                       23457/ 431/17  24845/ 228/ 5 |    0.980/ 0.714    9.1/ 20.8 |  0.977/ 0.955  1.13/0.58  1.02/0.73
+animals_whale_shark_aquarium                  19549/ 406/14  27125/ 223/ 4 |    0.980/ 0.599    7.7/ 14.9 |
+cartoon_anime_girl_flat_colours                6998/  56/ 7   9824/  22/ 4 |    0.988/ 0.984    5.0/  1.9 |
+cartoon_anime_portrait_shaded                 26256/ 492/16  29412/ 177/ 5 |    0.963/ 0.846   10.6/ 13.9 |  0.973/ 0.907  0.83/0.57  1.01/1.42
+cartoon_wikipetan_angry_vector                16245/ 280/10  20554/ 353/ 4 |    0.963/ 0.938    7.3/  8.6 |
+emblems_coat_of_arms_mexico                   18050/ 401/15  29431/ 187/ 4 |    0.977/ 0.967    5.7/  7.3 |
+emblems_flag_washington_island                 8820/  79/ 3  19653/  57/ 3 |    0.995/ 0.992    7.8/  2.0 |
+emblems_logo_sdl                               3323/  51/ 3   5268/  23/ 3 |    0.994/ 0.193    2.1/ 33.1 |
+emblems_seal_torrance_bw                      13669/ 150/ 1  57161/ 235/ 4 |    0.921/ 0.958    8.0/  5.7 |
+faces_angle_face_closeup_three_quarter         9902/ 149/11  19404/  90/ 4 |    0.863/ 0.919   10.7/  5.0 |  0.961/ 0.781  1.4/0.91  1.23/0.77
+faces_angle_woman_profile_sad                  8961/ 163/16  17017/ 137/ 4 |    0.965/ 0.964   11.6/ 11.1 |  0.955/ 0.868  0.9/1.28  0.9/1.09
+faces_angle_wwii_aircraft_worker_looking_dow   8966/ 173/15  19737/ 406/ 4 |   -0.246/-0.582   55.2/ 61.3 |  0.960/ 0.859  0.75/1.24  1.18/0.68
+faces_art_ghirlandaio_man_renaissance          8296/ 115/12  12215/  96/ 4 |    0.018/-0.043   36.8/ 37.6 |  0.879/ 0.111  0.82/1.52  0.78/1.24
+faces_bw_bessie_smith                         27457/ 471/10  29671/ 214/ 4 |    0.980/ 0.951    5.1/  5.8 |  0.950/ 0.829  0.75/0.99  0.74/0.64
+faces_bw_elder_shemagh                        22642/ 497/12  37956/ 406/ 4 |    0.963/ 0.963    7.1/  6.6 |  0.880/ 0.885  1.26/0.88  0.93/1.25
+faces_bw_inouye_senator                       12022/ 209/ 4  25189/ 450/ 3 |    0.981/ 0.384    7.6/ 18.2 |  0.907/ 0.731  1.06/0.92  1.16/0.79
+faces_colour_boy_madagascar                    9179/ 153/13  27594/ 261/ 4 |   -0.173/-0.274   45.9/ 33.2 |  0.908/ 0.476  0.81/0.98  0.76/0.71
+faces_colour_chawla_nasa_portrait             10885/ 214/16  28464/ 290/ 6 |    0.230/ 0.417   35.8/ 17.9 |  0.965/ 0.469  1.07/1.4  0.52/0.43
+faces_colour_indian_woman_elder               11664/ 259/16  26496/ 199/ 4 |   -0.312/ 0.788   53.7/ 18.4 |  0.911/ 0.695  0.42/1.46  0.76/0.5
+faces_colour_laotian_man_hat                   9369/ 173/14  24952/ 236/ 4 |   -0.213/ 0.674   42.5/ 17.6 |  0.954/ 0.788  1.13/1.78  0.83/0.97
+faces_colour_man_beard_dark_skin              13170/ 257/13  19789/ 120/ 3 |    0.919/ 0.952   11.6/  8.8 |  0.970/ 0.899  0.58/0.81  0.86/0.79
+faces_colour_poroshenko_official              11281/ 178/14  20945/  93/ 5 |    0.981/ 0.944    6.8/  6.2 |  0.938/ 0.443  0.95/0.66  0.99/0.47
+faces_colour_woman_glasses_headshot           12985/ 239/14  22336/ 163/ 5 |    0.552/ 0.934   23.2/  9.0 |  0.956/ 0.798  0.77/1.26  0.76/0.9
+faces_colour_young_woman_rose                 11810/ 181/15  21837/ 180/ 6 |    0.951/ 0.951   10.8/ 11.3 |  0.943/ 0.897  0.87/0.89  0.56/0.89
+faces_small_artemis2_crew_four                16659/ 416/15  26289/ 279/ 5 |    0.971/ 0.949    6.3/  7.5 |
+faces_small_football_header_action            18791/ 323/14  24043/ 207/ 7 |    0.979/ 0.912   10.8/ 16.0 |
+faces_small_meir_full_length                   6173/ 122/ 5   5967/  53/ 5 |    0.994/-0.185    4.8/ 18.5 |
+faces_small_street_crowd                       8780/ 197/13  35742/ 266/ 5 |    0.397/ 0.899   34.5/ 16.1 |
+icons_flat_programming_icon                    3543/  25/ 2  14521/  22/ 3 |    0.988/ 0.990    7.4/  1.3 |
+icons_pixel_sprites_xbr                        7222/ 104/ 6  10347/  79/ 4 |    0.983/ 0.098    7.9/ 21.4 |
+lineart_bellin_ionian_sea_map                 31484/ 523/11  34507/1102/ 4 |    0.867/ 0.765   12.7/ 22.9 |
+lineart_durer_promenade_engraving             23774/ 371/ 5  41162/ 762/ 4 |    0.937/ 0.927    9.7/  6.8 |
+lineart_woodcut_print_frog                    11268/ 183/ 2  22683/ 496/ 4 |    0.961/ 0.928    8.3/  8.9 |
+nature_blueberries_bowl                       18222/ 397/13  27410/ 225/ 4 |    0.990/ 0.989    6.1/  5.5 |
+nature_leaf_skeleton_veins                    36983/ 815/14  64109/1036/ 4 |    0.890/ 0.899   11.1/ 11.5 |
+nature_sunflower_bee_black                    29224/ 635/15  38418/ 449/ 4 |    0.988/ 0.988    6.7/  4.7 |
+objects_spices_on_white                        9282/ 221/ 8  15884/ 233/ 4 |    0.978/ 0.190    6.0/ 13.9 |
+objects_teapot_cups_white                     17569/ 289/16  20424/ 215/ 5 |    0.961/ 0.960    9.3/  6.9 |
+objects_zenit_camera_tripod                   15469/ 343/ 9  22107/ 265/ 4 |    0.992/ 0.990    5.7/  5.8 |
+scenes_cathedral_st_patricks                  19852/ 358/14  30203/ 532/ 4 |    0.925/ 0.704    7.6/ 26.0 |
+scenes_mountain_lake_zagedan                  24146/ 516/16  28084/ 294/ 4 |    0.954/ 0.895    9.8/ 13.1 |
+scenes_swayambhunath_stupa                    14907/ 292/15  22137/ 200/ 6 |    0.948/ 0.834   10.2/ 13.4 |
+sculpture_herodotos_marble_bust               10008/ 187/ 7  25733/ 250/ 5 |   -0.369/ 0.545   35.7/ 14.8 |  0.961/ 0.418  0.79/1.24  0.75/0.92
+sculpture_nefertiti_bust                      14419/ 283/14  15409/ 131/ 4 |    0.990/ 0.982    3.7/  4.0 |  0.967/ 0.921  1.1/1.3  0.82/0.87
+text_devanagari_nepali_plaque                 17055/ 322/11  27764/ 267/ 5 |    0.853/ 0.810    5.8/  5.3 |
+text_kufic_calligraphy_folio                   6954/ 247/14  29498/ 418/ 3 |    0.970/-0.133   14.2/ 20.1 |
+text_sans_sign_medstead                       24090/ 463/16  52610/ 965/ 4 |    0.947/ 0.789    7.7/ 12.8 |
+text_serif_sign_st_xavier                     13072/ 162/13  16100/  97/ 4 |    0.991/ 0.712    6.5/ 18.4 |
+
+FACES (19 with a face region): face-region correlation ours 0.943 vs DADE 0.723; ours higher on 18 of 19; face dE ours 8.46 vs DADE 12.45 (lower is better; ours lower on 16); eye-region correlation ours 0.686 vs DADE 0.544
+
+BY CATEGORY (whole frame; ours | DADE):
+  animals        n= 6  corrL 0.978 | 0.773   dE  8.67 | 13.75   stitches   18604 |   25721   trims   339 |   371
+  cartoon        n= 3  corrL 0.971 | 0.923   dE  7.65 |  8.15   stitches   16500 |   19930   trims   276 |   184
+  emblems        n= 4  corrL 0.972 | 0.778   dE  5.87 | 12.05   stitches   10966 |   27878   trims   170 |   126
+  faces_angle    n= 3  corrL 0.527 | 0.434   dE 25.82 | 25.83   stitches    9276 |   18719   trims   162 |   211
+  faces_art      n= 1  corrL 0.018 | -0.043   dE 36.80 | 37.60   stitches    8296 |   12215   trims   115 |    96
+  faces_bw       n= 3  corrL 0.975 | 0.766   dE  6.60 | 10.19   stitches   20707 |   30939   trims   392 |   357
+  faces_colour   n= 8  corrL 0.367 | 0.673   dE 28.81 | 15.31   stitches   11293 |   24052   trims   207 |   193
+  faces_small    n= 4  corrL 0.835 | 0.644   dE 14.07 | 14.52   stitches   12601 |   23010   trims   264 |   201
+  icons          n= 2  corrL 0.986 | 0.544   dE  7.66 | 11.32   stitches    5382 |   12434   trims    64 |    50
+  lineart        n= 3  corrL 0.922 | 0.873   dE 10.24 | 12.87   stitches   22175 |   32784   trims   359 |   787
+  nature         n= 3  corrL 0.956 | 0.959   dE  7.97 |  7.20   stitches   28143 |   43312   trims   616 |   570
+  objects        n= 3  corrL 0.977 | 0.713   dE  6.98 |  8.84   stitches   14107 |   19472   trims   284 |   238
+  scenes         n= 3  corrL 0.942 | 0.811   dE  9.22 | 17.49   stitches   19635 |   26808   trims   389 |   342
+  sculpture      n= 2  corrL 0.310 | 0.764   dE 19.70 |  9.38   stitches   12214 |   20571   trims   235 |   190
+  text           n= 4  corrL 0.940 | 0.544   dE  8.54 | 14.16   stitches   15293 |   31493   trims   298 |   437
+
+ALL 52: corrL ours 0.793 vs DADE 0.709 (ours higher on 38); dE ours 13.68 vs 13.82 (ours lower on 30); stitches ours 792519 vs DADE 1330382; trims median ours 258 vs DADE 230

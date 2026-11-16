@@ -1,0 +1,875 @@
+[
+ {
+  "name": "astronaut",
+  "file": "face_armstrong.png",
+  "convertMs": 5282,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 41 fine lines and 2 dots on top (about 650 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (44% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again",
+    "Crop to the face"
+   ],
+   "size": "87.2 × 109.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "11,821",
+   "Colours": "11 · 14 changes",
+   "Size": "77.9 × 91.7 mm",
+   "Time": "44 min",
+   "Trims": "244",
+   "Thread": "~19.2 m"
+  },
+  "dst": {
+   "file": "astronaut.dst",
+   "bytes": 39602
+  },
+  "cropButtonBefore": 1,
+  "cropConvertMs": 1026,
+  "afterCrop": {
+   "warn": [],
+   "notes": [
+    "The design has 33 fine lines and 3 dots on top (about 589 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (61% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 34 mm wide, so each eye is about 6.2 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "85.4 × 100.8 mm. The shapes made from it change size with it."
+  },
+  "beforeCrop": {
+   "warn": [],
+   "notes": [
+    "The design has 41 fine lines and 2 dots on top (about 650 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (44% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again",
+    "Crop to the face"
+   ],
+   "size": "87.2 × 109.0 mm. The shapes made from it change size with it."
+  },
+  "summaryAfterCrop": {
+   "Stitches": "12,372",
+   "Colours": "12 · 14 changes",
+   "Size": "85.5 × 91.7 mm",
+   "Time": "41 min",
+   "Trims": "205",
+   "Thread": "~22.7 m"
+  },
+  "faceNote": "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X",
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "chawla",
+  "file": "faces_colour_chawla_nasa_portrait.png",
+  "convertMs": 5280,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 46 fine lines and 5 dots on top (about 802 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (46% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 19 mm wide, so each eye is about 4.0 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again",
+    "Crop to the face"
+   ],
+   "size": "88.3 × 110.4 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "12,578",
+   "Colours": "11 · 15 changes",
+   "Size": "75.0 × 92.3 mm",
+   "Time": "45 min",
+   "Trims": "243",
+   "Thread": "~21.0 m"
+  },
+  "dst": {
+   "file": "chawla.dst",
+   "bytes": 41789
+  },
+  "faceNote": "The face is about 19 mm wide, so each eye is about 4.0 mm.",
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "rose",
+  "file": "faces_colour_young_woman_rose.png",
+  "convertMs": 4713,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 23 fine lines and 3 dots on top (about 446 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (56% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 30 mm wide, so each eye is about 5.2 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again",
+    "Crop to the face"
+   ],
+   "size": "96.3 × 67.5 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "11,125",
+   "Colours": "12 · 14 changes",
+   "Size": "91.4 × 67.0 mm",
+   "Time": "38 min",
+   "Trims": "182",
+   "Thread": "~17.8 m"
+  },
+  "dst": {
+   "file": "rose.dst",
+   "bytes": 36587
+  },
+  "faceNote": "The face is about 30 mm wide, so each eye is about 5.2 mm.",
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "pearl",
+  "file": "painting_pearl.png",
+  "convertMs": 5109,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 10 fine lines and 2 dots on top (about 232 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (40% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 25 mm wide, so each eye is about 4.7 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again",
+    "Crop to the face"
+   ],
+   "size": "89.5 × 104.8 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "10,226",
+   "Colours": "11 · 12 changes",
+   "Size": "57.5 × 91.8 mm",
+   "Time": "35 min",
+   "Trims": "186",
+   "Thread": "~17.6 m"
+  },
+  "dst": {
+   "file": "pearl.dst",
+   "bytes": 33899
+  },
+  "faceNote": "The face is about 25 mm wide, so each eye is about 4.7 mm.",
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "einstein",
+  "file": "face_einstein.png",
+  "convertMs": 3722,
+  "picture": {
+   "warn": [
+    "The smallest lettering is only about 1.9 mm tall. Letters under 3.5 mm do not sew clearly: make the whole design about 1.8 times bigger (it needs a bigger hoop), or leave the lettering out."
+   ],
+   "notes": [
+    "The design has 49 fine lines on top (about 628 stitches). Untick \"Fine details on top\" to leave them out.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger.",
+    "Light grey looks like the cloth, so only its fine lines and lettering are stitched; its larger areas show the cloth. Untick it to leave all of it out, or change the cloth colour above to the real garment colour."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "69.0 × 92.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [],
+  "summary": {
+   "Stitches": "23,550",
+   "Colours": "9 · 12 changes",
+   "Size": "68.9 × 91.8 mm",
+   "Time": "1 h 14 min",
+   "Trims": "429",
+   "Thread": "~30.2 m"
+  },
+  "dst": {
+   "file": "einstein.dst",
+   "bytes": 77279
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [],
+  "landmarkerRequested": false,
+  "personModelRequested": false,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "dog",
+  "file": "dog.png",
+  "convertMs": 4135,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 5 fine lines on top (about 96 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (48% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "92.0 × 65.4 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "8,497",
+   "Colours": "7 · 8 changes",
+   "Size": "92.0 × 53.5 mm",
+   "Time": "26 min",
+   "Trims": "130",
+   "Thread": "~13.7 m"
+  },
+  "dst": {
+   "file": "dog.dst",
+   "bytes": 27848
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "cat",
+  "file": "cat.png",
+  "convertMs": 3680,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 113 fine lines on top (about 1,572 stitches). Untick \"Fine details on top\" to leave them out.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "75.9 × 92.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm"
+  ],
+  "summary": {
+   "Stitches": "21,232",
+   "Colours": "12 · 15 changes",
+   "Size": "75.9 × 92.0 mm",
+   "Time": "1 h 7 min",
+   "Trims": "356",
+   "Thread": "~33.5 m"
+  },
+  "dst": {
+   "file": "cat.dst",
+   "bytes": 69359
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm"
+  ],
+  "landmarkerRequested": false,
+  "personModelRequested": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "logo",
+  "file": "logo_nike.png",
+  "convertMs": 622,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "This picture is read as a logo (flat colours), so it has no fine details on top.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "92.1 × 32.9 mm. The shapes made from it change size with it."
+  },
+  "requests": [],
+  "summary": {
+   "Stitches": "1,041",
+   "Colours": "1",
+   "Size": "91.6 × 31.8 mm",
+   "Time": "2 min",
+   "Trims": "6",
+   "Thread": "~2.8 m"
+  },
+  "dst": {
+   "file": "logo.dst",
+   "bytes": 3761
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [],
+  "landmarkerRequested": false,
+  "personModelRequested": false,
+  "checkNoModels": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "sign",
+  "file": "text_sans_sign_medstead.png",
+  "convertMs": 3286,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 26 fine lines and 2 dots on top (about 481 stitches). Untick \"Fine details on top\" to leave them out.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "92.0 × 61.4 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm"
+  ],
+  "summary": {
+   "Stitches": "20,649",
+   "Colours": "12 · 13 changes",
+   "Size": "92.0 × 61.4 mm",
+   "Time": "1 h 4 min",
+   "Trims": "360",
+   "Thread": "~30.2 m"
+  },
+  "dst": {
+   "file": "sign.dst",
+   "bytes": 67712
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm"
+  ],
+  "landmarkerRequested": false,
+  "personModelRequested": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "pencil",
+  "file": "faces_art_pencil_elderly_lady.png",
+  "convertMs": 2882,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 12 fine lines on top (about 161 stitches). Untick \"Fine details on top\" to leave them out.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "64.9 × 93.3 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm"
+  ],
+  "summary": {
+   "Stitches": "12,345",
+   "Colours": "5 · 5 changes",
+   "Size": "62.3 × 93.4 mm",
+   "Time": "36 min",
+   "Trims": "209",
+   "Thread": "~19.8 m"
+  },
+  "dst": {
+   "file": "pencil.dst",
+   "bytes": 40490
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm"
+  ],
+  "landmarkerRequested": false,
+  "personModelRequested": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "crowd",
+  "file": "faces_small_street_crowd.png",
+  "convertMs": 4517,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 26 fine lines and 6 dots on top (about 402 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (28% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "92.0 × 69.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "7,634",
+   "Colours": "10 · 12 changes",
+   "Size": "92.0 × 57.8 mm",
+   "Time": "31 min",
+   "Trims": "171",
+   "Thread": "~9.9 m"
+  },
+  "dst": {
+   "file": "crowd.dst",
+   "bytes": 26075
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "nolandmarker",
+  "file": "face_armstrong.png",
+  "digitizerLog": [
+   "[digitizer] the face finder could not run: Error: Failed to fetch model: /mediapipe/face_landmarker.task (404)\n    at http://127.0.0.1:52216/_next/static/chunks/085l9_aywv130.js:1:68788\n    at async a"
+  ],
+  "convertMs": 4910,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 60 fine lines and 3 dots on top (about 907 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (44% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "87.2 × 109.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "404 face_landmarker.task"
+  ],
+  "summary": {
+   "Stitches": "11,918",
+   "Colours": "11 · 14 changes",
+   "Size": "77.9 × 91.8 mm",
+   "Time": "45 min",
+   "Trims": "256",
+   "Thread": "~19.3 m"
+  },
+  "dst": {
+   "file": "nolandmarker.dst",
+   "bytes": 40067
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X",
+   "404 /mediapipe/face_landmarker.task"
+  ],
+  "badResponsesReal": [
+   "404 /mediapipe/face_landmarker.task"
+  ]
+ },
+ {
+  "name": "peopleoff",
+  "file": "face_armstrong.png",
+  "convertMs": 2377,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 39 fine lines and 1 dot on top (about 559 stitches). Untick \"Fine details on top\" to leave them out.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger.",
+    "Black (close) looks like the cloth, so only its fine lines and lettering are stitched; its larger areas show the cloth. Untick it to leave all of it out, or change the cloth colour above to the real garment colour."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again"
+   ],
+   "size": "64.0 × 80.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [],
+  "summary": {
+   "Stitches": "10,878",
+   "Colours": "12 · 15 changes",
+   "Size": "63.9 × 74.4 mm",
+   "Time": "42 min",
+   "Trims": "236",
+   "Thread": "~16.9 m"
+  },
+  "dst": {
+   "file": "peopleoff.dst",
+   "bytes": 36542
+  },
+  "faceNote": null,
+  "faceWarning": false,
+  "modelsRequested": [],
+  "landmarkerRequested": false,
+  "personModelRequested": false,
+  "checkNoModels": true,
+  "checkNoFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /collections/__next.collections.__PAGE__.txt?_rsc=KALKmVCzl6cZDbmA",
+   "404 /heritage/__next.heritage.__PAGE__.txt?_rsc=b4X0UIICi9zuAwTc",
+   "404 /pricing/__next.pricing.__PAGE__.txt?_rsc=YiogxYkMOyMkuGC-",
+   "404 /digitizer/__next.digitizer.__PAGE__.txt?_rsc=gh8VH5NQFn3US2kf",
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X"
+  ],
+  "badResponsesReal": []
+ },
+ {
+  "name": "phone",
+  "file": "face_armstrong.png",
+  "convertMs": 5305,
+  "picture": {
+   "warn": [],
+   "notes": [
+    "The design has 41 fine lines and 2 dots on top (about 650 stitches). Untick \"Fine details on top\" to leave them out.",
+    "A person was found (44% of the picture). The background is left out, and the hair, skin and clothes were given colours of their own. Untick \"Find the person in a photo\" to keep the whole picture.",
+    "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+    "Very thin lines and lettering were made about half a millimetre wide, the thinnest a line of thread can be, and are sewn as one line of stitches. If letters run together, make the picture bigger."
+   ],
+   "buttons": [
+    "Crop",
+    "Reset crop",
+    "Convert again",
+    "Crop to the face"
+   ],
+   "size": "87.2 × 109.0 mm. The shapes made from it change size with it."
+  },
+  "requests": [
+   "200 selfie_multiclass_256x256.tflite",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 wasm/vision_wasm_internal.js",
+   "200 wasm/vision_wasm_internal.wasm",
+   "200 face_landmarker.task"
+  ],
+  "overflowX": 0,
+  "summary": {
+   "Stitches": "11,821",
+   "Colours": "11 · 14 changes",
+   "Size": "77.9 × 91.7 mm",
+   "Time": "44 min",
+   "Trims": "244",
+   "Thread": "~19.2 m"
+  },
+  "dst": {
+   "file": "phone.dst",
+   "bytes": 39602
+  },
+  "faceNote": "The face is about 14 mm wide, so each eye is about 2.5 mm.",
+  "faceWarning": false,
+  "modelsRequested": [
+   "selfie_multiclass_256x256.tflite",
+   "wasm/vision_wasm_internal.js",
+   "wasm/vision_wasm_internal.wasm",
+   "face_landmarker.task"
+  ],
+  "landmarkerRequested": true,
+  "personModelRequested": true,
+  "checkFaceNote": true,
+  "errors": [],
+  "badResponses": [
+   "404 /quote/__next.quote.__PAGE__.txt?_rsc=lMxDkKxsk-eb2nYq",
+   "404 /account/login/__next.account.login.__PAGE__.txt?_rsc=ZBKO8xwcoJs35a4X",
+   "404 /atelier/__next.atelier.__PAGE__.txt?_rsc=BYVQNwpOyHFnPFQF",
+   "404 /cookies/__next.cookies.__PAGE__.txt?_rsc=lDmgs7ZmRrjpUj_I"
+  ],
+  "badResponsesReal": []
+ }
+]

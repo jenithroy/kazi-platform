@@ -1,0 +1,7 @@
+﻿set typed: 96 cells read by both (cur: 96, fin: 96); caps <= 6.0 mm
+all cells                      n= 96  cur  0.030  fin  0.018   cur clearly better   4, fin clearly better   6
+caps 3 mm                      n= 24  cur  0.067  fin  0.056   cur clearly better   4, fin clearly better   4
+caps 4 mm                      n= 24  cur  0.010  fin  0.010   cur clearly better   0, fin clearly better   0
+caps 5 mm                      n= 24  cur  0.010  fin  0.005   cur clearly better   0, fin clearly better   1
+caps 6 mm                      n= 24  cur  0.031  fin  0.000   cur clearly better   0, fin clearly better   1
+text 'ave'                     n= 48  cur  0.029  fin  0.018   cur clearly better   3, fin clearly better   2

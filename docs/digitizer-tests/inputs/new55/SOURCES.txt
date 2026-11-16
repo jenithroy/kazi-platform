@@ -1,0 +1,57 @@
+Round 4 test set: 55 images from Wikimedia Commons (licences: public domain, CC0, CC BY, CC BY-SA only). file - title - author - licence - URL
+
+faces_colour_boy_madagascar.jpg - Village Boy, Madagascar (22708916781).jpg - Rod Waddington - CC BY-SA 2.0 - https://commons.wikimedia.org/wiki/File:Village_Boy,_Madagascar_(22708916781).jpg
+faces_colour_chawla_nasa_portrait.jpg - Kalpana Chawla, NASA photo portrait in orange suit.jpg - NASA - Public domain - https://commons.wikimedia.org/wiki/File:Kalpana_Chawla,_NASA_photo_portrait_in_orange_suit.jpg
+faces_colour_indian_woman_elder.jpg - Indian woman portrait II.jpg - Jaime Escribá - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Indian_woman_portrait_II.jpg
+faces_colour_laotian_man_hat.jpg - Laotian laughing man with hat.jpg - Basile Morin - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Laotian_laughing_man_with_hat.jpg
+faces_colour_man_beard_dark_skin.jpg - Face portrait (Unsplash).jpg - William Stitt willpower - CC0 - https://commons.wikimedia.org/wiki/File:Face_portrait_(Unsplash).jpg
+faces_colour_poroshenko_official.jpg - Official portrait of Petro Poroshenko.jpg - http://www.president.gov.ua/ - CC BY 4.0 - https://commons.wikimedia.org/wiki/File:Official_portrait_of_Petro_Poroshenko.jpg
+faces_colour_woman_glasses_headshot.jpg - Headshot professional.jpg - Allie Reeves - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Headshot_professional.jpg
+faces_colour_young_woman_rose.jpg - Russia - young woman with flowers.jpg - Dmitry Makeev - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Russia_-_young_woman_with_flowers.jpg
+faces_bw_bessie_smith.jpg - Bessie Smith (1936) by Carl Van Vechten.jpg - Carl Van Vechten , restored by Adam Cuerden - Public domain - https://commons.wikimedia.org/wiki/File:Bessie_Smith_(1936)_by_Carl_Van_Vechten.jpg
+faces_bw_elder_shemagh.jpg - Elderly man with Syrian shemagh.jpg - Maher Alhashem - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Elderly_man_with_Syrian_shemagh.jpg
+faces_bw_inouye_senator.jpg - Sen. Daniel K. Inouye, head-and-shoulders portrait, facing front.jpg - Marion S. Trikosko - Public domain - https://commons.wikimedia.org/wiki/File:Sen._Daniel_K._Inouye,_head-and-shoulders_portrait,_facing_front.jpg
+faces_angle_face_closeup_three_quarter.jpg - Face – Tiger.jpg - Genusfotografen (Tommas Gunnarsson) / Wikimedia Sverige - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Face_%E2%80%93_Tiger.jpg
+faces_angle_woman_profile_sad.jpg - Girl with sad face.jpg - Wilfredor - CC0 - https://commons.wikimedia.org/wiki/File:Girl_with_sad_face.jpg
+faces_angle_wwii_aircraft_worker_looking_down.jpg - World War II woman aircraft worker, Vega Aircraft Corporation, Burbank, California 1942.jpg - Bransby, David, photographer. - Public domain - https://commons.wikimedia.org/wiki/File:World_War_II_woman_aircraft_worker,_Vega_Aircraft_Corporation,_Burbank,_California_1942.jpg
+faces_small_artemis2_crew_four.jpg - Artemis 2 Crew Portrait.jpg - Josh Valcarcel - Public domain - https://commons.wikimedia.org/wiki/File:Artemis_2_Crew_Portrait.jpg
+faces_small_football_header_action.jpg - 271000 - Football Jason Rand action - 3b - Sydney 2000 match photo.jpg - Sport the library - CC BY-SA 3.0 - https://commons.wikimedia.org/wiki/File:271000_-_Football_Jason_Rand_action_-_3b_-_Sydney_2000_match_photo.jpg
+faces_small_meir_full_length.jpg - Jessica Meir full length portrait (cropped).jpg - Robert Markowitz - Public domain - https://commons.wikimedia.org/wiki/File:Jessica_Meir_full_length_portrait_(cropped).jpg
+faces_small_street_crowd.jpg - Street Crowd.jpg - Yann Kemper - CC0 - https://commons.wikimedia.org/wiki/File:Street_Crowd.jpg
+faces_art_ghirlandaio_man_renaissance.jpg - Domenico Ghirlandaio - Portrait of a Man.jpg - Domenico Ghirlandaio - Public domain - https://commons.wikimedia.org/wiki/File:Domenico_Ghirlandaio_-_Portrait_of_a_Man.jpg
+faces_art_pencil_elderly_lady.jpg - Gizella Fejes "Portrait of an Elderly Lady", pencil drawing, 1950ies.jpg - Gyebnr123 - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Gizella_Fejes_%22Portrait_of_an_Elderly_Lady%22,_pencil_drawing,_1950ies.jpg
+faces_art_rembrandt_self_portrait_oil.jpg - Rembrandt self portrait.jpg - Rembrandt - Public domain - https://commons.wikimedia.org/wiki/File:Rembrandt_self_portrait.jpg
+faces_art_renoir_jean_impressionist.jpg - Pierre-Auguste Renoir - Portrait of Jean Renoir (Portrait de Jean Renoir) - BF70 - Barnes Foundation.jpg - Pierre-Auguste Renoir - Public domain - https://commons.wikimedia.org/wiki/File:Pierre-Auguste_Renoir_-_Portrait_of_Jean_Renoir_(Portrait_de_Jean_Renoir)_-_BF70_-_Barnes_Foundation.jpg
+sculpture_herodotos_marble_bust.jpg - Marble bust of Herodotos MET DT11742 (cropped).jpg - The Metropolitan Museum of Art (Open Access) - CC0 - https://commons.wikimedia.org/wiki/File:Marble_bust_of_Herodotos_MET_DT11742_(cropped).jpg
+sculpture_nefertiti_bust.jpg - Nofretete Neues Museum.jpg - Philip Pikart - CC BY-SA 3.0 - https://commons.wikimedia.org/wiki/File:Nofretete_Neues_Museum.jpg
+cartoon_anime_girl_flat_colours.png - Anime girl publicdomainq.png - oksmith - CC0 - https://commons.wikimedia.org/wiki/File:Anime_girl_publicdomainq.png
+cartoon_anime_portrait_shaded.jpg - Anime girl portrait.jpg - Artbreeder - Public domain - https://commons.wikimedia.org/wiki/File:Anime_girl_portrait.jpg
+cartoon_wikipetan_angry_vector.png - Angry Wikipe-tan.svg - Kasuga~commonswiki (derived from earlier Wikipe-tan works, see the Commons page) - CC BY-SA 3.0 - https://commons.wikimedia.org/wiki/File:Angry_Wikipe-tan.svg
+animals_butterfly_plate_1898.jpg - New Zealand Moths and Butterflies (1898) 11.jpg - George Vernon Hudson - Public domain - https://commons.wikimedia.org/wiki/File:New_Zealand_Moths_and_Butterflies_(1898)_11.jpg
+animals_cat_gazing_up.jpg - Close-up portrait of a domestic cat, gazing upwards.jpg - Godwin Borg - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Close-up_portrait_of_a_domestic_cat,_gazing_upwards.jpg
+animals_horse_portrait.jpg - Horse portrait, Ukraine.jpg - Star61 - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Horse_portrait,_Ukraine.jpg
+animals_owl_portrait.jpg - Owl portrait (5384365092).jpg - mcamcamca - CC BY-SA 2.0 - https://commons.wikimedia.org/wiki/File:Owl_portrait_(5384365092).jpg
+animals_westie_dog_face.jpg - West Highland White Terrier face portrait May 2023.jpg - Dominic Nelson - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:West_Highland_White_Terrier_face_portrait_May_2023.jpg
+animals_whale_shark_aquarium.jpg - Male whale shark at Georgia Aquarium.jpg - Zac Wolf - CC BY-SA 2.5 - https://commons.wikimedia.org/wiki/File:Male_whale_shark_at_Georgia_Aquarium.jpg
+nature_blueberries_bowl.jpg - Dish of blueberries.jpg - Petar Milošević - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Dish_of_blueberries.jpg
+nature_leaf_skeleton_veins.jpg - Eaten-Leaf-White-Oak-Close-Up 2012-08-02-15.48.47-ZS-PMax (7700429782).jpg - USGS Native Bee Inventory and Monitoring Laboratory from Beltsville, USA - Public domain - https://commons.wikimedia.org/wiki/File:Eaten-Leaf-White-Oak-Close-Up_2012-08-02-15.48.47-ZS-PMax_(7700429782).jpg
+nature_sunflower_bee_black.jpg - Sunflower and a bee.jpg - Tomascastelazo - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Sunflower_and_a_bee.jpg
+scenes_cathedral_st_patricks.jpg - St Patrick's Cathedral (Gothic Revival Style).jpg - Donaldytong - CC BY-SA 3.0 - https://commons.wikimedia.org/wiki/File:St_Patrick%27s_Cathedral_(Gothic_Revival_Style).jpg
+scenes_mountain_lake_zagedan.jpg - Zagedan Lakes, Mountain cirque, Caucasus Mountains.jpg - Vyacheslav Argenberg - CC BY 4.0 - https://commons.wikimedia.org/wiki/File:Zagedan_Lakes,_Mountain_cirque,_Caucasus_Mountains.jpg
+scenes_swayambhunath_stupa.jpg - Swayambhunath temple - an ancient religious architecture of Nepal.jpg - Nirmal Dulal - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Swayambhunath_temple_-_an_ancient_religious_architecture_of_Nepal.jpg
+objects_spices_on_white.jpg - Gewuerze 004 2024 08 10.jpg - Friedrich Haag - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Gewuerze_004_2024_08_10.jpg
+objects_teapot_cups_white.jpg - Asian styled teapot and cups.jpg - Gisela Francisco - CC BY 3.0 - https://commons.wikimedia.org/wiki/File:Asian_styled_teapot_and_cups.jpg
+objects_zenit_camera_tripod.jpg - Cameras Zenit 11.jpg - Dmitry Makeev - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Cameras_Zenit_11.jpg
+text_devanagari_nepali_plaque.jpg - Nepali Dharamshalas.jpg - Ashim nep - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Nepali_Dharamshalas.jpg
+text_kufic_calligraphy_folio.jpg - Folio from a Koran (8th-9th century).jpg - Unknown in Abbasid dynasty - Public domain - https://commons.wikimedia.org/wiki/File:Folio_from_a_Koran_(8th-9th_century).jpg
+text_sans_sign_medstead.jpg - Medstead and Four Marks Station - 51156966587.jpg - hugh llewelyn - CC BY-SA 2.0 - https://commons.wikimedia.org/wiki/File:Medstead_and_Four_Marks_Station_-_51156966587.jpg
+text_serif_sign_st_xavier.jpg - Former St. Xavier High School sign.jpg - Photograph by Minh Nguyễn of signage owned by St. Xavier High School - CC BY 3.0 - https://commons.wikimedia.org/wiki/File:Former_St._Xavier_High_School_sign.jpg
+emblems_coat_of_arms_mexico.png - Coat of arms of Mexico.svg - Omar Alejandro Covarrubias Neri based on the arms by Francisco Eppens Helguera (1968) and Juan Manuel Gabino Villascán. - Public domain - https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Mexico.svg
+emblems_flag_washington_island.png - Flag of Washington Island, Wisconsin.svg - Bagel2225 - CC0 - https://commons.wikimedia.org/wiki/File:Flag_of_Washington_Island,_Wisconsin.svg
+emblems_logo_sdl.png - Simple DirectMedia Layer, Logo.svg - ™/®Arne Claus / SDL Project - Public domain - https://commons.wikimedia.org/wiki/File:Simple_DirectMedia_Layer,_Logo.svg
+emblems_seal_torrance_bw.png - Seal of Torrance, CA.svg - Fireman Sam Hughes of the Torrance Fire Department, for the City of Torrance, in 1963 based on a 1956 design. - Public domain - https://commons.wikimedia.org/wiki/File:Seal_of_Torrance,_CA.svg
+lineart_bellin_ionian_sea_map.jpg - IAN 0134 Bellin 1797 Ionian Sea.jpg - Jacques-Nicolas Bellin - CC BY 4.0 - https://commons.wikimedia.org/wiki/File:IAN_0134_Bellin_1797_Ionian_Sea.jpg
+lineart_durer_promenade_engraving.jpg - Durer -The Promenade.jpeg - Albrecht Dürer - Public domain - https://commons.wikimedia.org/wiki/File:Durer_-The_Promenade.jpeg
+lineart_woodcut_print_frog.jpg - Woodcut print of the Print Frog® Glass Baren.jpg - SNBagley - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Woodcut_print_of_the_Print_Frog%C2%AE_Glass_Baren.jpg
+icons_flat_programming_icon.png - Programming icon flat circle.svg - APaskulin (WMF) - CC BY-SA 4.0 - https://commons.wikimedia.org/wiki/File:Programming_icon_flat_circle.svg
+icons_pixel_sprites_xbr.png - XBR 4x sprite scaling.png - New editing editor - CC BY 4.0 - https://commons.wikimedia.org/wiki/File:XBR_4x_sprite_scaling.png

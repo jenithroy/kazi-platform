@@ -1,0 +1,72 @@
+[
+ {
+  "name": "the Picture step has the switch, ticked by default",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "with the background switched OFF the whole picture is stitched: far more stitches (the page of the logo too)",
+  "ok": true,
+  "extra": "1,041 -> 3,818"
+ },
+ {
+  "name": "the colour list marks the page's white as left out when the background is left out, and not when it is switched off",
+  "ok": true,
+  "extra": "[[\"Black (close)26%Stitch Black (close)\",\"White · background74%Stitch White\"],[\"Black (close)26%Stitch Black (close)\",\"White74%Stitch White\"]]"
+ },
+ {
+  "name": "the cloth hint says the whole picture is stitched",
+  "ok": true,
+  "extra": "What colour is the garment? It is how the design is shown. With \"Leave out the background\" off, the whole picture is stitched, whatever its colours."
+ },
+ {
+  "name": "ticking it again gives the first result back (same number of stitches)",
+  "ok": true,
+  "extra": "1,041 vs 1,041"
+ },
+ {
+  "name": "no console errors",
+  "ok": true,
+  "extra": ""
+ },
+ {
+  "name": "chawla: the person was found and the picture converted (a person note, colours, stitches)",
+  "ok": true,
+  "extra": "12 colours, 10,774 stitches"
+ },
+ {
+  "name": "chawla: a DST was written",
+  "ok": true,
+  "extra": "35762 bytes"
+ },
+ {
+  "name": "chawla: no console errors, no digitizer warnings",
+  "ok": false,
+  "extra": "INFO: Created TensorFlow Lite XNNPACK delegate for CPU. | INFO: Created TensorFlow Lite XNNPACK delegate for CPU."
+ },
+ {
+  "name": "boy: the person was found and the picture converted (a person note, colours, stitches)",
+  "ok": true,
+  "extra": "11 colours, 14,642 stitches"
+ },
+ {
+  "name": "boy: a DST was written",
+  "ok": true,
+  "extra": "48158 bytes"
+ },
+ {
+  "name": "boy: no console errors, no digitizer warnings",
+  "ok": false,
+  "extra": "INFO: Created TensorFlow Lite XNNPACK delegate for CPU. | INFO: Created TensorFlow Lite XNNPACK delegate for CPU."
+ },
+ {
+  "name": "typed lettering is stitched at every setting (more than 100 stitches each)",
+  "ok": true,
+  "extra": "{\"times_bold_5\":\"470\",\"times_regular_5\":\"459\",\"sans_regular_5\":\"314\",\"sans_bold_8\":\"758\"}"
+ },
+ {
+  "name": "no console errors while typing and sewing text",
+  "ok": true,
+  "extra": ""
+ }
+]

@@ -1,0 +1,55 @@
+﻿animals_butterfly_plate_1898 dE  11.3 corrL 0.982
+animals_cat_gazing_up      dE   8.1 corrL 0.976
+animals_horse_portrait     dE   9.0 corrL 0.982
+animals_owl_portrait       dE   6.8 corrL 0.969
+animals_westie_dog_face    dE   9.1 corrL 0.980   FACE  42.3 mm dE  10.0 corrL 0.977 thr 7   eyes c 1.13 r 0.84
+animals_whale_shark_aquarium dE   7.7 corrL 0.980
+cartoon_anime_girl_flat_colours dE   5.0 corrL 0.988
+cartoon_anime_portrait_shaded dE  10.6 corrL 0.963   FACE  46.3 mm dE  11.5 corrL 0.973 thr 8   eyes c 0.83 r 0.95
+cartoon_wikipetan_angry_vector dE   7.3 corrL 0.963
+emblems_coat_of_arms_mexico dE   5.7 corrL 0.977
+emblems_flag_washington_island dE   7.8 corrL 0.995
+emblems_logo_sdl           dE   2.1 corrL 0.994
+emblems_seal_torrance_bw   dE   8.0 corrL 0.921
+faces_angle_face_closeup_three_quarter dE  10.7 corrL 0.863   FACE  34.4 mm dE   7.9 corrL 0.961 thr 8   eyes c 1.40 r 0.60
+faces_angle_woman_profile_sad dE  11.6 corrL 0.965   FACE  28.4 mm dE   6.8 corrL 0.955 thr 8   eyes c 0.90 r 0.87
+faces_angle_wwii_aircraft_worker_looking_down dE  55.2 corrL -0.246   FACE  20.9 mm dE   9.1 corrL 0.960 thr 8   eyes c 0.75 r 0.68
+faces_art_ghirlandaio_man_renaissance dE  36.8 corrL 0.018   FACE  21.3 mm dE   8.6 corrL 0.879 thr 4   eyes c 0.82 r 0.81
+faces_art_pencil_elderly_lady dE   8.6 corrL 0.851   FACE  30.9 mm dE   8.2 corrL 0.931 thr 4   eyes c 1.55 r 0.46
+faces_art_rembrandt_self_portrait_oil dE  34.1 corrL 0.524   FACE  19.7 mm dE   9.5 corrL 0.968 thr 10   eyes c 0.88 r 0.67
+faces_art_renoir_jean_impressionist dE  18.4 corrL 0.286   FACE  25.0 mm dE   8.1 corrL 0.912 thr 7   eyes c 0.78 r 0.86
+faces_bw_bessie_smith      dE   5.1 corrL 0.980   FACE  22.1 mm dE   4.2 corrL 0.950 thr 4   eyes c 0.75 r 0.72
+faces_bw_elder_shemagh     dE   7.1 corrL 0.963   FACE  24.6 mm dE   4.4 corrL 0.880 thr 5   eyes c 1.26 r 0.45
+faces_bw_inouye_senator    dE   7.6 corrL 0.981   FACE  34.3 mm dE   9.2 corrL 0.907 thr 3   eyes c 1.06 r 0.82
+faces_colour_boy_madagascar dE  45.9 corrL -0.173   FACE  30.0 mm dE   8.3 corrL 0.908 thr 7   eyes c 0.81 r 0.72
+faces_colour_chawla_nasa_portrait dE  35.8 corrL 0.230   FACE  17.5 mm dE   8.3 corrL 0.965 thr 6   eyes c 1.07 r 0.63
+faces_colour_indian_woman_elder dE  53.7 corrL -0.312   FACE  27.2 mm dE  10.0 corrL 0.911 thr 5   eyes c 0.42 r 0.32
+faces_colour_laotian_man_hat dE  42.5 corrL -0.213   FACE  26.0 mm dE   8.1 corrL 0.954 thr 8   eyes c 1.13 r 0.71
+faces_colour_man_beard_dark_skin dE  11.6 corrL 0.919   FACE  54.0 mm dE   7.9 corrL 0.970 thr 8   eyes c 0.58 r 0.80
+faces_colour_poroshenko_official dE   6.8 corrL 0.981   FACE  34.1 mm dE   9.2 corrL 0.938 thr 5   eyes c 0.95 r 0.89
+faces_colour_woman_glasses_headshot dE  23.2 corrL 0.552   FACE  25.6 mm dE   9.8 corrL 0.956 thr 9   eyes c 0.77 r 0.19
+faces_colour_young_woman_rose dE  10.8 corrL 0.951   FACE  31.2 mm dE   9.4 corrL 0.943 thr 6   eyes c 0.87 r 0.73
+faces_small_artemis2_crew_four dE   6.3 corrL 0.971
+faces_small_football_header_action dE  10.8 corrL 0.979
+faces_small_meir_full_length dE   4.8 corrL 0.994
+faces_small_street_crowd   dE  34.5 corrL 0.397
+icons_flat_programming_icon dE   7.4 corrL 0.988
+icons_pixel_sprites_xbr    dE   7.9 corrL 0.983
+lineart_bellin_ionian_sea_map dE  12.7 corrL 0.867
+lineart_durer_promenade_engraving dE   9.7 corrL 0.937
+lineart_woodcut_print_frog dE   8.3 corrL 0.961
+nature_blueberries_bowl    dE   6.1 corrL 0.990
+nature_leaf_skeleton_veins dE  11.1 corrL 0.890
+nature_sunflower_bee_black dE   6.7 corrL 0.988
+objects_spices_on_white    dE   6.0 corrL 0.978
+objects_teapot_cups_white  dE   9.3 corrL 0.961
+objects_zenit_camera_tripod dE   5.7 corrL 0.992
+scenes_cathedral_st_patricks dE   7.6 corrL 0.925
+scenes_mountain_lake_zagedan dE   9.8 corrL 0.954
+scenes_swayambhunath_stupa dE  10.2 corrL 0.948
+sculpture_herodotos_marble_bust dE  35.7 corrL -0.369   FACE  29.1 mm dE   8.5 corrL 0.961 thr 5   eyes c 0.79 r 0.81
+sculpture_nefertiti_bust   dE   3.7 corrL 0.990   FACE  22.7 mm dE   9.5 corrL 0.967 thr 8   eyes c 1.10 r 0.50
+text_devanagari_nepali_plaque dE   5.8 corrL 0.853
+text_kufic_calligraphy_folio dE  14.2 corrL 0.970
+text_sans_sign_medstead    dE   7.7 corrL 0.947
+text_serif_sign_st_xavier  dE   6.5 corrL 0.991

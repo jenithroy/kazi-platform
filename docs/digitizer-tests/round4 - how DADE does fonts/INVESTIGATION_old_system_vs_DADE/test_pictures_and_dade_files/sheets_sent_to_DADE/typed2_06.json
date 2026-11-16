@@ -1,0 +1,71 @@
+{
+ "sheet": "typed2_06",
+ "w": 1000,
+ "h": 1000,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "montserrat_b_5mm_ave",
+   "x": 24,
+   "y": 24,
+   "w": 456,
+   "h": 90
+  },
+  {
+   "id": "montserrat_b_5mm_ham",
+   "x": 24,
+   "y": 150,
+   "w": 802,
+   "h": 107
+  },
+  {
+   "id": "montserrat_b_6mm_ave",
+   "x": 24,
+   "y": 293,
+   "w": 539,
+   "h": 100
+  },
+  {
+   "id": "opensans_b_3mm_ave",
+   "x": 599,
+   "y": 293,
+   "w": 254,
+   "h": 71
+  },
+  {
+   "id": "opensans_b_3mm_ham",
+   "x": 24,
+   "y": 429,
+   "w": 459,
+   "h": 83
+  },
+  {
+   "id": "opensans_b_4mm_ave",
+   "x": 519,
+   "y": 429,
+   "w": 339,
+   "h": 81
+  },
+  {
+   "id": "opensans_b_4mm_ham",
+   "x": 24,
+   "y": 548,
+   "w": 610,
+   "h": 97
+  },
+  {
+   "id": "opensans_b_5mm_ave",
+   "x": 24,
+   "y": 681,
+   "w": 421,
+   "h": 91
+  },
+  {
+   "id": "opensans_b_5mm_ham",
+   "x": 24,
+   "y": 808,
+   "w": 754,
+   "h": 111
+  }
+ ]
+}

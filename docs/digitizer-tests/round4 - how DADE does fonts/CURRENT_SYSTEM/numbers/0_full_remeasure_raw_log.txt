@@ -1,0 +1,155 @@
+##### code: 11/15/2026 14:46:27 / thin.js 11/15/2026 14:23:38
+##### typed + typed2
+typed: 168 cells done, 0 failed, 80.8 s  (lib <REPO>\app\lib; hook plan=true engine=true)
+== fin read in 129 s
+set typed: 94 cells read by both (fin: 96, dade: 94); caps <= 6.0 mm
+all cells                      n= 94  fin  0.018  dade  0.068   fin clearly better  15, dade clearly better   0
+caps 3 mm                      n= 24  fin  0.056  dade  0.131   fin clearly better   8, dade clearly better   0
+caps 4 mm                      n= 24  fin  0.010  dade  0.066   fin clearly better   3, dade clearly better   0
+caps 5 mm                      n= 24  fin  0.005  dade  0.035   fin clearly better   2, dade clearly better   0
+set typed: 96 cells read by both (fin: 96, fin2: 96); caps <= 6.0 mm
+all cells                      n= 96  fin  0.018  fin2  0.098   fin clearly better  42, fin2 clearly better   1
+caps 3 mm                      n= 24  fin  0.056  fin2  0.188   fin clearly better  17, fin2 clearly better   1
+caps 4 mm                      n= 24  fin  0.010  fin2  0.108   fin clearly better  12, fin2 clearly better   0
+caps 5 mm                      n= 24  fin  0.005  fin2  0.068   fin clearly better   9, fin2 clearly better   0
+== fin / typed done in 211 s  (engine {}, fill {})
+typed: 180 cells done, 0 failed, 66.6 s  (lib <REPO>\app\lib; hook plan=true engine=true)
+== fin read in 169 s
+set typed2: 140 cells read by both (fin: 144, dade: 140); caps <= 6.0 mm
+all cells                      n=140  fin  0.044  dade  0.069   fin clearly better  22, dade clearly better  10
+caps 3 mm                      n= 36  fin  0.091  dade  0.150   fin clearly better  11, dade clearly better   6
+caps 4 mm                      n= 36  fin  0.042  dade  0.050   fin clearly better   6, dade clearly better   3
+caps 5 mm                      n= 36  fin  0.007  dade  0.030   fin clearly better   4, dade clearly better   0
+set typed2: 144 cells read by both (fin: 144, fin2: 144); caps <= 6.0 mm
+all cells                      n=144  fin  0.043  fin2  0.125   fin clearly better  61, fin2 clearly better   4
+caps 3 mm                      n= 36  fin  0.091  fin2  0.257   fin clearly better  26, fin2 clearly better   1
+caps 4 mm                      n= 36  fin  0.042  fin2  0.116   fin clearly better  17, fin2 clearly better   2
+caps 5 mm                      n= 36  fin  0.007  fin2  0.064   fin clearly better  12, fin2 clearly better   0
+== fin / typed2 done in 241 s  (engine {}, fill {})
+
+##### lettering pictures
+143 pictures sewn into <SESSION>\scratchpad\text\out\fin in 17 s, 0 failed  (engine options {})
+character error (lower is better)   picture       now      dade       cur       fin
+all                                  0.101     0.167     0.179     0.124     0.110
+line (all sizes)                     0.087     0.176     0.121     0.120     0.109
+badge (all sizes)                    0.170     0.114     0.178     0.133     0.084
+outline (all sizes)                  0.140     0.162     0.963     0.162     0.177
+line, caps 3 mm                      0.000     0.385     0.168     0.266     0.237
+line, caps 4 mm                      0.072     0.225     0.105     0.173     0.132
+line, caps 5 mm                      0.010     0.124     0.057     0.020     0.024
+line, caps 6 mm                      0.065     0.054     0.040     0.010     0.017
+line, caps 8 mm                      0.114     0.069     0.128     0.052     0.049
+line, caps 12 mm                     0.258     0.197     0.229     0.197     0.197
+line sans, 3-6 mm                    0.000     0.075     0.015     0.016     0.038
+line black, 3-6 mm                   0.007     0.114     0.015     0.007     0.007
+line condensed, 3-6 mm               0.000     0.444     0.565     0.393     0.400
+line humanist, 3-6 mm                0.022     0.090     0.015     0.047     0.016
+line serif, 3-6 mm                   0.250     0.390     0.046     0.308     0.183
+line times, 3-6 mm                   0.007     0.218     0.082     0.166     0.136
+line mono, 3-6 mm                    0.016     0.198     0.046     0.061     0.029
+line script, 3-6 mm                  0.007     0.126     0.051     0.015     0.074
+line round, 3-6 mm                   0.022     0.120     0.000     0.045     0.038
+badge, 4-6 mm                        0.187     0.097     0.130     0.126     0.052
+outline                              0.140     0.162     0.963     0.162     0.177
+pictures read                          134       134       134       134       134
+
+##### real pictures
+73 pictures sewn into <SESSION>\scratchpad\text\out\r73fin in 55 s, 0 failed  (engine options {})
+7 pictures sewn into <SESSION>\scratchpad\text\out\realH in 7 s, 0 failed  (engine options {})
+73 real pictures, the older rules against the final system: 4 changed
+new55__emblems_flag_washington_island            stitches   8820 ->   8962  trims   79 ->   80
+new55__emblems_logo_sdl                          stitches   3323 ->   3495  trims   51 ->   50
+new55__emblems_seal_torrance_bw                  stitches  13669 ->  14852  trims  150 ->  152
+reg18__crest_manzanares                          stitches  13683 ->  14126  trims  150 ->  156
+the 7 real pictures of the lettering bench (older rules -> final):
+chart2__chart                                 stitches   8321 ->   9616
+new55__emblems_flag_washington_island         stitches   8820 ->   8962
+new55__emblems_logo_sdl                       stitches   3323 ->   3495
+new55__emblems_seal_torrance_bw               stitches  13669 ->  14852
+new55__text_sans_sign_medstead                stitches  24090 ->  24090
+new55__text_serif_sign_st_xavier              stitches  13072 ->  13072
+reg18__crest_manzanares                       stitches  13683 ->  14126
+##### weights, typed (stitched ink / drawn ink; 1.00 = as drawn): old, previous current, final, DADE
+set typed: 94 texts, caps <= 6.0 mm. W = stitched ink area / glyph area, S = stitched stroke width / glyph stroke width (1.00 = as drawn)
+                                        fin2             cur             fin            dade
+                                    W      S        W      S        W      S        W      S
+all texts                        0.95   0.96     1.55   1.58     1.22   1.24     1.69   1.78   n=94
+caps 3 mm                        1.02   1.14     1.85   1.99     1.42   1.52     1.89   2.08   n=24
+caps 4 mm                        0.85   0.90     1.59   1.61     1.21   1.24     1.73   1.83   n=24
+caps 5 mm                        0.90   0.87     1.43   1.42     1.12   1.12     1.60   1.64   n=24
+caps 6 mm                        1.02   0.90     1.30   1.28     1.10   1.08     1.52   1.53   n=22
+
+font black                       0.85   0.84     1.18   1.20     1.01   1.03     1.43   1.52   n=7
+font condensed                   1.02   1.19     1.08   1.33     1.03   1.27     1.24   1.98   n=8
+font humanist                    0.81   0.81     1.37   1.37     1.06   1.07     1.61   1.59   n=8
+font mono                        0.84   0.88     1.52   1.57     1.15   1.16     1.72   1.82   n=8
+font round                       0.83   0.82     1.29   1.29     1.05   1.05     1.57   1.61   n=8
+font sans                        0.85   0.86     1.51   1.51     1.18   1.18     1.70   1.71   n=16
+font script                      0.81   0.85     1.50   1.53     1.16   1.17     1.75   1.74   n=7
+font serif                       1.10   1.05     1.84   1.83     1.38   1.37     1.83   1.82   n=16
+font times                       1.13   1.11     1.95   1.97     1.48   1.51     1.92   1.98   n=16
+
+##### weights, eighteen fonts
+set typed2: 140 texts, caps <= 6.0 mm. W = stitched ink area / glyph area, S = stitched stroke width / glyph stroke width (1.00 = as drawn)
+                                        fin2             cur             fin            dade
+                                    W      S        W      S        W      S        W      S
+all texts                        0.90   0.90     1.48   1.53     1.16   1.19     1.64   1.80   n=140
+caps 3 mm                        0.90   1.01     1.76   1.93     1.29   1.36     1.80   2.17   n=36
+caps 4 mm                        0.78   0.82     1.55   1.57     1.16   1.18     1.69   1.86   n=36
+caps 5 mm                        0.87   0.84     1.36   1.36     1.10   1.11     1.56   1.62   n=36
+caps 6 mm                        1.06   0.94     1.23   1.22     1.08   1.08     1.49   1.51   n=32
+
+font abril                       1.12   0.96     1.54   1.66     1.23   1.32     1.57   1.71   n=8
+font anton                       0.91   0.92     1.17   1.32     1.01   1.04     1.39   2.30   n=8
+font archivoblack                0.92   0.90     1.13   1.16     1.01   1.04     1.41   1.50   n=7
+font baskerville                 0.80   0.88     1.69   1.65     1.26   1.23     1.76   1.71   n=7
+font bebas                       0.83   0.87     1.40   1.51     1.13   1.16     1.63   2.32   n=8
+font caveat                      0.87   0.95     1.72   1.86     1.28   1.33     1.86   2.02   n=8
+font cinzel                      0.98   0.91     1.77   1.71     1.30   1.29     1.74   1.69   n=7
+font courierprime                0.75   0.78     1.38   1.40     1.05   1.07     1.62   1.74   n=8
+font dancing                     1.16   1.28     2.10   2.37     1.63   1.77     2.11   2.27   n=8
+font lora                        0.76   0.83     1.51   1.53     1.13   1.14     1.68   1.74   n=8
+font merri                       1.08   0.95     1.67   1.66     1.25   1.24     1.70   1.71   n=8
+font montserrat                  0.79   0.79     1.30   1.29     1.02   1.03     1.54   1.53   n=7
+font nunito                      0.84   0.83     1.39   1.38     1.11   1.09     1.66   1.60   n=8
+font opensans                    0.81   0.82     1.28   1.28     1.03   1.04     1.55   1.56   n=8
+font oswald                      0.86   0.87     1.23   1.27     1.01   1.04     1.48   1.81   n=8
+font pacifico                    0.86   0.87     1.33   1.41     1.10   1.11     1.59   1.69   n=8
+font playfair                    1.00   0.95     1.75   1.75     1.28   1.34     1.66   1.76   n=8
+font robotoslab                  0.82   0.83     1.30   1.30     1.05   1.07     1.59   1.61   n=8
+
+##### weights, pictures: old, previous current, final
+108 line pictures. W = stitched ink area / the picture's text area, S = stroke width ratio (1.00 = as drawn)
+                                   now             cur             fin
+                              W      S        W      S        W      S
+all line pictures          1.11   1.11     1.43   1.51     1.15   1.18   n=108
+caps 3 mm                  1.10   1.27     1.90   2.29     1.34   1.50   n=18
+caps 4 mm                  1.05   1.10     1.65   1.77     1.18   1.25   n=18
+caps 5 mm                  1.15   1.10     1.49   1.51     1.12   1.14   n=18
+caps 6 mm                  1.17   1.10     1.30   1.29     1.11   1.11   n=18
+caps 8 mm                  1.11   1.08     1.18   1.15     1.09   1.06   n=18
+caps 12 mm                 1.05   1.03     1.05   1.03     1.05   1.03   n=18
+font black (3-6 mm)        1.05   0.97     1.28   1.31     1.00   1.02   n=8
+font condensed (3-6 mm)     1.04   1.17     1.09   1.24     1.02   1.17   n=8
+font humanist (3-6 mm)     1.11   1.06     1.68   1.76     1.17   1.20   n=8
+font mono (3-6 mm)         1.06   1.13     1.79   2.01     1.22   1.31   n=8
+font round (3-6 mm)        1.11   1.06     1.48   1.52     1.10   1.12   n=8
+font sans (3-6 mm)         1.05   1.01     1.53   1.62     1.10   1.12   n=8
+font script (3-6 mm)       1.10   1.13     1.80   1.92     1.25   1.29   n=8
+font serif (3-6 mm)        1.24   1.38     1.65   1.86     1.35   1.45   n=8
+font times (3-6 mm)        1.28   1.38     1.98   2.21     1.46   1.57   n=8
+
+##### badge and outline pictures, three margins
+now        outline: 8 pictures, mean error (three margins) 0.160
+fin        outline: 8 pictures, mean error (three margins) 0.162
+
+fin much worse than now: []
+fin much better than now: []
+
+now        badge: 18 pictures, mean error (three margins) 0.165
+fin        badge: 18 pictures, mean error (three margins) 0.103
+
+fin much worse than now: []
+fin much better than now: [('badge_serif_4mm_ham', 0.53, 0.0), ('badge_humanist_4mm_ham', 0.31, 0.0)]
+
+##### done

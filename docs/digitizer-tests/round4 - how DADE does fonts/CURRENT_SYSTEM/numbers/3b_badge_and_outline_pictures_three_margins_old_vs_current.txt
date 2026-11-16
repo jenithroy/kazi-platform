@@ -1,0 +1,13 @@
+﻿##### badge and outline pictures, three margins
+now        outline: 8 pictures, mean error (three margins) 0.160
+fin        outline: 8 pictures, mean error (three margins) 0.162
+
+fin much worse than now: []
+fin much better than now: []
+
+now        badge: 18 pictures, mean error (three margins) 0.165
+fin        badge: 18 pictures, mean error (three margins) 0.103
+
+fin much worse than now: []
+fin much better than now: [('badge_serif_4mm_ham', 0.53, 0.0), ('badge_humanist_4mm_ham', 0.31, 0.0)]
+

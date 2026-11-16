@@ -1,0 +1,166 @@
+##### code: Mon Nov 16 13:22:15 NST 2026 trace/index.js, Mon Nov 16 13:24:15 NST 2026 engine.js
+143 pictures sewn into out/r8 in 17 s, 0 failed  (engine options {})
+144 pictures sewn into out/x4 in 18 s, 0 failed  (engine options {})
+108 pictures sewn into out/s4 in 6 s, 0 failed  (engine options {})
+108 pictures sewn into out/m_on2 in 14 s, 0 failed  (engine options {})
+143 pictures sewn into out/q2_jpg50_on in 17 s, 0 failed  (engine options {})
+143 pictures sewn into out/q2_low_on in 20 s, 0 failed  (engine options {})
+##### lettering pictures (143): picture | old | DADE | before | now
+character error (lower is better)   picture       now      dade       fin        r8
+all                                  0.101     0.167     0.179     0.110     0.064
+line (all sizes)                     0.087     0.176     0.121     0.109     0.068
+badge (all sizes)                    0.170     0.114     0.178     0.084     0.049
+outline (all sizes)                  0.140     0.162     0.963     0.177     0.052
+line, caps 3 mm                      0.000     0.385     0.168     0.237     0.075
+line, caps 4 mm                      0.072     0.225     0.105     0.132     0.013
+line, caps 5 mm                      0.010     0.124     0.057     0.024     0.013
+line, caps 6 mm                      0.065     0.054     0.040     0.017     0.007
+line, caps 8 mm                      0.114     0.069     0.128     0.049     0.101
+line, caps 12 mm                     0.258     0.197     0.229     0.197     0.197
+line sans, 3-6 mm                    0.000     0.075     0.015     0.038     0.015
+line black, 3-6 mm                   0.007     0.114     0.015     0.007     0.000
+line condensed, 3-6 mm               0.000     0.444     0.565     0.400     0.146
+line humanist, 3-6 mm                0.022     0.090     0.015     0.016     0.000
+line serif, 3-6 mm                   0.250     0.390     0.046     0.183     0.016
+line times, 3-6 mm                   0.007     0.218     0.082     0.136     0.030
+line mono, 3-6 mm                    0.016     0.198     0.046     0.029     0.030
+line script, 3-6 mm                  0.007     0.126     0.051     0.074     0.007
+line round, 3-6 mm                   0.022     0.120     0.000     0.038     0.000
+badge, 4-6 mm                        0.187     0.097     0.130     0.052     0.000
+outline                              0.140     0.162     0.963     0.177     0.052
+pictures read                          134       134       134       134       134
+##### 18 fonts as pictures: picture | before | now | DADE (typed2)
+character error (lower is better)      picture        x_off           x4 dade(typed2)
+all                                   0.014        0.109        0.061        0.069   n=144
+caps 3 mm                             0.009        0.275        0.133        0.150   n=36
+caps 4 mm                             0.003        0.055        0.037        0.050   n=36
+caps 5 mm                             0.008        0.061        0.046        0.030   n=36
+caps 6 mm                             0.036        0.043        0.029        0.042   n=36
+text 'ave'                            0.009        0.085        0.042        0.071   n=72
+text 'ham'                            0.020        0.132        0.081        0.067   n=72
+
+abril (fat face)                      0.000        0.266        0.090        0.106   n=8
+anton (heavy condensed)               0.000        0.145        0.074        0.214   n=8
+archivoblack (heavy sans)             0.007        0.030        0.007        0.107   n=8
+baskerville (transitional seri        0.000        0.085        0.054        0.000   n=8
+bebas (condensed caps)                0.000        0.150        0.039        0.107   n=8
+caveat (handwriting)                  0.000        0.141        0.059        0.073   n=8
+cinzel (roman caps)                   0.000        0.108        0.015        0.077   n=8
+courierprime (typewriter)             0.000        0.060        0.007        0.046   n=8
+dancing (script)                      0.047        0.157        0.143        0.159   n=8
+lora (serif)                          0.000        0.029        0.016        0.000   n=8
+merri (sturdy serif)                  0.000        0.119        0.045        0.031   n=8
+montserrat (geometric sans)           0.000        0.015        0.000        0.000   n=8
+nunito (rounded sans)                 0.000        0.007        0.000        0.015   n=8
+opensans (humanist sans)              0.000        0.045        0.000        0.016   n=8
+oswald (condensed sans)               0.000        0.083        0.022        0.015   n=8
+pacifico (brush script)               0.200        0.311        0.333        0.150   n=8
+playfair (high-contrast serif)        0.000        0.183        0.199        0.115   n=8
+robotoslab (slab serif)               0.000        0.022        0.000        0.000   n=8
+pictures read                           144          144          144          140
+##### short words (108): picture | before | now
+character error (lower is better)      picture        s_off           s4
+all                                   0.000        0.276        0.121   n=108
+caps 3 mm                             0.000        0.451        0.220   n=36
+caps 4 mm                             0.000        0.266        0.102   n=36
+caps 6 mm                             0.000        0.111        0.042   n=36
+text 'bmw'                            0.000        0.309        0.160   n=27
+text 'kazi'                           0.000        0.231        0.120   n=27
+text 'open'                           0.000        0.370        0.111   n=27
+text 'sale'                           0.000        0.194        0.093   n=27
+
+black ()                              0.000        0.069        0.000   n=12
+condensed ()                          0.000        0.667        0.549   n=12
+humanist ()                           0.000        0.021        0.021   n=12
+mono ()                               0.000        0.465        0.215   n=12
+round ()                              0.000        0.125        0.000   n=12
+sans ()                               0.000        0.090        0.000   n=12
+script ()                             0.000        0.215        0.208   n=12
+serif ()                              0.000        0.410        0.028   n=12
+times ()                              0.000        0.424        0.069   n=12
+pictures read                           108          108          108
+##### short words on the 48 DADE read: before | now | DADE
+lpicss: 48 pictures read by all of: ours_before, ours_now, DADE
+                             ours_befor   ours_now       DADE
+all                               0.345      0.104      0.174   n=48
+caps 3 mm                         0.458      0.153      0.243   n=24
+caps 4 mm                         0.233      0.056      0.104   n=24
+word 'bmw'                        0.361      0.167      0.361   n=12
+word 'kazi'                       0.271      0.062      0.167   n=12
+word 'open'                       0.479      0.146      0.083   n=12
+word 'sale'                       0.271      0.042      0.083   n=12
+
+font black                        0.104      0.000      0.031   n=8
+font mono                         0.573      0.198      0.427   n=8
+font sans                         0.104      0.000      0.000   n=8
+font script                       0.292      0.281      0.156   n=8
+font serif                        0.490      0.042      0.250   n=8
+font times                        0.510      0.104      0.177   n=8
+##### mixed backgrounds (108): picture | before | now
+character error (lower is better)      picture        m_off        m_on2
+all                                   0.036        0.077        0.025   n=108
+caps 3 mm                             0.000        0.185        0.068   n=36
+caps 4 mm                             0.045        0.040        0.007   n=36
+caps 6 mm                             0.064        0.007        0.000   n=36
+text 'ave'                            0.014        0.046        0.016   n=54
+text 'ham'                            0.059        0.108        0.034   n=54
+
+black (gradient)                      0.000        0.020        0.003   n=18
+mono (gradient)                       0.035        0.074        0.040   n=18
+sans (gradient)                       0.000        0.057        0.016   n=18
+script (gradient)                     0.003        0.093        0.020   n=18
+serif (gradient)                      0.174        0.066        0.010   n=18
+times (gradient)                      0.007        0.154        0.061   n=18
+pictures read                           108          108          108
+##### messy copies of the lettering pictures: picture | JPEG50 before | JPEG50 now | half size before | half size now
+character error (lower is better)   pictureq_jpg50_offq2_jpg50_on q_low_off q2_low_on
+all                                  0.101     0.115     0.088     0.109     0.091
+line (all sizes)                     0.087     0.126     0.098     0.120     0.103
+badge (all sizes)                    0.170     0.080     0.052     0.077     0.049
+outline (all sizes)                  0.140     0.037     0.045     0.029     0.029
+line, caps 3 mm                      0.000     0.258     0.222     0.241     0.145
+line, caps 4 mm                      0.072     0.137     0.040     0.074     0.088
+line, caps 5 mm                      0.010     0.044     0.027     0.044     0.033
+line, caps 6 mm                      0.065     0.027     0.003     0.017     0.007
+line, caps 8 mm                      0.114     0.098     0.101     0.105     0.101
+line, caps 12 mm                     0.258     0.193     0.193     0.241     0.241
+line sans, 3-6 mm                    0.000     0.022     0.029     0.037     0.061
+line black, 3-6 mm                   0.007     0.044     0.119     0.000     0.030
+line condensed, 3-6 mm               0.000     0.344     0.131     0.387     0.230
+line humanist, 3-6 mm                0.022     0.015     0.062     0.038     0.038
+line serif, 3-6 mm                   0.250     0.214     0.142     0.145     0.037
+line times, 3-6 mm                   0.007     0.224     0.091     0.121     0.121
+line mono, 3-6 mm                    0.016     0.044     0.038     0.044     0.052
+line script, 3-6 mm                  0.007     0.090     0.030     0.045     0.037
+line round, 3-6 mm                   0.022     0.052     0.015     0.029     0.007
+badge, 4-6 mm                        0.187     0.042     0.000     0.042     0.000
+outline                              0.140     0.037     0.045     0.029     0.029
+pictures read                          134       134       134       134       134
+##### badge and outline pictures, three margins
+now        outline: 8 pictures, mean error (three margins) 0.160
+fin        outline: 8 pictures, mean error (three margins) 0.162
+r8         outline: 8 pictures, mean error (three margins) 0.118
+now        badge: 18 pictures, mean error (three margins) 0.165
+fin        badge: 18 pictures, mean error (three margins) 0.103
+r8         badge: 18 pictures, mean error (three margins) 0.061
+##### weights, pictures: old, before, now
+108 line pictures. W = stitched ink area / the picture's text area, S = stroke width ratio (1.00 = as drawn)
+                                   now             fin              r8
+                              W      S        W      S        W      S
+all line pictures          1.11   1.11     1.15   1.18     1.15   1.19   n=108
+caps 3 mm                  1.10   1.27     1.34   1.50     1.35   1.51   n=18
+caps 4 mm                  1.05   1.10     1.18   1.25     1.18   1.26   n=18
+caps 5 mm                  1.15   1.10     1.12   1.14     1.13   1.17   n=18
+caps 6 mm                  1.17   1.10     1.11   1.11     1.11   1.12   n=18
+caps 8 mm                  1.11   1.08     1.09   1.06     1.09   1.06   n=18
+caps 12 mm                 1.05   1.03     1.05   1.03     1.05   1.03   n=18
+font black (3-6 mm)        1.05   0.97     1.00   1.02     1.05   1.08   n=8
+font condensed (3-6 mm)     1.04   1.17     1.02   1.17     1.09   1.38   n=8
+font humanist (3-6 mm)     1.11   1.06     1.17   1.20     1.15   1.18   n=8
+font mono (3-6 mm)         1.06   1.13     1.22   1.31     1.18   1.24   n=8
+font round (3-6 mm)        1.11   1.06     1.10   1.12     1.12   1.13   n=8
+font sans (3-6 mm)         1.05   1.01     1.10   1.12     1.11   1.14   n=8
+font script (3-6 mm)       1.10   1.13     1.25   1.29     1.23   1.28   n=8
+font serif (3-6 mm)        1.24   1.38     1.35   1.45     1.31   1.36   n=8
+font times (3-6 mm)        1.28   1.38     1.46   1.57     1.51   1.57   n=8
+##### done

@@ -1,0 +1,8 @@
+The reader's mean error on badge and outline pictures, read with three different margins around the lettering (the reader is sensitive to what surrounds the text). Lower is better.
+
+old rules        outline: 8 pictures, mean error (three margins) 0.160
+before           outline: 8 pictures, mean error (three margins) 0.162
+now               outline: 8 pictures, mean error (three margins) 0.118
+old rules        badge: 18 pictures, mean error (three margins) 0.165
+before           badge: 18 pictures, mean error (three margins) 0.103
+now               badge: 18 pictures, mean error (three margins) 0.061

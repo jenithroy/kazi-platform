@@ -1,0 +1,64 @@
+{
+ "sheet": "typed2_09",
+ "w": 1000,
+ "h": 1000,
+ "pxPerMm": 10.0,
+ "cells": [
+  {
+   "id": "anton_b_5mm_ham",
+   "x": 24,
+   "y": 24,
+   "w": 618,
+   "h": 110
+  },
+  {
+   "id": "anton_b_6mm_ave",
+   "x": 24,
+   "y": 170,
+   "w": 372,
+   "h": 113
+  },
+  {
+   "id": "anton_b_6mm_ham",
+   "x": 24,
+   "y": 319,
+   "w": 733,
+   "h": 124
+  },
+  {
+   "id": "archivoblack_b_3mm_ave",
+   "x": 24,
+   "y": 479,
+   "w": 285,
+   "h": 71
+  },
+  {
+   "id": "archivoblack_b_3mm_ham",
+   "x": 345,
+   "y": 479,
+   "w": 501,
+   "h": 82
+  },
+  {
+   "id": "archivoblack_b_4mm_ave",
+   "x": 24,
+   "y": 597,
+   "w": 380,
+   "h": 80
+  },
+  {
+   "id": "archivoblack_b_4mm_ham",
+   "x": 24,
+   "y": 713,
+   "w": 667,
+   "h": 94
+  },
+  {
+   "id": "archivoblack_b_5mm_ave",
+   "x": 24,
+   "y": 843,
+   "w": 472,
+   "h": 90
+  }
+ ]
+}
