@@ -77,7 +77,46 @@ export function shapeWidthMm(shape, mmPerPx) {
  * lines and lettering are kept and widened to something a needle can follow. Detail 0.75 is the starting point: on 95 test pictures each step up the slider
  * (0.25, 0.5, 0.75, 1) kept more of the small things and made the stitched picture closer to the source, at a few per cent more stitches.
  */
-export const CONVERT_DEFAULTS = { colors: "auto", maxColors: 12, detail: 0.75, background: "auto", snap: false, kind: "auto", details: true, detailThick: false, people: true };
+export const CONVERT_DEFAULTS = { colors: "auto", maxColors: 12, detail: 0.75, background: "auto", snap: false, kind: "auto", details: true, detailThick: false, people: true, threads: [], useThreads: true };
+
+/**
+ * The threads the person has, as the list `snap` can be: the settings' `threads` (hex colours) while "use only my threads" is on and there is
+ * at least one, else the plain `snap` switch (false: the picture's own colours; true: the nearest thread of the chart).
+ */
+export function snapOf(settings) {
+  const mine = settings && settings.useThreads !== false && Array.isArray(settings.threads) ? settings.threads.filter((h) => /^#[0-9a-f]{6}$/i.test(h)) : [];
+  return mine.length ? mine : !!(settings && settings.snap);
+}
+
+/**
+ * How the colours of a picture become thread colours. `snap` is false (kept as the picture has them: the nearest thread is only a name on the
+ * sheet), true (each moved to the nearest thread of the chart) or a list of hex colours, the threads the person has (each moved to the nearest of
+ * those by CIELAB distance, so the design is sewn with what is in their box; two colours of the picture may end up in one thread).
+ * Returns a function (r, g, b) -> hex.
+ */
+export function threadPicker(snap) {
+  if (Array.isArray(snap) && snap.length) {
+    const pool = [];
+    for (const h of snap) {
+      if (!/^#[0-9a-f]{6}$/i.test(h)) continue;
+      const { r, g, b } = hexToRgb(h);
+      pool.push({ hex: h.toLowerCase(), lab: toLab(r, g, b) });
+    }
+    if (pool.length) {
+      return (r, g, b) => {
+        const lab = toLab(r, g, b);
+        let best = pool[0], bd = Infinity;
+        for (const c of pool) {
+          const d = (lab[0] - c.lab[0]) ** 2 + (lab[1] - c.lab[1]) ** 2 + (lab[2] - c.lab[2]) ** 2;
+          if (d < bd) { bd = d; best = c; }
+        }
+        return best.hex;
+      };
+    }
+  }
+  // (an empty list is no list: the picture's own colours, not the chart)
+  return snap && !Array.isArray(snap) ? (r, g, b) => nearestThread(r, g, b).hex : (r, g, b) => rgbToHex(r, g, b);
+}
 
 /**
  * Whether a portrait, artwork or a photograph is read half a step further up the Detail slider than a logo (`trace/detail.js`: its small shapes are the
@@ -291,6 +330,7 @@ export const DETAIL_TUNE = Object.freeze({
  */
 function fineObjects(traced, { palette, cloth, originX, originY, mmPerPx, snap, maxColors, thick, shapes, tune = null }) {
   const t = { ...DETAIL_TUNE, ...(tune || {}) };
+  const pick = threadPicker(snap);
   const det = traced.details || { lines: [], spots: [], stats: {} };
   const hair = traced.hairlines || [];
   if (!det.lines.length && !det.spots.length && !hair.length) return null;
@@ -323,7 +363,7 @@ function fineObjects(traced, { palette, cloth, originX, originY, mmPerPx, snap, 
     }
     for (const g of groups.filter((q) => q.w >= DETAIL_NEW_MIN).sort((a, b) => b.w - a.w).slice(0, room)) {
       const r = Math.round(g.r / g.w), gg = Math.round(g.g / g.w), b = Math.round(g.b / g.w);
-      const hex = snap ? nearestThread(r, gg, b).hex : rgbToHex(r, gg, b);
+      const hex = pick(r, gg, b);
       if (!seen.has(hex)) { seen.add(hex); fresh.push({ hex, lab: labOfHex(hex) }); }
     }
   }
@@ -450,7 +490,7 @@ function tagLettering(objects, shapes, traced, mmPerPx, options = null) {
  * @param {object} o  originX, originY (hoop mm of the traced image's top-left corner), mmPerPx (mm per traced-image pixel),
  *   skip (Set of palette indexes the person turned off), include (Set of indexes turned ON although they match the cloth),
  *   fabric (the cloth's colour as hex: a picture colour close to it is the cloth showing through, so it is not stitched),
- *   snap (move each colour to the nearest thread of the chart)
+ *   snap (move each colour to the nearest thread: false, true for the chart's, or a list of hex colours, the person's own threads: see threadPicker)
  * @returns {{ objects: object[], palette: {index, hex, name, fraction, background, enclosed, skipped, sameAsCloth, fineOnly}[], rank: Map }}
  *   `enclosed` marks the page colour that sits inside the design (white letters in a navy disc, the hole of an O): it is its own entry.
  *   `fineOnly` marks a colour like the cloth of which only the fine shapes that are ink (narrower than CLOTH_FINE_MM and in a hole of a wide shape, see
@@ -460,6 +500,7 @@ function tagLettering(objects, shapes, traced, mmPerPx, options = null) {
 export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new Set(), include = new Set(), fabric = null, snap = false, bleed = 0.4, before = null, maxColors = 12, detailThick = false, detailTune = null, letteringOptions = null }) {
   const cloth = fabric ? toLab(...Object.values(hexToRgb(fabric))) : null;
   const matchDE = clothMatchOf(traced, fabric);
+  const pick = threadPicker(snap);
   // Which shapes have a hole that another shape sits in? Touching shapes share exactly the same boundary points, so a shape sits in the hole of
   // any shape whose hole outline has one of its own outline's points. Built (and widths measured) only when a colour like the cloth has narrow shapes.
   const indexOf = new Map(traced.shapes.map((sh, k) => [sh, k]));
@@ -500,7 +541,7 @@ export function objectsFromTrace(traced, { originX, originY, mmPerPx, skip = new
     return fine.get(s);
   };
   const palette = traced.palette.map((p, index) => {
-    const hex = snap ? nearestThread(p.r, p.g, p.b).hex : rgbToHex(p.r, p.g, p.b);
+    const hex = pick(p.r, p.g, p.b);
     const lab = toLab(p.r, p.g, p.b);
     const sameAsCloth = !p.background && !!cloth && matchDE > 0 && Math.hypot(lab[0] - cloth[0], lab[1] - cloth[1], lab[2] - cloth[2]) <= matchDE;
     // a colour like the cloth is not stitched, except for its fine shapes (lettering, thin lines) unless the person asked for none of it

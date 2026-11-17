@@ -7,7 +7,7 @@
 import { assignAngles, elongationOf, touching, angleGap } from "./angles.js";
 import { edgeLook, EDGE_DEFAULTS } from "./edges.js";
 import { applyLook, lookOptions, LOOK_DEFAULTS } from "./look.js";
-import { objectsFromTrace, mergeTraceObjects, traceOptions, clothMatchOf, contentBox, CLOTH_MATCH, CLOTH_MATCH_PHOTO, CLOTH_SKIPS } from "./convert.js";
+import { objectsFromTrace, mergeTraceObjects, traceOptions, clothMatchOf, contentBox, CLOTH_MATCH, CLOTH_MATCH_PHOTO, CLOTH_SKIPS, threadPicker, snapOf, CONVERT_DEFAULTS } from "./convert.js";
 import { makeObject, engineDesign, parseDesign } from "./model.js";
 import { traceImage } from "../embroidery/trace/index.js";
 import { outlineRuns } from "../embroidery/stitch/outline.js";
@@ -171,6 +171,26 @@ console.log("\"Leave out the background\" OFF: the whole picture is sewn, nothin
   const tracedSky = traceImage(sky, traceOptions({ kind: "art", detail: 0.5, background: "none" }, 0.25));
   const skyMade = objectsFromTrace(tracedSky, { originX: -37.5, originY: -25, mmPerPx: 0.25, fabric: "#ffffff" });
   check("a pale picture on a white cloth with the background off: every colour of it is sewn", skyMade.palette.every((p) => !p.skipped) && skyMade.objects.length >= skyMade.palette.length, JSON.stringify(skyMade.palette.map((p) => [p.hex, p.skipped])));
+}
+
+console.log("the person's own threads: every colour of the picture is moved to the nearest of them");
+{
+  const mine = ["#d0262c", "#16255c", "#ffffff"]; // red, navy, white
+  const pick = threadPicker(mine);
+  check("a colour goes to the nearest of the person's threads (CIELAB)", pick(170, 30, 40) === "#d0262c" && pick(30, 40, 140) === "#16255c" && pick(250, 250, 245) === "#ffffff");
+  check("with no list: true is the chart, false keeps the picture's own colour exactly", threadPicker(true)(130, 60, 200) === "#6f3d99" && threadPicker(false)(130, 60, 200) === "#823cc8" && threadPicker([])(130, 60, 200) === "#823cc8");
+  check("snapOf: the list while 'use only my threads' is on, else the plain switch", JSON.stringify(snapOf({ threads: mine, useThreads: true, snap: false })) === JSON.stringify(mine) && snapOf({ threads: mine, useThreads: false, snap: true }) === true && snapOf({ threads: [], snap: false }) === false && snapOf({ threads: ["nope"], snap: false }) === false && snapOf(CONVERT_DEFAULTS) === false);
+  // a drawn picture of three colours the person's box has no thread for: a green disc, an orange disc and a sky-blue disc
+  const W = 450, H = 200;
+  const img = { width: W, height: H, data: new Uint8ClampedArray(W * H * 4).fill(255) };
+  const disc = (cx, cy, r, rgb) => { for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if ((x - cx) ** 2 + (y - cy) ** 2 <= r * r) { const o = (y * W + x) * 4; img.data[o] = rgb[0]; img.data[o + 1] = rgb[1]; img.data[o + 2] = rgb[2]; } };
+  disc(80, 100, 70, [40, 150, 60]); disc(225, 100, 70, [240, 140, 30]); disc(370, 100, 70, [120, 190, 240]);
+  const traced = traceImage(img, traceOptions({ kind: "logo", detail: 0.5, background: "auto" }, 0.25));
+  const own = objectsFromTrace(traced, { originX: -56, originY: -25, mmPerPx: 0.25, fabric: "#ffffff", snap: mine });
+  const plain = objectsFromTrace(traced, { originX: -56, originY: -25, mmPerPx: 0.25, fabric: "#ffffff", snap: false });
+  check("without a list the colours are the picture's own", plain.objects.some((o) => !mine.includes(o.fill.color.toLowerCase())), JSON.stringify(plain.objects.map((o) => o.fill.color)));
+  check("with the person's threads every shape is in one of them, and so is every colour in the list", own.objects.length > 0 && own.objects.every((o) => mine.includes(o.fill.color.toLowerCase())) && own.palette.filter((p) => !p.background).every((p) => mine.includes(p.hex)), JSON.stringify([own.objects.map((o) => o.fill.color), own.palette.map((p) => p.hex)]));
+  check("the same shapes are made (only their colour changes)", own.objects.length === plain.objects.length);
 }
 
 console.log("stitch/outline.js: a line inside the edge");

@@ -14,17 +14,18 @@ import {
 } from "../../lib/digitizer/model";
 import { traceRing, tracePolyline, crossesItself, nextTraceName, sampleRingColour } from "../../lib/digitizer/trace";
 import { loadPicture, extractImage, downloadBlob, fileSafe } from "../../lib/digitizer/image";
-import { mergeTraceObjects, CONVERT_DEFAULTS, traceOptions, clothFromTrace, contentBox, fillScale } from "../../lib/digitizer/convert";
+import { mergeTraceObjects, CONVERT_DEFAULTS, traceOptions, clothFromTrace, contentBox, fillScale, snapOf, threadPicker } from "../../lib/digitizer/convert";
 import { drawText, textRings, DEFAULT_TEXT } from "../../lib/digitizer/text";
 import { summarize } from "../../lib/digitizer/stats";
 import { buildFile, buildPreview, productionSheetHtml, printSheet, loadFormats, centreStitches } from "../../lib/digitizer/exporter";
 import { flatten } from "../../lib/digitizer/flat";
 import { checkStitches, checkMessages } from "../../lib/embroidery/stitch/checks";
 import { FABRICS } from "../../lib/embroidery/stitch/presets";
-import { threadName, nearestThread, hexToRgb } from "../../lib/embroidery/thread/chart";
+import { threadName, hexToRgb } from "../../lib/embroidery/thread/chart";
 import { hasAutosave, peekAutosave, saveAutosave, loadAutosave, clearAutosave } from "../../lib/digitizer/store";
 
 const SETTINGS_KEY = "kazi.digitizer.settings";
+const THREADS_KEY = "kazi.digitizer.threads";
 /** How many of the pictures opened in one visit are kept for undo (a big picture is tens of megabytes). */
 const KEEP_PICTURES = 4;
 /** How long the cloth colour must rest before the picture's colours are looked at again for it (a drag through the colour chart passes many). */
@@ -61,6 +62,13 @@ const read = (key, fallback) => {
   try { const v = JSON.parse(localStorage.getItem(key) || "null"); return v ?? fallback; } catch { return fallback; }
 };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage full or blocked */ } };
+
+/** The threads the person has (hex colours) and whether they are in use, remembered on this computer so they are not typed in again every visit. */
+const rememberedThreads = () => {
+  const t = read(THREADS_KEY, null);
+  const list = t && Array.isArray(t.list) ? t.list.filter((h) => typeof h === "string" && /^#[0-9a-f]{6}$/i.test(h)).map((h) => h.toLowerCase()) : [];
+  return { threads: [...new Set(list)].slice(0, 60), useThreads: !(t && t.use === false) };
+};
 
 const HOOP_KEY = "kazi.digitizer.hoop";
 /** The hoop last chosen on this computer: a new design starts with it, so a bigger hoop is not forgotten between designs (the first time: Left chest, 100 x 100). */
@@ -127,7 +135,7 @@ export function useDigitizer() {
   // back the picture that went with a step and not only the place it sat.
   const pictures = useRef(new Map());
   const [hasImage, setHasImage] = useState(false);
-  const [settings, setSettings] = useState(CONVERT_DEFAULTS);
+  const [settings, setSettings] = useState(() => ({ ...CONVERT_DEFAULTS, ...rememberedThreads() }));
   const [palette, setPalette] = useState([]);
   const [skip, setSkip] = useState(() => new Set());
   const [include, setInclude] = useState(() => new Set()); // colours that match the cloth but the person wants stitched
@@ -573,11 +581,12 @@ export function useDigitizer() {
     const d = hist.current.present;
     const seen = d.reference && refImage.current ? sampleRingColour(refImage.current.canvas, d.reference, ring) : null;
     const rgb = seen ? hexToRgb(seen) : null;
-    const color = rgb ? (settings.snap ? nearestThread(rgb.r, rgb.g, rgb.b).hex : seen) : lastColor.current;
+    const snap = snapOf(settings);
+    const color = rgb ? (snap ? threadPicker(snap)(rgb.r, rgb.g, rgb.b) : seen) : lastColor.current;
     addObjects([makeObject({ name: nextTraceName(d.objects), kind: "shape", rings: [ring], fill: { color }, source: d.reference ? "hand" : undefined })]);
     setTraceNow(null);
     return true;
-  }, [notify, addObjects, settings.snap, setTraceNow]);
+  }, [notify, addObjects, settings, setTraceNow]);
 
   // Leaving the tool, or the Design step, throws away a shape that was not finished.
   useEffect(() => { if (tool !== "trace" || mode !== "design") setTraceNow(null); }, [tool, mode, setTraceNow]);
@@ -722,7 +731,7 @@ export function useDigitizer() {
     const amend = want === chosenRef.current;
     shapesBusy.current++;
     try {
-      await applyTrace(want.skip, want.include, settingsRef.current.snap, d.fabricColor, false, lt, null, amend);
+      await applyTrace(want.skip, want.include, snapOf(settingsRef.current), d.fabricColor, false, lt, null, amend);
     } catch (e) {
       // The shapes could not be made: show the colour list as the design really is.
       wantRef.current = chosenRef.current;
@@ -837,7 +846,7 @@ export function useDigitizer() {
       const nextSkip = new Set(), nextInclude = new Set();
       cloth = clothOf(res);
       // The shapes are made in the worker. What was found out, the colour list and the shapes land together, in one step.
-      landed = await applyTrace(nextSkip, nextInclude, s.snap, cloth, true, lt, (u) => {
+      landed = await applyTrace(nextSkip, nextInclude, snapOf(s), cloth, true, lt, (u) => {
         const done = { ...info, details: (u && u.details) || null }; // (what the fine lines and dots came to once they were checked against the colours)
         setDropped(droppedMm2);
         setTraceInfo(done);
@@ -857,15 +866,42 @@ export function useDigitizer() {
   }, [settings, applyTrace, busy, syncSoon, commit, setTraceNow, releaseTokens]);
 
   const changeSettings = useCallback((patch, convertNow = true) => {
-    setSettings((s) => ({ ...s, ...patch }));
+    setSettings((s) => {
+      const next = { ...s, ...patch };
+      if ("threads" in patch || "useThreads" in patch) write(THREADS_KEY, { list: next.threads, use: next.useThreads !== false });
+      return next;
+    });
     if (convertNow && refImage.current) {
       // A slider sends many values as it moves: convert once it has rested a moment, not for each one.
       clearTimeout(convertTimer.current);
-      convertTimer.current = setTimeout(() => runConvertRef.current({ ...patch }), 150);
+      // Only the threads changed: the picture is not read again (seconds); its shapes are made again from the reading the worker keeps.
+      const onlyThreads = Object.keys(patch).every((k) => k === "threads" || k === "useThreads");
+      convertTimer.current = setTimeout(() => (onlyThreads ? remapRef.current(patch) : runConvertRef.current({ ...patch })), 150);
     }
   }, []);
   const runConvertRef = useRef(runConvert);
   runConvertRef.current = runConvert;
+  const remapRef = useRef(null);
+  /**
+   * The person's threads changed (added, taken away, switched on or off): the shapes are made again in the new colours from the reading of the
+   * picture the worker has kept, which is quick. Like "Convert again", it replaces the shapes made from the picture (Undo brings them back).
+   * With no reading to go on (a conversion is running, a design opened from a file, shapes from an older reading) the picture is read again.
+   */
+  const remapThreads = useCallback(async (patch) => {
+    const d = hist.current.present, lt = lastTrace.current;
+    const made = madeFor(d);
+    if (convertingRef.current || !lt || !d.reference || !made || made.token !== lt.token) { runConvertRef.current({ ...patch }); return; }
+    const s = { ...settingsRef.current, ...patch };
+    busy(true);
+    try {
+      await applyTrace(chosenRef.current.skip, chosenRef.current.include, snapOf(s), d.fabricColor, true, lt);
+    } catch (e) {
+      notify(e.message || "The threads could not be used. Press Convert again.", "error");
+    } finally {
+      busy(false);
+    }
+  }, [applyTrace, busy, notify]);
+  remapRef.current = remapThreads;
   /** Make the picture (and the shapes made from it) as big as the hoop allows and read it again at that size: where the extra detail of a bigger hoop comes from. */
   const fitToHoop = useCallback(() => runConvertRef.current({}, "hoop"), []);
 
