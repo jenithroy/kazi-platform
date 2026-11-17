@@ -17,7 +17,7 @@
  * (DigitizerClient.jsx loads it with ssr: false): it reads localStorage and the window while it starts.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Needle, X } from "@phosphor-icons/react";
+import { Needle, Question, X } from "@phosphor-icons/react";
 import Modal from "./Modal";
 import Select from "./Select";
 import { Toggle, Segmented } from "./Controls";
@@ -29,6 +29,9 @@ import ObjectsPane from "./ObjectsPane";
 import PicturePanel from "./PicturePanel";
 import InspectorPanel from "./InspectorPanel";
 import StitchPanel from "./StitchPanel";
+import Help from "./Help";
+import { warmHelp } from "./helpClips"; // (the first clip is fetched while the pointer is on the "?", so the help opens on a moving picture)
+import Tour, { tourSeen } from "./Tour";
 import { useDigitizer } from "./useDigitizer";
 import { PICTURE_TYPES } from "../../lib/digitizer/image";
 import { formatMinutes } from "../../lib/digitizer/stats";
@@ -64,6 +67,25 @@ export default function DigitizerEditor() {
   const designInput = useRef(null);
   const [dragOver, setDragOver] = useState(false);
   const { design, mode, selection } = api;
+
+  // The help ("?": every feature with a video) and the tour of the screen. The tour starts by itself only for someone who has never seen it.
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
+  const helpToggle = useRef(null);
+  helpToggle.current = () => setHelpOpen((o) => !o);
+  useEffect(() => {
+    // Not in a browser driven by a script (the site's own tests, a crawler): a tour over the page would take their clicks.
+    if (tourSeen() || navigator.webdriver) return undefined;
+    let t = 0, waited = 0;
+    const go = () => {
+      // The cookie notice is answered first: the tour over it would hide its buttons, and the tour's own last steps (the buttons at the
+      // bottom of the panel) would lie under it.
+      if (document.querySelector('[aria-label="Cookie consent"]') && waited++ < 600) { t = setTimeout(go, 700); return; }
+      t = setTimeout(() => setTourOpen(true), 900);
+    };
+    t = setTimeout(go, 1200); // once the page has settled
+    return () => clearTimeout(t);
+  }, []);
 
   // A different step, or shapes picked or let go, is a different panel: it starts at its top, not where the last one was scrolled to.
   // (Scrolled, not remounted: the panels keep their own state, and the text box takes the keyboard only when it is asked to.)
@@ -161,7 +183,7 @@ export default function DigitizerEditor() {
   // A picture copied anywhere (a screenshot, a picture from a web page, a file copied in the file manager) is opened by Ctrl+V.
   useEffect(() => {
     const onPaste = (e) => {
-      if (document.querySelector(".dz-modal-overlay")) return;
+      if (document.querySelector(".dz-modal-overlay, .dz-tour")) return;
       const data = e.clipboardData;
       if (!data) return;
       const files = [...(data.files || [])];
@@ -189,8 +211,9 @@ export default function DigitizerEditor() {
       const root = pageRef.current;
       if (!root || !(root.contains(document.activeElement) || overRef.current)) return;
       if (isTyping(e) || e.altKey) return;
-      if (document.querySelector(".dz-modal-overlay")) return;
+      if (document.querySelector(".dz-modal-overlay, .dz-tour")) return;
       const mod = e.ctrlKey || e.metaKey;
+      if (e.key === "?" && !mod) { e.preventDefault(); helpToggle.current?.(); return; }
       const key = e.key.toLowerCase();
       const tracing = a.tool === "trace" && !!a.trace; // a shape is half drawn: its keys come first
       if (mod && key === "z") { e.preventDefault(); if (tracing && !e.shiftKey) a.traceBack(); else if (e.shiftKey) a.redo(); else a.undo(); return; }
@@ -313,7 +336,13 @@ export default function DigitizerEditor() {
           </div>
         )}
         {dragOver && <div className="dz-drop" aria-hidden="true">Drop to open</div>}
+        <button type="button" className={`dz-help-btn${helpOpen ? " is-on" : ""}`} aria-label="Help and tutorials" aria-expanded={helpOpen} title="Help: a video of every feature (?)" onPointerEnter={warmHelp} onFocus={warmHelp} onClick={() => setHelpOpen((o) => !o)}>
+          <Question size={16} weight="bold" aria-hidden="true" />
+        </button>
       </section>
+
+      {helpOpen && <Help onClose={() => setHelpOpen(false)} onTour={() => { setHelpOpen(false); setTourOpen(true); }} />}
+      {tourOpen && <Tour api={api} onClose={() => setTourOpen(false)} />}
 
       {/* Left: the tools, and the Objects of the design beside them. */}
       <div className="dz-left" data-dz-float="left">

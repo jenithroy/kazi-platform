@@ -28,7 +28,7 @@
 ══════════════════════════════════════════════════════════════════ */
 
 /* The pop-ups (colour chart, right-click menu, dialog) live in <body>, outside `.dz-page`, so they carry the tokens too. */
-.dz-page, .dz-menu, .dz-pop, .dz-modal-overlay {
+.dz-page, .dz-menu, .dz-pop, .dz-modal-overlay, .dz-tour {
   --dz-pine: var(--color-pine, #1b3a2b);
   --dz-pine-soft: var(--color-pine-soft, #3a5745);
   --dz-paper: var(--color-paper, #f6f7f2);
@@ -535,6 +535,73 @@ html[data-digitizer-open] .whatsapp-fab { display: none; }
   .dz-toggle-box { width: 22px; height: 22px; }
 }
 
+/* ── the help: a "?" button in the corner of the canvas, and a card with a video of every feature ── */
+
+.dz-help-btn {
+  position: absolute; z-index: 10; top: var(--dz-gap); right: calc(var(--dz-inset-r, 0px) + 12px); display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+  border: 1px solid var(--dz-edge); border-radius: 999px; color: var(--kb-ink-2); cursor: pointer; box-shadow: var(--kb-shadow);
+  background: color-mix(in srgb, var(--dz-bone) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background-color .15s, color .15s;
+}
+.dz-help-btn:hover { background: var(--dz-bone); color: var(--kb-ink); }
+.dz-help-btn.is-on { background: var(--dz-pine); border-color: var(--dz-pine); color: var(--dz-bone); }
+.dz-help-btn:focus-visible { outline: 2px solid var(--kb-accent); outline-offset: 2px; }
+
+.dz-help {
+  position: absolute; z-index: 30; left: calc(var(--dz-inset-l, 0px) + (100% - var(--dz-inset-l, 0px) - var(--dz-inset-r, 0px)) / 2); top: 50%; transform: translate(-50%, -50%);
+  width: min(860px, calc(100% - var(--dz-inset-l, 0px) - var(--dz-inset-r, 0px) - 32px)); max-height: calc(100% - 40px); display: flex; flex-direction: column;
+  background: var(--dz-bone); border: 1px solid var(--dz-edge); border-radius: 12px; box-shadow: var(--dz-card-shadow); overflow: hidden;
+}
+.dz-help-hd { flex: none; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 16px; border-bottom: 1px solid var(--dz-edge); }
+.dz-help-hd h2 { flex: 1 1 auto; margin: 0; font: 400 17px/1 var(--font-head); color: var(--kb-ink); }
+.dz-help-body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 196px minmax(0, 1fr); }
+.dz-help-list { overflow-y: auto; overscroll-behavior: contain; padding: 8px; border-right: 1px solid var(--dz-edge); }
+.dz-help-group { margin: 12px 8px 4px; font: 600 10px/1 var(--font); letter-spacing: .16em; text-transform: uppercase; color: var(--kb-ink-3); }
+.dz-help-grp:first-child .dz-help-group { margin-top: 2px; }
+.dz-help-item { display: block; width: 100%; padding: 7px 9px; border: 0; border-radius: 6px; background: transparent; color: var(--kb-ink); font: 500 13.5px/1.25 var(--font); text-align: left; cursor: pointer; }
+.dz-help-item:hover:not(.is-on) { background: rgba(27, 58, 43, .06); }
+.dz-help-item.is-on { background: var(--dz-pine); color: var(--dz-bone); }
+.dz-help-item:focus-visible { outline: 2px solid var(--kb-accent); outline-offset: -2px; }
+.dz-help-view { min-width: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 16px 16px; }
+.dz-help-video { position: relative; width: 100%; aspect-ratio: 960 / 536; background: var(--kb-well); border: 1px solid var(--dz-edge); border-radius: 8px; overflow: hidden; }
+.dz-help-video video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dz-help-pp { position: absolute; right: 8px; bottom: 8px; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 999px; background: rgba(27, 58, 43, .78); color: var(--dz-bone); cursor: pointer; opacity: 0; transition: opacity .15s; }
+.dz-help-video:hover .dz-help-pp, .dz-help-pp:focus-visible { opacity: 1; }
+@media (hover: none) { .dz-help-pp { opacity: .9; } }
+.dz-help-novideo { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; background: var(--kb-well); font-size: 13px; color: var(--kb-ink-3); }
+.dz-help-view h3 { margin: 14px 0 6px; font: 400 21px/1.15 var(--font-head); color: var(--kb-ink); }
+.dz-help-view p { margin: 0 0 10px; font-size: 14px; line-height: 1.45; color: var(--kb-ink-2); }
+.dz-help-keys { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--kb-ink-2); }
+.dz-help-keys kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--kb-line-hi); border-bottom-width: 2px; border-radius: 4px; background: var(--dz-paper); font: 600 12px/1.4 var(--font); color: var(--kb-ink); }
+
+/* ── the tour: a spotlight over the page, and a card beside what it talks about ── */
+
+.dz-tour { position: fixed; inset: 0; z-index: 1600; font-family: var(--font); }
+.dz-tour-block { position: absolute; inset: 0; }
+.dz-tour-dim { position: absolute; inset: 0; background: rgba(27, 58, 43, .55); }
+.dz-tour-hole { position: absolute; border-radius: 12px; pointer-events: none; box-shadow: 0 0 0 2px var(--dz-bone), 0 0 0 9999px rgba(27, 58, 43, .55); transition: left .25s ease, top .25s ease, width .25s ease, height .25s ease; }
+.dz-tour-card {
+  position: absolute; width: min(340px, calc(100vw - 24px)); padding: 16px 18px 14px; background: var(--dz-bone); color: var(--kb-ink);
+  border: 1px solid var(--dz-edge); border-radius: 12px; box-shadow: var(--kb-shadow-hi); transition: left .25s ease, top .25s ease;
+}
+.dz-tour-count { margin: 0 0 6px; font: 600 10px/1 var(--font); letter-spacing: .16em; text-transform: uppercase; color: var(--kb-ink-3); }
+.dz-tour-card h2 { margin: 0 0 6px; font: 400 22px/1.1 var(--font-head); color: var(--kb-ink); }
+.dz-tour-card #dz-tour-text { margin: 0 0 14px; font-size: 14.5px; line-height: 1.45; color: var(--kb-ink-2); }
+.dz-tour-foot { display: flex; align-items: center; gap: 8px; }
+.dz-tour-dots { flex: 1 1 auto; display: flex; justify-content: center; gap: 4px; }
+.dz-tour-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--kb-line-hi); }
+.dz-tour-dots i.is-done { background: var(--kb-ink-3); }
+.dz-tour-dots i.is-on { background: var(--dz-pine); }
+@media (prefers-reduced-motion: reduce) { .dz-tour-hole, .dz-tour-card { transition: none; } }
+
+/* a narrower window: the help's list becomes a row of chips above the video */
+@media (max-width: 1100px) {
+  .dz-help-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .dz-help-list { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; padding: 8px 10px; border-right: 0; border-bottom: 1px solid var(--dz-edge); }
+  .dz-help-grp { display: contents; }
+  .dz-help-group { display: none; }
+  .dz-help-item { width: auto; flex: none; white-space: nowrap; }
+}
+
 /* ── a smaller screen: a narrower panel, and the Objects list starts closed (DigitizerEditor.jsx) ── */
 @media (max-width: 1100px) {
   .dz-page { --dz-right-w: 272px; }
@@ -577,4 +644,6 @@ html[data-digitizer-open] .whatsapp-fab { display: none; }
   .dz-tracebar { padding: 5px 6px; gap: 4px; }
   .dz-tracebar-msg { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .dz-skeleton { height: 420px; }
+  .dz-help { position: fixed; z-index: 1400; left: 8px; right: 8px; bottom: 8px; top: auto; transform: none; width: auto; max-height: 82dvh; }
+  .dz-help-btn { right: 12px; }
 }
