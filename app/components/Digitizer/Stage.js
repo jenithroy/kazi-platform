@@ -51,6 +51,8 @@ export class Stage {
     this.dirty = true;
     this.raf = 0;
     this.fitted = false;
+    this.autoFit = false; // the view is still the one a fit made (not moved or zoomed by the person since): a panel opening or the window resizing fits it again
+    this.lastFit = "hoop"; // which fit that was: "hoop" or "design"
     this.themeCache = null;
     this.layer = null;
     this.layerTimer = 0;
@@ -115,6 +117,8 @@ export class Stage {
     // A different hoop (picked, typed, a new or opened design): show all of it. (Before, the view stayed as it was once it had been fitted,
     // so a bigger hoop was drawn mostly out of sight.)
     if (prev.design?.hoop !== props.design?.hoop) this.fitHoop();
+    // A panel opened or closed over the edge of the canvas: while the view is still the fitted one, fit it again in what is left.
+    else if (this.autoFit && (prev.insets?.l !== props.insets?.l || prev.insets?.r !== props.insets?.r || prev.insets?.b !== props.insets?.b)) this.refit();
     if (prev.theme !== props.theme) this.themeCache = null;
     this.invalidate();
   }
@@ -136,7 +140,7 @@ export class Stage {
     this.canvas.height = Math.floor(h * dpr);
     this.canvas.style.width = `${w}px`;
     this.canvas.style.height = `${h}px`;
-    if (!this.fitted) this.fitHoop(); else this.emitView();
+    if (!this.fitted || this.autoFit) this.refit(); else this.emitView();
     this.invalidate();
   }
 
@@ -151,16 +155,24 @@ export class Stage {
   fitBox(box, pad = 36) {
     const { w, h } = this.size;
     if (!box || w < 10 || h < 10) return;
+    // Panels float over the left and right edges of the canvas, and the zoom chip and the player over the bottom (props.insets, in pixels): the
+    // box is fitted to, and centred in, what they leave free. (Never more than 45% of the width or 40% of the height, so a narrow or short
+    // window cannot leave nothing to draw in.)
+    const ins = this.props.insets || {};
+    const il = Math.max(0, Math.min(ins.l || 0, w * 0.45)), ir = Math.max(0, Math.min(ins.r || 0, w * 0.45)), ib = Math.max(0, Math.min(ins.b || 0, h * 0.4));
+    const aw = w - il - ir, ah = h - ib;
     const bw = Math.max(1, box[2] - box[0]), bh = Math.max(1, box[3] - box[1]);
-    const k = Math.max(0.5, Math.min((w - 2 * pad) / bw, (h - 2 * pad) / bh));
-    this.view = { k, ox: w / 2 - ((box[0] + box[2]) / 2) * k, oy: h / 2 - ((box[1] + box[3]) / 2) * k };
+    const k = Math.max(0.5, Math.min((aw - 2 * pad) / bw, (ah - 2 * pad) / bh));
+    this.view = { k, ox: il + aw / 2 - ((box[0] + box[2]) / 2) * k, oy: ah / 2 - ((box[1] + box[3]) / 2) * k };
     this.fitted = true;
+    this.autoFit = true;
     this.emitView();
     this.invalidate();
   }
 
   fitHoop() {
     const { hoop } = this.props.design || { hoop: { w: 100, h: 100 } };
+    this.lastFit = "hoop";
     this.fitBox([-hoop.w / 2, -hoop.h / 2, hoop.w / 2, hoop.h / 2]);
   }
 
@@ -169,10 +181,14 @@ export class Stage {
     const box = boxOfObjects(objs);
     const ref = this.refBox();
     const all = box && ref ? [Math.min(box[0], ref[0]), Math.min(box[1], ref[1]), Math.max(box[2], ref[2]), Math.max(box[3], ref[3])] : box || ref;
-    if (all) this.fitBox(all); else this.fitHoop();
+    if (all) { this.lastFit = "design"; this.fitBox(all); } else this.fitHoop();
   }
 
+  /** Make the same fit again (the canvas or the room the panels leave changed size). */
+  refit() { if (this.lastFit === "design") this.fitDesign(); else this.fitHoop(); }
+
   zoomAt(factor, sx, sy) {
+    this.autoFit = false; // the person has taken the view over
     const k = clamp(this.view.k * factor, 0.4, 120);
     const f = k / this.view.k;
     this.view = { k, ox: sx - (sx - this.view.ox) * f, oy: sy - (sy - this.view.oy) * f };
@@ -242,6 +258,7 @@ export class Stage {
     e.preventDefault();
     const [sx, sy] = this.pos(e);
     if (e.shiftKey && !e.ctrlKey) {
+      this.autoFit = false;
       this.view = { ...this.view, ox: this.view.ox - e.deltaY, oy: this.view.oy };
       this.emitView();
       this.invalidate();
@@ -417,6 +434,7 @@ export class Stage {
       const pts = [...this.pointers.values()];
       const dist = Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]) || 1;
       const mid = [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2];
+      this.autoFit = false;
       this.view = { ...this.view, ox: this.view.ox + (mid[0] - d.mid[0]), oy: this.view.oy + (mid[1] - d.mid[1]) };
       this.zoomAt(dist / d.dist, mid[0], mid[1]);
       d.dist = dist; d.mid = mid;
@@ -424,6 +442,7 @@ export class Stage {
     }
     if (d.kind === "pan") {
       if (d.click && !d.moved) { if (Math.hypot(sx - d.sx, sy - d.sy) < CLICK_PX) return; d.moved = true; } // still a right-click
+      this.autoFit = false;
       this.view = { ...this.view, ox: d.ox + (sx - d.sx), oy: d.oy + (sy - d.sy) };
       this.emitView();
       this.invalidate();
@@ -435,6 +454,7 @@ export class Stage {
         if (d.touch) {
           // A finger that drags moves the view (from where it first touched, so there is no jump).
           this.drag = { kind: "pan", sx: d.sx, sy: d.sy, ox: this.view.ox, oy: this.view.oy };
+          this.autoFit = false;
           this.view = { ...this.view, ox: this.drag.ox + (sx - d.sx), oy: this.drag.oy + (sy - d.sy) };
           this.emitView();
           this.invalidate();
@@ -742,7 +762,7 @@ export class Stage {
     ctx.moveTo(cx - 6, cy); ctx.lineTo(cx + 6, cy); ctx.moveTo(cx, cy - 6); ctx.lineTo(cx, cy + 6);
     ctx.stroke();
 
-    this.drawRulers(hoop);
+    if (p.showRulers) this.drawRulers(hoop);
     if (mode === "picture") this.drawPictureHandles();
     else if (mode !== "stitches" && !tracing) this.drawSelection();
     this.drawGuides();

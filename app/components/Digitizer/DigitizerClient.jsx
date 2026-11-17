@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 // The stylesheet is imported here, not only in the editor, so it arrives with the page and the loading panel below is
 // already drawn in its final size when the (much bigger) editor code follows.
@@ -17,5 +18,12 @@ const DigitizerEditor = dynamic(() => import("./DigitizerEditor"), {
 });
 
 export default function DigitizerClient() {
+  // Flags <html> while the digitizer is the page: it is a full-screen workspace, one window tall, so digitizer.css locks the page's own
+  // scrolling (on a screen wide enough for that). It is flagged from the start, so the loading panel above is locked too.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-digitizer-page", "");
+    return () => root.removeAttribute("data-digitizer-page");
+  }, []);
   return <DigitizerEditor />;
 }

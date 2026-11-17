@@ -3,10 +3,11 @@
 /**
  * Embroidery Digitizer: a picture or some lettering in, a machine embroidery file out.
  *
- * One panel in the site's look: the objects of the design on the left (in the order they are sewn), the canvas in the middle
- * (the hoop, the shapes, the stitches) and what you can change on the right. Three steps along the top of the canvas: Picture
- * (its size, crop and colours, and how it is turned into shapes), Design (move, resize, recolour, add text and shapes, choose
- * how each is stitched) and Stitches (see them, save DST / PES / EXP / JEF / VP3 / XXX).
+ * A full-screen workspace in the look of the Atelier page: the canvas fills the window (the hoop, the shapes, the stitches) and the
+ * controls are small and float over its edges. On the left a slim rail holds the tools, undo and redo and the file buttons, with the
+ * Objects of the design (in the order they are sewn) beside it; on the right one panel holds what you can change. It has three
+ * steps: Picture (its size, crop and colours, and how it is turned into shapes), Design (move, resize, recolour, add text and
+ * shapes, choose how each is stitched) and Stitches (see them, save DST / PES / EXP / JEF / VP3 / XXX).
  *
  * It runs entirely in the browser and sends nothing anywhere: the picture is read on this computer, the stitches are made by
  * the engine in lib/embroidery (in a Web Worker), and the last design is remembered on this computer only.
@@ -15,13 +16,13 @@
  * layout, glass panels, shared Select and Modal) replaced by this site's own. It must only ever be rendered in the browser
  * (DigitizerClient.jsx loads it with ssr: false): it reads localStorage and the window while it starts.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUUpLeft, Needle } from "@phosphor-icons/react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Needle, X } from "@phosphor-icons/react";
 import Modal from "./Modal";
 import Select from "./Select";
-import { Toggle } from "./Controls";
+import { Toggle, Segmented } from "./Controls";
 import StageCanvas from "./StageCanvas";
-import Toolbar from "./Toolbar";
+import ToolRail, { ZoomBar } from "./Toolbar";
 import TraceBar from "./TraceBar";
 import CanvasMenu from "./CanvasMenu";
 import ObjectsPane from "./ObjectsPane";
@@ -57,15 +58,56 @@ export default function DigitizerEditor() {
   const api = useDigitizer();
   const stageRef = useRef(null);
   const pageRef = useRef(null);
+  const panelRef = useRef(null); // the right-hand panel's scrolling body
   const overRef = useRef(false); // the pointer is over the editor
   const fileInput = useRef(null);
   const designInput = useRef(null);
   const [dragOver, setDragOver] = useState(false);
   const { design, mode, selection } = api;
 
-  // The WhatsApp button sits in the bottom-right corner of every page, which is where this panel's right-hand column ends on
-  // a laptop or a phone. While any of the editor is on screen the page flags <html>, and the button steps aside (digitizer.css),
-  // as it does for the Atelier's panels. It comes back when the editor has scrolled away.
+  // A different step, or shapes picked or let go, is a different panel: it starts at its top, not where the last one was scrolled to.
+  // (Scrolled, not remounted: the panels keep their own state, and the text box takes the keyboard only when it is asked to.)
+  const somethingSelected = selection.length > 0;
+  useEffect(() => { panelRef.current?.scrollTo({ top: 0 }); }, [mode, somethingSelected]);
+
+  // The Objects list starts closed, so the canvas is clear; the button on the rail (with the number of objects) opens it. What the person
+  // chooses is remembered.
+  const objectsOpen = !!api.prefs.objectsOpen;
+  const toggleObjects = () => api.setPrefs({ objectsOpen: !objectsOpen });
+
+  // How much of the canvas's left and right edges the floating columns cover, and of its bottom the zoom chip and the player (px), so the
+  // hoop is fitted to the room between them. All zero when they are stacked around the canvas (a phone). They announce themselves with
+  // data-dz-float. (The chip is always there, so the hoop does not change size when the player comes and goes.)
+  const [insets, setInsets] = useState({ l: 0, r: 0, b: 0 });
+  const hasStitches = !!api.stitches; // (with the Stitches step, the player is on show: it has to be found and watched)
+  useLayoutEffect(() => {
+    const root = pageRef.current;
+    if (!root) return undefined;
+    const measure = () => {
+      const wrap = root.querySelector(".dz-canvas-wrap");
+      if (!wrap) return;
+      const w = wrap.getBoundingClientRect();
+      let l = 0, r = 0, bottom = 0;
+      for (const el of root.querySelectorAll("[data-dz-float]")) {
+        if (getComputedStyle(el).position !== "absolute") continue;
+        const b = el.getBoundingClientRect();
+        const side = el.dataset.dzFloat;
+        if (side === "left") l = Math.max(l, Math.ceil(b.right - w.left));
+        else if (side === "right") r = Math.max(r, Math.ceil(w.right - b.left));
+        else bottom = Math.max(bottom, Math.ceil(w.bottom - b.top));
+      }
+      setInsets((prev) => (prev.l === l && prev.r === r && prev.b === bottom ? prev : { l, r, b: bottom }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+    root.querySelectorAll("[data-dz-float]").forEach((el) => ro.observe(el));
+    return () => ro.disconnect();
+  }, [objectsOpen, mode, hasStitches]);
+
+  // The WhatsApp button sits in the bottom-right corner of every page, which is where this workspace's right-hand panel is. While
+  // the editor is on screen the page flags <html>, and the button steps aside (digitizer.css), as it does for the Atelier's panels.
+  // It comes back when the editor has scrolled away.
   useEffect(() => {
     const el = pageRef.current;
     const root = document.documentElement;
@@ -220,19 +262,122 @@ export default function DigitizerEditor() {
       setTimeout(() => (mode === "picture" ? stageRef.current?.fitDesign() : stageRef.current?.fitHoop()), 80);
     },
   };
+  const player = mode === "stitches" && !!api.stitches;
 
   return (
     // data-lenis-prevent: the page's smooth scrolling (Lenis) must leave the wheel alone in here, which zooms the canvas and
-    // scrolls the panels.
+    // scrolls the panels. The whole page is a drop target for a picture or a machine file.
     <div
       ref={pageRef}
-      className="dz-page"
+      className={`dz-page${objectsOpen ? " has-objects" : ""}${player ? " has-player" : ""}${dragOver ? " is-drop" : ""}`}
+      style={{ "--dz-inset-l": `${insets.l}px`, "--dz-inset-r": `${insets.r}px` }}
       data-lenis-prevent
       onPointerEnter={() => { overRef.current = true; }}
       onPointerLeave={() => { overRef.current = false; }}
+      onDragOver={(e) => { if (e.dataTransfer?.types?.includes("Files")) { e.preventDefault(); setDragOver(true); } }}
+      onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDragOver(false); }}
+      onDrop={(e) => { if (e.dataTransfer?.files?.length) { e.preventDefault(); e.nativeEvent.__dzHandled = true; setDragOver(false); onFiles(e.dataTransfer.files); } }}
     >
-      <div className="dz-bar">
-        <p className="dz-bar-info">
+      {/* The canvas fills the window; everything else floats over it. */}
+      <section className={`dz-canvas-wrap${mode === "design" && api.tool === "trace" ? " is-tracing" : ""}`} aria-label="Canvas">
+        <StageCanvas api={api} stageRef={stageRef} insets={insets} />
+        {mode === "design" && api.tool === "trace" && <TraceBar api={api} />}
+        {empty && api.tool !== "select" && api.tool !== "trace" && (
+          <div className="dz-hint-chip" role="status">
+            {api.tool === "text" ? "Click on the hoop where the words should go, or press Enter for the middle." : "Click or drag on the hoop to draw the shape, or press Enter for one in the middle."}
+            <button type="button" onClick={() => api.setTool("select")}>Cancel</button>
+          </div>
+        )}
+        {empty && api.tool === "select" && (
+          <div className="dz-empty-stage">
+            <div className="dz-card-empty">
+              <span className="dz-card-chip" aria-hidden="true"><Needle size={22} /></span>
+              <h2>Start with a picture</h2>
+              <p>Drop your logo here, paste it with Ctrl+V, or choose a file.</p>
+              <div className="dz-actions dz-actions--center">
+                <button type="button" className="kb-btn kb-btn--primary" onClick={pickFile}>Choose a picture</button>
+                <button type="button" className="kb-btn kb-btn--ghost" onClick={tryExample}>Try the Kazi logo</button>
+                <button type="button" className="kb-btn kb-btn--ghost" onClick={() => api.setTool("text")}>Start with text</button>
+                {api.restorable && <button type="button" className="kb-btn kb-btn--ghost" onClick={api.restore}>Open my last design</button>}
+              </div>
+              <p className="dz-hint">Everything runs in your browser: your pictures and designs are never uploaded. The last design is remembered on this device only.</p>
+            </div>
+          </div>
+        )}
+        {api.converting && <div className="dz-busy-bar" role="status">Reading the picture…</div>}
+        {/* Over the canvas, not above the page: a banner in the page pushed the canvas down while it showed, and a point clicked then landed off target. */}
+        {api.notice && (
+          <div className={`dz-note dz-note--${api.notice.kind}`} role="status">
+            <span>{api.notice.text}</span>
+            <button type="button" aria-label="Dismiss" onClick={api.dismissNotice}>×</button>
+          </div>
+        )}
+        {dragOver && <div className="dz-drop" aria-hidden="true">Drop to open</div>}
+      </section>
+
+      {/* Left: the tools, and the Objects of the design beside them. */}
+      <div className="dz-left" data-dz-float="left">
+        <ToolRail api={api} objectsOpen={objectsOpen} onToggleObjects={toggleObjects} onOpenFile={() => designInput.current?.click()} />
+        {objectsOpen && (
+          <section className="dz-card dz-objects-card" aria-label="Objects">
+            <div className="dz-card-hd">
+              <h2>Objects</h2>
+              <span className="dz-card-note">{design.objects.length}</span>
+              <button type="button" className="dz-card-x" aria-label="Close the Objects list" title="Close" onClick={toggleObjects}><X size={14} aria-hidden="true" /></button>
+            </div>
+            <ObjectsPane api={api} />
+          </section>
+        )}
+      </div>
+
+      <ZoomBar
+        api={api}
+        zoomPct={(api.view.k / 3.7795) * 100}
+        onZoom={(f) => stageRef.current?.zoomAt(f, stageRef.current.size.w / 2, stageRef.current.size.h / 2)}
+        onFit={() => (mode === "picture" ? stageRef.current?.fitDesign() : stageRef.current?.fitHoop())}
+      />
+
+      {/* Bottom: the player, only while the stitches are on show. */}
+      {player && (
+        <div className="dz-sim" data-dz-float="bottom">
+          <div className="dz-sim-in" role="group" aria-label="Stitch preview">
+            <button type="button" className="dz-tool" aria-label={api.sim.playing ? "Pause" : "Play the stitching"} title={api.sim.playing ? "Pause" : "Watch it being sewn"} onClick={api.sim.playing ? api.pauseSim : api.playSim}>
+              {api.sim.playing ? <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg> : <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" /></svg>}
+            </button>
+            <button type="button" className="dz-tool" aria-label="Show all stitches" title="Show all stitches" onClick={api.stopSim} disabled={api.sim.pos == null}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" /></svg>
+            </button>
+            <input type="range" aria-label="How far through the stitching" min={0} max={total} step={1} value={api.sim.pos ?? total} style={{ "--p": `${total ? (Math.min(total, Math.max(0, api.sim.pos ?? total)) / total) * 100 : 100}%` }} onChange={(e) => api.seekSim(Number(e.target.value))} />
+            <output title="Stitch number">{sewnNo.toLocaleString("en-GB")} / {(stitchesBefore ? stitchesBefore[total] : 0).toLocaleString("en-GB")}</output>
+            <span className="dz-speed">
+              <span>Speed</span>
+              <Select variant="pill" label="Playback speed" value={api.sim.speed} options={SPEEDS} onChange={(v) => api.setSimSpeed(Number(v))} />
+            </span>
+            <Toggle checked={!!api.prefs.showJumps} onChange={(v) => api.setPrefs({ showJumps: v })}>Show jumps</Toggle>
+            {api.stitches.checks?.piledCount > 0 && (
+              <Toggle checked={!!api.prefs.showProblems} onChange={(v) => api.setPrefs({ showProblems: v })}>Show crowded spots</Toggle>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Right: the three steps and what can be changed in each. */}
+      <aside className="dz-right dz-card" data-dz-float="right" aria-label={panelTitle}>
+        <div className="dz-steps-hd">
+          <Segmented
+            label="Step"
+            value={mode}
+            onChange={api.setMode}
+            options={[
+              { value: "picture", label: "Picture", title: "The picture, its size, crop and colours" },
+              { value: "design", label: "Design", title: "Move, resize and recolour shapes" },
+              { value: "stitches", label: "Stitches", title: "See the stitches and save the file" },
+            ]}
+            size="step"
+          />
+        </div>
+        {/* (The Stitches step shows these figures, and more, in its own panel.) */}
+        {mode !== "stitches" && <p className={`dz-stats${s ? "" : " is-empty"}`}>
           {s ? (
             <>
               <span><b>{s.stitches.toLocaleString("en-GB")}</b> stitches</span>
@@ -240,113 +385,26 @@ export default function DigitizerEditor() {
               <span><b>{s.widthMm.toFixed(1)} × {s.heightMm.toFixed(1)}</b> mm</span>
               <span><b>{formatMinutes(s.minutes)}</b></span>
             </>
-          ) : <span>A logo or lettering in, a machine stitch file out</span>}
-        </p>
-        <div className="dz-headbtns">
-          <button type="button" className="kb-pillbtn" onClick={api.undo} disabled={!api.canUndo} aria-label="Undo" title="Undo (Ctrl+Z)"><ArrowUUpLeft size={14} weight="bold" aria-hidden="true" /> Undo</button>
-          <button type="button" className="kb-pillbtn" onClick={api.redo} disabled={!api.canRedo} aria-label="Redo" title="Redo (Ctrl+Y)">Redo</button>
-          <button type="button" className="kb-pillbtn" onClick={() => designInput.current?.click()} title="Open a design saved from this page, or a machine file (DST, PES, EXP, JEF, VP3, XXX) to look at it or save it as another type">Open</button>
-          <button type="button" className="kb-pillbtn" onClick={api.saveDesignFile} disabled={!design.objects.length} title="Save the design to edit later (Ctrl+S)">Save design</button>
-          <button type="button" className="kb-pillbtn" onClick={api.newFile} disabled={empty}>New</button>
-          {ready && (
-            <button type="button" className="kb-btn kb-btn--primary" onClick={() => api.exportFormats(["dst"])} disabled={api.exporting} title="Download the stitch file for the machine: DST, which Tajima, Barudan, ZSK, SWF and most industrial machines read. Other types (PES, EXP, JEF, VP3, XXX) are in the Stitches step.">
-              Download DST
-            </button>
-          )}
-          <button type="button" className={ready ? "kb-pillbtn" : "kb-btn kb-btn--primary"} onClick={pickFile}>Choose picture</button>
+          ) : <span>Logo or lettering in, stitch file out</span>}
+        </p>}
+        <div className="dz-panel" ref={panelRef}>
+          {mode === "picture" && <PicturePanel api={panelApi} pickFile={pickFile} />}
+          {mode === "design" && <InspectorPanel api={panelApi} />}
+          {mode === "stitches" && <StitchPanel api={api} />}
         </div>
-      </div>
-
-      <div className="dz-grid">
-        <section className="dz-tile dz-left" aria-label="Objects">
-          <div className="kb-hd"><h2 className="kb-ttl">Objects</h2><span className="kb-note">{design.objects.length}</span></div>
-          <ObjectsPane api={api} />
-        </section>
-
-        <section
-          className={`dz-tile dz-stage${dragOver ? " is-drop" : ""}`}
-          aria-label="Canvas"
-          onDragOver={(e) => { if (e.dataTransfer?.types?.includes("Files")) { e.preventDefault(); setDragOver(true); } }}
-          onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDragOver(false); }}
-          onDrop={(e) => { if (e.dataTransfer?.files?.length) { e.preventDefault(); e.nativeEvent.__dzHandled = true; setDragOver(false); onFiles(e.dataTransfer.files); } }}
-        >
-          <Toolbar
-            api={api}
-            zoomPct={(api.view.k / 3.7795) * 100}
-            onZoom={(f) => stageRef.current?.zoomAt(f, stageRef.current.size.w / 2, stageRef.current.size.h / 2)}
-            onFit={() => (mode === "picture" ? stageRef.current?.fitDesign() : stageRef.current?.fitHoop())}
-          />
-          <div className={`dz-canvas-wrap${mode === "design" && api.tool === "trace" ? " is-tracing" : ""}`}>
-            <StageCanvas api={api} stageRef={stageRef} />
-            {mode === "design" && api.tool === "trace" && <TraceBar api={api} />}
-            {empty && api.tool !== "select" && api.tool !== "trace" && (
-              <div className="dz-hint-chip" role="status">
-                {api.tool === "text" ? "Click on the hoop where the words should go, or press Enter for the middle." : "Click or drag on the hoop to draw the shape, or press Enter for one in the middle."}
-                <button type="button" onClick={() => api.setTool("select")}>Cancel</button>
-              </div>
-            )}
-            {empty && api.tool === "select" && (
-              <div className="dz-empty-stage">
-                <div className="dz-card">
-                  <span className="dz-card-chip" aria-hidden="true"><Needle size={24} /></span>
-                  <h2>Start with a picture</h2>
-                  <p>Drop your logo here, paste it with Ctrl+V, or choose a file. It never leaves your device.</p>
-                  <ol className="dz-steps">
-                    <li><b>Picture</b> It is turned into shapes, one for each colour.</li>
-                    <li><b>Design</b> Move, resize and recolour them, and add text.</li>
-                    <li><b>Stitches</b> Watch it being sewn, then save the file for the machine.</li>
-                  </ol>
-                  <div className="dz-actions dz-actions--center">
-                    <button type="button" className="kb-btn kb-btn--primary" onClick={pickFile}>Choose a picture</button>
-                    <button type="button" className="kb-btn kb-btn--ghost" onClick={tryExample}>Try the Kazi logo</button>
-                    <button type="button" className="kb-btn kb-btn--ghost" onClick={() => api.setTool("text")}>Start with text</button>
-                    {api.restorable && <button type="button" className="kb-btn kb-btn--ghost" onClick={api.restore}>Open my last design</button>}
-                  </div>
-                  <p className="dz-hint">Click with the Text tool anywhere on the hoop to add words.</p>
-                </div>
-              </div>
-            )}
-            {api.converting && <div className="dz-busy-bar" role="status">Reading the picture…</div>}
-            {/* Over the canvas, not above the page: a banner in the page pushed the canvas down while it showed, and a point clicked then landed off target. */}
-            {api.notice && (
-              <div className={`dz-note dz-note--${api.notice.kind}`} role="status">
-                <span>{api.notice.text}</span>
-                <button type="button" aria-label="Dismiss" onClick={api.dismissNotice}>×</button>
-              </div>
-            )}
-            {dragOver && <div className="dz-drop" aria-hidden="true">Drop to open</div>}
-          </div>
-          {mode === "stitches" && api.stitches && (
-            <div className="dz-sim" role="group" aria-label="Stitch preview">
-              <button type="button" className="dz-tool" aria-label={api.sim.playing ? "Pause" : "Play the stitching"} title={api.sim.playing ? "Pause" : "Watch it being sewn"} onClick={api.sim.playing ? api.pauseSim : api.playSim}>
-                {api.sim.playing ? <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg> : <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" /></svg>}
+        <div className="dz-card-ft">
+          {empty ? (
+            <button type="button" className="kb-btn kb-btn--primary" onClick={pickFile}>Choose picture</button>
+          ) : (
+            <>
+              <button type="button" className="kb-btn" onClick={pickFile}>Choose picture</button>
+              <button type="button" className="kb-btn kb-btn--primary" onClick={() => api.exportFormats(["dst"])} disabled={!ready || api.exporting} title="Download the stitch file for the machine: DST, which Tajima, Barudan, ZSK, SWF and most industrial machines read. Other types (PES, EXP, JEF, VP3, XXX) are in the Stitches step.">
+                Download DST
               </button>
-              <button type="button" className="dz-tool" aria-label="Show all stitches" title="Show all stitches" onClick={api.stopSim} disabled={api.sim.pos == null}>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" /></svg>
-              </button>
-              <input type="range" aria-label="How far through the stitching" min={0} max={total} step={1} value={api.sim.pos ?? total} onChange={(e) => api.seekSim(Number(e.target.value))} />
-              <output title="Stitch number">{sewnNo.toLocaleString("en-GB")} / {(stitchesBefore ? stitchesBefore[total] : 0).toLocaleString("en-GB")}</output>
-              <span className="dz-speed">
-                <span>Speed</span>
-                <Select variant="pill" label="Playback speed" value={api.sim.speed} options={SPEEDS} onChange={(v) => api.setSimSpeed(Number(v))} />
-              </span>
-              <Toggle checked={!!api.prefs.showJumps} onChange={(v) => api.setPrefs({ showJumps: v })}>Show jumps</Toggle>
-              {api.stitches.checks?.piledCount > 0 && (
-                <Toggle checked={!!api.prefs.showProblems} onChange={(v) => api.setPrefs({ showProblems: v })}>Show crowded spots</Toggle>
-              )}
-            </div>
+            </>
           )}
-        </section>
-
-        <section className="dz-tile dz-right" aria-label={panelTitle}>
-          <div className="kb-hd"><h2 className="kb-ttl">{panelTitle}</h2>{selection.length > 0 && mode === "design" && <span className="kb-note">{selection.length} selected</span>}</div>
-          <div className="dz-panel">
-            {mode === "picture" && <PicturePanel api={panelApi} pickFile={pickFile} />}
-            {mode === "design" && <InspectorPanel api={panelApi} />}
-            {mode === "stitches" && <StitchPanel api={api} />}
-          </div>
-        </section>
-      </div>
+        </div>
+      </aside>
 
       <input ref={fileInput} type="file" accept={PICTURE_TYPES} hidden aria-label="Choose a picture" onChange={(e) => { onFiles(e.target.files); e.target.value = ""; }} />
       <input ref={designInput} type="file" accept=".json,application/json,.dst,.pes,.pec,.exp,.jef,.vp3,.xxx,.u01" hidden aria-label="Open a saved design or a machine file" onChange={(e) => { onFiles(e.target.files); e.target.value = ""; }} />
