@@ -1,0 +1,14 @@
+Run 2026-11-16_1701_after-fix-stem-and-notches  (54 pictures)
+average MISSING 0.25% (the engine did not sew a shape it had: 0.25%, the tracer lost the ink: 0.01%)   average EXTRA 2.93% (of which the tracer's shape was already fatter: 0.63%)
+  3 mm caps: missing 0.26%  extra 5.03%  (18)
+  4 mm caps: missing 0.29%  extra 2.7%  (18)
+  6 mm caps: missing 0.21%  extra 1.06%  (18)
+  black      missing   0.12%  extra   0.33%
+  condensed  missing   0.16%  extra   1.39%
+  humanist   missing   0.18%  extra   1.42%
+  mono       missing   0.18%  extra   2.11%
+  round      missing    0.1%  extra   1.91%
+  sans       missing   0.18%  extra   1.42%
+  script     missing   0.26%  extra   1.59%
+  serif      missing   0.54%  extra    8.1%
+  times      missing   0.54%  extra    8.1%

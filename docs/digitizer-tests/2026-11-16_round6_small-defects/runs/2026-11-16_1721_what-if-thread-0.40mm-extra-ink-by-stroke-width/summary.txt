@@ -1,0 +1,19 @@
+Run 2026-11-16_1721_what-if-thread-0.40mm-extra-ink-by-stroke-width  (54 pictures)
+average MISSING 0.37% (the engine did not sew a shape it had: 0.36%, the tracer lost the ink: 0.01%)   average EXTRA 2.18% (of which the tracer's shape was already fatter: 0.49%)
+  3 mm caps: missing 0.39%  extra 3.71%  (18)
+  4 mm caps: missing 0.44%  extra 2.13%  (18)
+  6 mm caps: missing 0.29%  extra 0.7%  (18)
+  black      missing    0.2%  extra    0.2%
+  condensed  missing   0.31%  extra   1.22%
+  humanist   missing   0.28%  extra   0.79%
+  mono       missing   0.28%  extra   1.34%
+  round      missing   0.13%  extra   1.01%
+  sans       missing   0.28%  extra   0.79%
+  script     missing   0.45%  extra   1.09%
+  serif      missing   0.71%  extra   6.59%
+  times      missing   0.71%  extra   6.59%
+  thread drawn 0.4 mm wide; the extra ink lies next to strokes that are:
+    thinner than 0.25 mm (a hairline: the thread cannot be thinner than 0.4)        27 % of the extra ink  (0.40 % of all stitched ink)
+    0.25 to 0.45 mm                                                                 25 % of the extra ink  (0.38 % of all stitched ink)
+    0.45 to 0.7 mm                                                                  27 % of the extra ink  (0.40 % of all stitched ink)
+    0.7 mm and more                                                                 21 % of the extra ink  (0.32 % of all stitched ink)

@@ -1,0 +1,31 @@
+Engine settings tried on the 54-picture bench (same pictures as the baseline run). None improved both numbers, so nothing was changed in the engine.
+Baseline for comparison:
+average MISSING 0.37%   average EXTRA 2.78%
+  3 mm caps: missing 0.56%  extra 4.74%  (18)
+  4 mm caps: missing 0.28%  extra 2.62%  (18)
+  6 mm caps: missing 0.26%  extra 1%  (18)
+
+--- denseTrim=0.25
+average MISSING 0.79%   average EXTRA 2.54%
+  3 mm caps: missing 0.87%  extra 4.41%  (18)
+  4 mm caps: missing 0.8%  extra 2.47%  (18)
+  6 mm caps: missing 0.69%  extra 0.74%  (18)
+
+--- denseTrim=0.3
+average MISSING 1.24%   average EXTRA 2.51%
+  3 mm caps: missing 1.1%  extra 4.4%  (18)
+  4 mm caps: missing 1.25%  extra 2.37%  (18)
+  6 mm caps: missing 1.37%  extra 0.75%  (18)
+
+--- denseTrim=0.25+core0.15
+average MISSING 1.01%   average EXTRA 1.81%
+  3 mm caps: missing 1.29%  extra 3.33%  (18)
+  4 mm caps: missing 1.13%  extra 1.57%  (18)
+  6 mm caps: missing 0.62%  extra 0.53%  (18)
+
+--- denseSpacing=0.25
+average MISSING 0.4%   average EXTRA 2.63%
+  3 mm caps: missing 0.54%  extra 4.36%  (18)
+  4 mm caps: missing 0.35%  extra 2.62%  (18)
+  6 mm caps: missing 0.32%  extra 0.9%  (18)
+

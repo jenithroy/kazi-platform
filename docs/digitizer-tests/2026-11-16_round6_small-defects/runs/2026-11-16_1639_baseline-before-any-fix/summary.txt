@@ -1,0 +1,14 @@
+Run 2026-11-16_1639_baseline-before-any-fix  (54 pictures)
+average MISSING 0.37% (the engine did not sew a shape it had: 0.36%, the tracer lost the ink: 0.01%)   average EXTRA 2.78% (of which the tracer's shape was already fatter: 0.62%)
+  3 mm caps: missing 0.56%  extra 4.74%  (18)
+  4 mm caps: missing 0.28%  extra 2.62%  (18)
+  6 mm caps: missing 0.26%  extra 1%  (18)
+  black      missing   0.13%  extra   0.31%
+  condensed  missing   0.27%  extra    1.3%
+  humanist   missing   0.32%  extra   1.38%
+  mono       missing   0.47%  extra   2.05%
+  round      missing    0.2%  extra   1.83%
+  sans       missing   0.32%  extra   1.38%
+  script     missing   0.37%  extra   1.49%
+  serif      missing    0.6%  extra   7.66%
+  times      missing    0.6%  extra   7.66%
