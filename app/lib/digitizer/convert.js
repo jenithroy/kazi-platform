@@ -23,8 +23,17 @@ export const CLOTH_MATCH = 14;
  */
 export const CLOTH_MATCH_PHOTO = 7;
 
+/**
+ * Whether a picture colour like the cloth is left unstitched (the cloth showing through). OFF: the cloth is only how the design is shown (its
+ * colour on the canvas), and every colour of the picture is stitched, white on a white cloth as well: tone on tone is real embroidery. What a
+ * person does not want sewn they delete (the Objects list) or switch off (the colour list under "Colours found"); the page's own colour is
+ * still left out by "Leave out the background". The rules below (CLOTH_MATCH and what hangs on it) are kept as they were, switched off by this flag.
+ */
+export const CLOTH_SKIPS = false;
+
 /** How near (CIELAB distance) a colour must be to the cloth `fabric` (a hex colour) to be left unstitched, for this kind of picture (0: never). */
 export function clothMatch(kind, fabric = null) {
+  if (!CLOTH_SKIPS) return 0;
   if (kind !== "photo") return CLOTH_MATCH;
   return fabric && String(fabric).toLowerCase() === String(DEFAULT_CLOTH).toLowerCase() ? 0 : CLOTH_MATCH_PHOTO;
 }

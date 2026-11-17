@@ -8,7 +8,7 @@
  */
 import { traceImage, renderTrace, quantize, detectBackground, normalizeOptions } from "./index.js";
 import { detailLimits, limitsFor } from "./detail.js";
-import { contentBox, fillScale, objectsFromTrace, mergeTraceObjects, changedColours, bleedUnder, clothFromTrace, clothMatch, CLOTH_MATCH, CLOTH_MATCH_PHOTO, CLOTH_FINE_MM, CLOTH_FIELD_MM } from "../../digitizer/convert.js";
+import { contentBox, fillScale, objectsFromTrace, mergeTraceObjects, changedColours, bleedUnder, clothFromTrace, clothMatch, CLOTH_MATCH, CLOTH_MATCH_PHOTO, CLOTH_FINE_MM, CLOTH_FIELD_MM, CLOTH_SKIPS } from "../../digitizer/convert.js";
 import { REGION, REGION_COUNT, cutOutPerson, resampleClasses, importanceMap, DEFAULT_REGION_WEIGHTS } from "./regions.js";
 import { buildRegionalPalette, classifyByRegion } from "./regionPalette.js";
 import { rgbToLab } from "./color.js";
@@ -529,27 +529,42 @@ log("8. thin lines and lettering are kept, widened, and keep their colour; kinds
     const box = contentBox(res, { originX: -10, originY: -5, mmPerPx: 0.1, fabric: "#f4f1ea" });
     check("contentBox is the stitched part in hoop millimetres (not the page round it)", box && Math.abs(box.x0 - (-10 + 50.2 * 0.1)) < 0.2 && Math.abs(box.x1 - (-10 + 150.2 * 0.1)) < 0.2, JSON.stringify(box));
     const hidden = contentBox(res, { originX: 0, originY: 0, mmPerPx: 0.1, fabric: "#c82228" });
-    check("a colour like the cloth is not part of it", hidden === null, JSON.stringify(hidden));
+    if (CLOTH_SKIPS) check("a colour like the cloth is not part of it", hidden === null, JSON.stringify(hidden));
+    else check("the cloth is only how the design is shown: a colour like it is part of what is stitched", !!hidden && Math.abs(hidden.x0 - 5.02) < 0.2 && Math.abs(hidden.x1 - 15.02) < 0.2, JSON.stringify(hidden));
   }
 
   // A narrow shape of the cloth's colour is stitched only where it is ink: in a hole of a WIDE shape (white lettering on a badge). The white inside a
   // letter (its counter: the hole of an o, a, e, B, D) sits in the hole of a narrow shape and is left as cloth, and so is a white outline round the
   // whole design, which sits in no hole at all (hatching the counters of every letter in white thread was a real mistake).
+  // (These rules hold while CLOTH_SKIPS is on. With it off, as it is, nothing is "like the cloth": the white is a colour like any other, stitched
+  // unless the colour list switches it off, and only the page round the design is left out.)
   {
     const opts = { originX: 0, originY: 0, mmPerPx: 0.2, fabric: "#f4f1ea" };
     const rings = makeImage(300, 120);
     for (let i = 0; i < 4; i++) { paint(rings, [circle(45.2 + i * 70, 60.4, 16, 360)], NAVY); paint(rings, [circle(45.2 + i * 70, 60.4, 6, 180)], WHITE); } // four letter Os, 2 mm strokes, 2.4 mm counters
-    const o = objectsFromTrace(traceImage(rings, { ...page, mmPerPx: 0.2 }), opts);
+    const tracedRings = traceImage(rings, { ...page, mmPerPx: 0.2 });
+    const o = objectsFromTrace(tracedRings, opts);
     const white = o.palette.filter((p) => p.sameAsCloth && !p.background);
-    check(`the white inside four narrow letter Os (strokes under ${CLOTH_FIELD_MM} mm) is left as cloth: no white objects, the white is not stitched`, white.length >= 1 && white.every((p) => p.skipped && !p.fineOnly) && o.objects.every((ob) => !o.palette[ob.pal].sameAsCloth), JSON.stringify(white.map((p) => ({ skipped: p.skipped, fineOnly: p.fineOnly }))));
-    check("and the four letters themselves are stitched", o.objects.length === 4, `${o.objects.length} objects`);
+    if (CLOTH_SKIPS) {
+      check(`the white inside four narrow letter Os (strokes under ${CLOTH_FIELD_MM} mm) is left as cloth: no white objects, the white is not stitched`, white.length >= 1 && white.every((p) => p.skipped && !p.fineOnly) && o.objects.every((ob) => !o.palette[ob.pal].sameAsCloth), JSON.stringify(white.map((p) => ({ skipped: p.skipped, fineOnly: p.fineOnly }))));
+      check("and the four letters themselves are stitched", o.objects.length === 4, `${o.objects.length} objects`);
+    } else {
+      const inside = o.palette.filter((p) => p.enclosed && !p.background).map((p) => p.index);
+      check("the cloth is only how the design is shown: the white inside four letter Os is stitched like any colour, the page round them is not", o.palette.every((p) => !p.sameAsCloth && !p.fineOnly) && inside.length === 1 && o.objects.length === 8 && o.palette.some((p) => p.background && p.skipped), JSON.stringify(o.palette.map((p) => [p.hex, p.background, p.enclosed, p.skipped])));
+      const off = objectsFromTrace(tracedRings, { ...opts, skip: new Set(inside) });
+      check("and unticked in the colour list the white is left out: the four letters remain", off.objects.length === 4 && off.palette[inside[0]].skipped, `${off.objects.length} objects`);
+    }
 
     const halo = makeImage(300, 300);
     paint(halo, [circle(150.2, 150.4, 120, 720)], WHITE); // a thin white outline round a navy disc, on a see-through page
     paint(halo, [circle(150.2, 150.4, 114, 720)], NAVY);
     for (let y = 0; y < 300; y++) for (let x = 0; x < 300; x++) if (Math.hypot(x + 0.5 - 150.2, y + 0.5 - 150.4) > 121) halo.data[(y * 300 + x) * 4 + 3] = 0;
     const h = objectsFromTrace(traceImage(halo, { ...page, mmPerPx: 0.2 }), opts);
-    check("a thin white outline round the whole design (in no shape's hole) is the cloth: not stitched", h.palette.filter((p) => p.sameAsCloth && !p.background).every((p) => !p.fineOnly) && h.objects.every((ob) => !h.palette[ob.pal].sameAsCloth), JSON.stringify(h.palette.map((p) => [p.hex, p.sameAsCloth, p.skipped, p.fineOnly])));
+    if (CLOTH_SKIPS) {
+      check("a thin white outline round the whole design (in no shape's hole) is the cloth: not stitched", h.palette.filter((p) => p.sameAsCloth && !p.background).every((p) => !p.fineOnly) && h.objects.every((ob) => !h.palette[ob.pal].sameAsCloth), JSON.stringify(h.palette.map((p) => [p.hex, p.sameAsCloth, p.skipped, p.fineOnly])));
+    } else {
+      check("a thin white outline round the whole design is part of the picture: stitched with the disc, the page round it is not", h.objects.length === 2 && h.objects.some((ob) => h.palette[ob.pal].hex === "#ffffff") && h.palette.every((p) => !p.sameAsCloth), JSON.stringify(h.palette.map((p) => [p.hex, p.sameAsCloth, p.skipped, p.background])));
+    }
   }
 
   // The overlap under later shapes, done the fast way, comes out the same as the slow way (every later shape in reach united, then cut).
@@ -583,6 +598,7 @@ log("8. thin lines and lettering are kept, widened, and keep their colour; kinds
 
   // White inside a navy disc, on a pale cloth: the white is "like the cloth". A wide white area is left as bare cloth, but narrow white
   // strokes (lettering, a thin ring) are stitched in white over the navy round them: a gap that narrow cannot be kept clean in a fill.
+  // (While CLOTH_SKIPS is on. With it off all of the white is stitched, and the colour of the cloth changes nothing that is stitched.)
   {
     const img = makeImage(300, 300);
     paint(img, [circle(150.2, 150.4, 130, 720)], NAVY);
@@ -594,32 +610,44 @@ log("8. thin lines and lettering are kept, widened, and keep their colour; kinds
     const white = made.palette.filter((p) => p.sameAsCloth && !p.background);
     const whiteObjects = (m, idx) => m.objects.filter((o) => idx.includes(o.pal)).length;
     const idx = white.map((p) => p.index);
-    check("white like the cloth is a colour of its own, with only its fine parts stitched", white.length === 1 && white[0].fineOnly && !white[0].skipped, JSON.stringify(white));
-    check(`the five narrow bars (narrower than ${CLOTH_FINE_MM} mm) are stitched, the wide patch is left as cloth`, whiteObjects(made, idx) === 5, `${whiteObjects(made, idx)} white objects`);
-    check("the navy is stitched as before", made.objects.some((o) => made.palette[o.pal].hex === "#16255c" || !made.palette[o.pal].sameAsCloth));
-    const all = objectsFromTrace(res, { ...opts, include: new Set(idx) });
-    check("ticking the colour stitches all of it, the wide patch too", whiteObjects(all, idx) === 6 && !all.palette[idx[0]].fineOnly, `${whiteObjects(all, idx)}`);
-    const none = objectsFromTrace(res, { ...opts, skip: new Set(idx) });
-    check("unticking it leaves all of it out", whiteObjects(none, idx) === 0 && none.palette[idx[0]].skipped);
-    // changing the cloth colour changes which parts of the white are stitched: the design is updated for that colour only
-    {
-      const next = objectsFromTrace(res, { ...opts, fabric: "#16255c", before: made.palette });
-      const merged = mergeTraceObjects(made.objects, next.objects, { before: made.palette, after: next.palette, rank: next.rank });
-      check("on a change of cloth colour the shapes that now need stitching are added (white: fine parts only, then all of it)", whiteObjects({ objects: merged }, idx) === 6, `${whiteObjects({ objects: merged }, idx)} white objects`);
-      const back = objectsFromTrace(res, { ...opts, before: next.palette });
-      const again = mergeTraceObjects(merged, back.objects, { before: next.palette, after: back.palette, rank: back.rank });
-      check("and taken away again when the cloth goes back to pale", whiteObjects({ objects: again }, idx) === 5, `${whiteObjects({ objects: again }, idx)} white objects`);
-      // The page asks the worker (digitizer/engineCore.js) for the shapes of the colours that CHANGED. The white went from "fine parts only" to all of it, which is a change although
-      // it was never switched off: the worker has to send its shapes too (looking only at on and off, it sent none and the white was gone from the design after a cloth change).
-      check("the white is among the colours the change of cloth changed", idx.every((i) => changedColours(next.palette, made.palette).has(i)));
-      const core = await import("../../digitizer/engineCore.js");
-      core.run("trace", { image: img, options: { ...page, mmPerPx: 0.2 }, keep: 1 });
-      const sent = core.run("shapes", { token: 1, originX: -30, originY: -30, mmPerPx: 0.2, skip: [], include: [], fabric: "#16255c", snap: false, before: made.palette, fresh: false }).result;
-      const whiteSent = sent.packed.meta.filter((o) => idx.includes(o.pal)).length;
-      check("and the worker sends the shapes of the white (all six) when asked for them", whiteSent === 6, `${whiteSent} white shapes sent`);
+    if (CLOTH_SKIPS) {
+      check("white like the cloth is a colour of its own, with only its fine parts stitched", white.length === 1 && white[0].fineOnly && !white[0].skipped, JSON.stringify(white));
+      check(`the five narrow bars (narrower than ${CLOTH_FINE_MM} mm) are stitched, the wide patch is left as cloth`, whiteObjects(made, idx) === 5, `${whiteObjects(made, idx)} white objects`);
+      check("the navy is stitched as before", made.objects.some((o) => made.palette[o.pal].hex === "#16255c" || !made.palette[o.pal].sameAsCloth));
+      const all = objectsFromTrace(res, { ...opts, include: new Set(idx) });
+      check("ticking the colour stitches all of it, the wide patch too", whiteObjects(all, idx) === 6 && !all.palette[idx[0]].fineOnly, `${whiteObjects(all, idx)}`);
+      const none = objectsFromTrace(res, { ...opts, skip: new Set(idx) });
+      check("unticking it leaves all of it out", whiteObjects(none, idx) === 0 && none.palette[idx[0]].skipped);
+      // changing the cloth colour changes which parts of the white are stitched: the design is updated for that colour only
+      {
+        const next = objectsFromTrace(res, { ...opts, fabric: "#16255c", before: made.palette });
+        const merged = mergeTraceObjects(made.objects, next.objects, { before: made.palette, after: next.palette, rank: next.rank });
+        check("on a change of cloth colour the shapes that now need stitching are added (white: fine parts only, then all of it)", whiteObjects({ objects: merged }, idx) === 6, `${whiteObjects({ objects: merged }, idx)} white objects`);
+        const back = objectsFromTrace(res, { ...opts, before: next.palette });
+        const again = mergeTraceObjects(merged, back.objects, { before: next.palette, after: back.palette, rank: back.rank });
+        check("and taken away again when the cloth goes back to pale", whiteObjects({ objects: again }, idx) === 5, `${whiteObjects({ objects: again }, idx)} white objects`);
+        // The page asks the worker (digitizer/engineCore.js) for the shapes of the colours that CHANGED. The white went from "fine parts only" to all of it, which is a change although
+        // it was never switched off: the worker has to send its shapes too (looking only at on and off, it sent none and the white was gone from the design after a cloth change).
+        check("the white is among the colours the change of cloth changed", idx.every((i) => changedColours(next.palette, made.palette).has(i)));
+        const core = await import("../../digitizer/engineCore.js");
+        core.run("trace", { image: img, options: { ...page, mmPerPx: 0.2 }, keep: 1 });
+        const sent = core.run("shapes", { token: 1, originX: -30, originY: -30, mmPerPx: 0.2, skip: [], include: [], fabric: "#16255c", snap: false, before: made.palette, fresh: false }).result;
+        const whiteSent = sent.packed.meta.filter((o) => idx.includes(o.pal)).length;
+        check("and the worker sends the shapes of the white (all six) when asked for them", whiteSent === 6, `${whiteSent} white shapes sent`);
+      }
+      const dark = objectsFromTrace(res, { ...opts, fabric: "#16255c" });
+      check("on a navy cloth the white is stitched whole and the navy is the cloth", whiteObjects(dark, idx) === 6 && dark.palette.some((p) => p.sameAsCloth && p.skipped && p.hex !== "#ffffff"));
+    } else {
+      const inside = made.palette.filter((p) => p.enclosed && !p.background).map((p) => p.index);
+      const whiteN = (m) => m.objects.filter((o) => inside.includes(o.pal)).length;
+      check("the cloth is only how the design is shown: the five bars and the wide patch are all stitched, and nothing is 'like the cloth'", inside.length === 1 && whiteN(made) === 6 && made.palette.every((p) => !p.sameAsCloth && !p.fineOnly), JSON.stringify(made.palette.map((p) => [p.hex, p.background, p.enclosed, p.skipped])));
+      check("the navy is stitched as before", made.objects.some((o) => !inside.includes(o.pal) && !made.palette[o.pal].background));
+      const none = objectsFromTrace(res, { ...opts, skip: new Set(inside) });
+      check("unticking the white leaves all of it out", whiteN(none) === 0 && none.palette[inside[0]].skipped);
+      const dark = objectsFromTrace(res, { ...opts, fabric: "#16255c" });
+      check("a navy cloth changes nothing that is stitched: the same shapes, the white whole, the navy not left out", dark.objects.length === made.objects.length && whiteN(dark) === 6 && dark.palette.every((p) => !p.sameAsCloth && (!p.skipped || p.background)));
+      check("and no colour counts as changed by it (the worker has nothing to send again)", changedColours(dark.palette, made.palette).size === 0);
     }
-    const dark = objectsFromTrace(res, { ...opts, fabric: "#16255c" });
-    check("on a navy cloth the white is stitched whole and the navy is the cloth", whiteObjects(dark, idx) === 6 && dark.palette.some((p) => p.sameAsCloth && p.skipped && p.hex !== "#ffffff"));
   }
 }
 
@@ -857,10 +885,15 @@ log("N. a portrait: light hair against a light wall, and a person cut out of the
   const cream = objectsFromTrace(plain, { originX: 0, originY: 0, mmPerPx: 0.25, fabric: "#f4f1ea" });
   check("on the default cream cloth nothing of a photograph is left bare as 'like the cloth' (the white of hair stays)", cream.palette.every((p) => !p.sameAsCloth), JSON.stringify(cream.palette.map((p) => [p.hex, p.sameAsCloth, p.background])));
   const sameHair = objectsFromTrace(plain, { originX: 0, originY: 0, mmPerPx: 0.25, fabric: "#e1e1e1" });
-  check("on a cloth that means something (here exactly the hair's colour) a photograph colour that is the cloth is left to it", sameHair.palette.some((p) => p.sameAsCloth && !p.background));
+  if (CLOTH_SKIPS) check("on a cloth that means something (here exactly the hair's colour) a photograph colour that is the cloth is left to it", sameHair.palette.some((p) => p.sameAsCloth && !p.background));
+  else check("the cloth is only how the design is shown: even a cloth exactly the hair's colour leaves nothing of the photograph out", sameHair.palette.every((p) => !p.sameAsCloth) && sameHair.objects.length === cream.objects.length, `${sameHair.objects.length} objects against ${cream.objects.length}`);
   const wallCloth = objectsFromTrace(plain, { originX: 0, originY: 0, mmPerPx: 0.25, fabric: "#c8cdd2" });
   check("... but the hair 8 to 9 steps from a wall-coloured cloth is not taken for the cloth", wallCloth.palette.every((p) => !(p.sameAsCloth && p.r > 200)), JSON.stringify(wallCloth.palette.map((p) => [p.hex, p.sameAsCloth])));
-  check("cloth match by kind: logo and artwork 14; photograph 0 on the default cream, 7 on any other cloth", clothMatch("logo", "#ffffff") === CLOTH_MATCH && clothMatch("art", "#f4f1ea") === CLOTH_MATCH && clothMatch("photo", "#F4F1EA") === 0 && clothMatch("photo", "#202020") === CLOTH_MATCH_PHOTO && CLOTH_MATCH_PHOTO < CLOTH_MATCH);
+  if (CLOTH_SKIPS) {
+    check("cloth match by kind: logo and artwork 14; photograph 0 on the default cream, 7 on any other cloth", clothMatch("logo", "#ffffff") === CLOTH_MATCH && clothMatch("art", "#f4f1ea") === CLOTH_MATCH && clothMatch("photo", "#F4F1EA") === 0 && clothMatch("photo", "#202020") === CLOTH_MATCH_PHOTO && CLOTH_MATCH_PHOTO < CLOTH_MATCH);
+  } else {
+    check("cloth match by kind: 0 whatever the kind and the cloth while CLOTH_SKIPS is off (the limits, 14 and 7, are kept for when it is on)", [["logo", "#ffffff"], ["art", "#f4f1ea"], ["photo", "#F4F1EA"], ["photo", "#202020"]].every(([kind, f]) => clothMatch(kind, f) === 0) && CLOTH_MATCH_PHOTO < CLOTH_MATCH);
+  }
   const wall = { stats: { kind: "photo" }, palette: [{ background: true, r: 150, g: 160, b: 168 }] };
   check("a plain backdrop darker than L 75 sets the cloth, in a photograph as in a logo", clothFromTrace(wall) !== null && clothFromTrace({ stats: { kind: "logo" }, palette: wall.palette }) !== null);
 

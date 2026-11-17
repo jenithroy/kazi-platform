@@ -7,7 +7,7 @@
 import { assignAngles, elongationOf, touching, angleGap } from "./angles.js";
 import { edgeLook, EDGE_DEFAULTS } from "./edges.js";
 import { applyLook, lookOptions, LOOK_DEFAULTS } from "./look.js";
-import { objectsFromTrace, mergeTraceObjects, traceOptions, clothMatchOf, contentBox, CLOTH_MATCH, CLOTH_MATCH_PHOTO } from "./convert.js";
+import { objectsFromTrace, mergeTraceObjects, traceOptions, clothMatchOf, contentBox, CLOTH_MATCH, CLOTH_MATCH_PHOTO, CLOTH_SKIPS } from "./convert.js";
 import { makeObject, engineDesign, parseDesign } from "./model.js";
 import { traceImage } from "../embroidery/trace/index.js";
 import { outlineRuns } from "../embroidery/stitch/outline.js";
@@ -150,14 +150,19 @@ console.log("\"Leave out the background\" OFF: the whole picture is sewn, nothin
   };
   const auto = made("auto"), none = made("none");
   check("the tracer says whether the background was switched off (stats.backgroundOff)", none.traced.stats.backgroundOff === true && !auto.traced.stats.backgroundOff);
-  check("(control) with the background left out, the white of the page and of the heart is not sewn", auto.palette.some((p) => p.skipped && (p.background || p.sameAsCloth)), JSON.stringify(auto.palette.map((p) => [p.hex, p.skipped])));
+  check("(control) with the background left out, the white of the page is not sewn", auto.palette.some((p) => p.skipped && (p.background || p.sameAsCloth)), JSON.stringify(auto.palette.map((p) => [p.hex, p.skipped])));
+  const isWhite = (o) => /^#f[0-9a-f]f[0-9a-f]f[0-9a-f]$/i.test(o.fill.color);
+  check("the cloth is only how the design is shown: white on a cream cloth is sewn (the heart inside the ring), the page round it is not", CLOTH_SKIPS || (auto.objects.some(isWhite) && auto.palette.some((p) => p.background && p.skipped) && auto.palette.every((p) => !p.sameAsCloth)), JSON.stringify(auto.palette.map((p) => [p.hex, p.skipped, p.background, p.enclosed])));
   check("with it switched OFF no colour is skipped: not as the background, not as like the cloth", none.palette.length > 0 && none.palette.every((p) => !p.skipped && !p.background && !p.sameAsCloth), JSON.stringify(none.palette.map((p) => [p.hex, p.skipped, p.background, p.sameAsCloth])));
   check("and a white shape is sewn (the page and the heart), so there are more objects than with the background left out", none.objects.length > auto.objects.length && none.objects.some((o) => /^#f[0-9a-f]f[0-9a-f]f[0-9a-f]$/i.test(o.fill.color)), `${auto.objects.length} -> ${none.objects.length}`);
   const box = (m) => contentBox(m.traced, { originX: -50, originY: -37.5, mmPerPx: 0.25, fabric: cream });
   const ba = box(auto), bn = box(none);
   check("what is sewn reaches the whole picture (100 x 75 mm) when the background is off, less when it is left out", bn && Math.abs((bn.x1 - bn.x0) - 100) < 0.6 && Math.abs((bn.y1 - bn.y0) - 75) < 0.6 && ba && (ba.x1 - ba.x0) < (bn.x1 - bn.x0) - 5, JSON.stringify([ba, bn]));
   check("clothMatchOf: 0 whatever the kind and the cloth when the background is off", [["logo", cream], ["art", "#ffffff"], ["photo", "#336699"], ["photo", cream]].every(([kind, f]) => clothMatchOf({ stats: { kind, backgroundOff: true } }, f) === 0));
-  check("clothMatchOf: otherwise the kind's own limit", clothMatchOf({ stats: { kind: "logo" } }, cream) === CLOTH_MATCH && clothMatchOf({ stats: { kind: "photo" } }, "#336699") === CLOTH_MATCH_PHOTO && clothMatchOf({ stats: { kind: "photo" } }, cream) === 0);
+  check("clothMatchOf: otherwise nothing is left out for being like the cloth (CLOTH_SKIPS is off), or the kind's own limit when it is switched on",
+    CLOTH_SKIPS
+      ? clothMatchOf({ stats: { kind: "logo" } }, cream) === CLOTH_MATCH && clothMatchOf({ stats: { kind: "photo" } }, "#336699") === CLOTH_MATCH_PHOTO && clothMatchOf({ stats: { kind: "photo" } }, cream) === 0
+      : [["logo", cream], ["art", "#ffffff"], ["photo", "#336699"], ["photo", cream]].every(([kind, f]) => clothMatchOf({ stats: { kind } }, f) === 0));
   check("traceOptions: a frame round the picture is kept only when the background is off", traceOptions({ background: "none" }, 0.25).trimFrame === false && traceOptions({ background: "auto" }, 0.25).trimFrame === undefined);
   // a light photograph (the woman's white shirt, the sky): nothing of it may be cut out either
   const sky = { width: 300, height: 200, data: new Uint8ClampedArray(300 * 200 * 4) };
