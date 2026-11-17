@@ -13,8 +13,9 @@
  */
 import { CMD } from "../pattern.js";
 import { islandsOf, ringArea, ringPerimeter, bboxOf, transformRings, composeMatrix } from "../geometry/poly.js";
-import { intersectRings, offsetRings, differenceRings } from "../geometry/clip.js";
+import { intersectRings, offsetRings, differenceRings, unionRings, unionShapes } from "../geometry/clip.js";
 import { tatamiFill, FILL_DEFAULTS } from "./fill.js";
+import { unsewnPatches } from "./rescue.js";
 import { satinIsland, lineIsland, SATIN_DEFAULTS } from "./satin.js";
 import { strokeCenterlines } from "../geometry/skeleton.js";
 import { beanAlong, runAlong, satinAlong, curveRun, densify } from "./path.js";
@@ -63,6 +64,14 @@ export const ENGINE_DEFAULTS = {
   denseStitchLen: 3, // mm
   denseMinRow: 0.15, // mm: a row piece shorter than this is dropped (a normal fill keeps 0.3): thin strokes are crossed by short pieces. DADE keeps every piece however short (two thirds of its stitches in 3 mm text are under 0.4 mm); with 0.15 and denseMinPiece the shortest stitch stays 0.3 mm
   denseMinPiece: 0.3, // mm: never leave a first or last stitch of a row shorter than this (a normal fill keeps 0.9)
+  densePhases: 1, // 1: the rows of a dense letter are also tried shifted by a fraction of a row step (fill.js rowPhases), and the shift that puts rows across most of the letter is kept. Rows in the middle of equal strips fall symmetrically, and with denseWeight the stem of an I, l or T is taken in to 0.2 mm, the row spacing: it sat exactly between two rows and was not sewn at all (bench of 2026-11-16: the I of a 3 mm typewriter MARIA lost its whole stem). 0 = rows in the middle of their strips, as before
+  densePhaseMissed: 0.5, // ... but only when at least this many mm of strokes (counted at the lines half way between two rows) are missed by the rows in the middle, and the shift taken misses at most half as much: a letter with no such stroke keeps its rows
+  denseRescue: 1, // 1: after the rows of a dense letter are laid, any part of the DRAWN letter that no thread reaches (rescue.js: the shape's interior, 0.08 mm in from its edge, further than denseRescueHalf from every stitch, in a piece of at least denseRescueArea) gets the drawn shape put back round it and the rows are laid again: a thin neck or a junction that denseWeight took in to nothing left a notch in the letter (3 mm and 6 mm lettering, bench of 2026-11-16: bare pieces of 0.5 to 0.75 mm). The same rows, so no extra thread, tie stitch or jump. 0 = as before
+  denseRescueLetters: 1, // 1: the same for a letter found in a picture that is not sewn dense (a connected script is one piece, so it never has five letters to its block): its thin necks were left bare by the plain fill's 0.3 mm shortest row piece. 0 = dense letters only
+  denseRescueHalf: 0.2, // mm: how far a thread is taken to reach either side of its stitch (it is about 0.45 mm wide)
+  denseRescueCompare: 0.125, // mm: ... and two sewings of the letter are compared by how much of it lies further than this from every stitch (the rim and hairlines included)
+  denseRescueArea: 0.06, // mm2: smaller bare pieces are left alone
+  denseRescueGrow: 0.06, // mm: a bare piece is made this much bigger (inside the drawn shape) before it is put back, so the rows (0.2 mm apart) cross it (0.12 put back more of the letter and made it heavier: extra ink 3.00 % against 2.92 %)
   denseInsetStroke: 0.8, // mm: (only with denseWeight 0) lettering whose strokes are this thick or more ...
   denseInset: 0.1, // ... has its rows stop this far inside the edge, so the holes of an a, e, o stay open (Impact, caps 3 to 6 mm: 0.389 characters wrong with the rows at the edge, 0.151 with this); thinner lettering is filled right up to the edge
   pictureLineBelow: 0.55, // mm: the letters of a run of lettering found in a picture (object.letters, trace/lettering.js) are sewn like typed lettering, as lines from end to end, when the run's typical stroke is thinner than this: the crest's AVE MARIA went from 0.75 to 0.12 of its characters read wrong, and nothing else among 134 drawn pictures and 7 real ones changed for the worse. A heavier run is sewn letter by letter as before: the typed rules for it (satin, a fill) made it worse in the same test, 0.167 to 0.207 and 0.169 to 0.197 (the traced letters are less exact than a typed font's)
@@ -678,6 +687,7 @@ function denseFill(fx, f, S, stroke) {
   if (f.pullComp == null) out.pullComp = 0;
   if (f.inset == null) out.inset = S.denseWeight > 0 ? 0 : stroke >= S.denseInsetStroke ? S.denseInset : 0;
   if (f.grow == null) out.grow = 0;
+  if (S.densePhases > 0) { out.rowPhases = [0.25, 0.75, 0.125, 0.375, 0.625, 0.875]; out.phaseMissed = S.densePhaseMissed; }
   return out;
 }
 
@@ -855,7 +865,34 @@ function objectRuns(item, needle, S0, warn, info) {
         // (dense letters with denseWeight: the rows are laid in the shape with its thick strokes taken in, so the stitched letter is as heavy as the drawn one; the shape itself is not changed)
         const rowShape = item.textDense && S.denseWeight > 0 && !giant ? lightenThick(fillShape, { step: S.denseStep, core: S.denseCore, max: S.denseTrim }) : fillShape;
         const reach = fx.grow > 0 ? offsetRings(rowShape, fx.grow, { join: "miter", miterLimit: 2 }) : rowShape;
-        const top = tatamiFill(reach.length ? reach : fillShape, { ...fx, start: at, lite: giant });
+        const rowsIn = reach.length ? reach : fillShape;
+        let top = tatamiFill(rowsIn, { ...fx, start: at, lite: giant });
+        if ((item.textDense || (S.denseRescueLetters > 0 && obj.letters)) && S.denseRescue > 0 && !giant) {
+          // (parts of the drawn letter no thread reaches: see rescue.js. The drawn shape is put back round them and the rows laid again; the new rows are kept only when they leave less
+          // of the letter bare than the old ones (laying the rows again moves them all), and at most twice. A letter found in a picture that is not sewn dense (a connected script is one
+          // piece) is looked at too, with the reach its wider rows need, and its second laying keeps the short row pieces of dense lettering)
+          const reach2 = Math.max(S.denseRescueHalf, fx.spacing / 2 + 0.05);
+          const ro = { half: reach2, minArea: S.denseRescueArea };
+          const sens = { half: Math.max(S.denseRescueCompare, fx.spacing / 2 + 0.05), erode: 0, minArea: 0 }; // (to compare two sewings of the letter: everything bare, a rim and a hairline too, by a stricter reach)
+          const bareArea = (paths) => unsewnPatches(fillShape, paths, sens).total;
+          const again2 = item.textDense ? fx : { ...fx, minRow: Math.min(fx.minRow, S.denseMinRow), minPiece: Math.min(fx.minPiece, S.denseMinPiece) };
+          let bare = unsewnPatches(fillShape, top.paths, ro), left = bareArea(top.paths);
+          const put = [];
+          for (let pass = 0; pass < 2 && bare.length; pass++) {
+            try {
+              put.push(...bare.flatMap((q) => q.rects.map((r2) => [r2])));
+              const piece = offsetRings(unionShapes(put), S.denseRescueGrow, { join: "round" });
+              const back = piece.length ? intersectRings(fillShape, piece) : [];
+              const again = back.length ? unionRings(rowsIn, back) : null;
+              if (!again || !again.length) break;
+              const next = tatamiFill(again, { ...again2, start: at, lite: giant });
+              const nextBare = unsewnPatches(fillShape, next.paths, ro);
+              const nextLeft = bareArea(next.paths);
+              if (!(nextLeft < left)) break;
+              top = next; bare = nextBare; left = nextLeft;
+            } catch (e) { break; }
+          }
+        }
         top.paths.forEach((p, i) => { runs.push({ pts: p, join: i === 0 && under.length > 0, connectMax: S.joinWithinIsland, kind: "fill", color: fc }); at = p[p.length - 1]; });
         if (cut) {
           for (const arm of cut.arms) {
