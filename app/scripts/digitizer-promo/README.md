@@ -1,6 +1,6 @@
 # Digitizer promo clip
 
-The dark band on the homepage ("Turn your image into stitches", `components/home/DigitizerPromo.jsx`) plays a 28 second
+The dark band on the homepage ("Turn your image into stitches", `components/home/DigitizerPromo.jsx`) plays a 31 second
 loop that is a **recording of the real digitizer being used**, with the site's own Kazi logo (`public/images/logo/kazi-logo-dark.png`)
 as the example: the logo file is dragged onto the canvas and converted, the Design step is opened, a drag-box is drawn round the
 logo's tiny "manufacturing" lettering (too small to stitch well) and the 10 shapes are deleted, the Stitches step is opened,
@@ -47,16 +47,25 @@ bigger). The dev server works but its first load compiles the page; a production
    are not painted in a recording, so the script sets them directly (the hoop before the recording starts). At the default 100 mm
    hoop the logo's small lettering stitches raggedly and the Stitches panel lists more warnings; at "Normal" speed the sewing is over
    in about a second and a half.
-6. **Do not change the cloth colour to the logo's own colour.** A picture's colours that match the cloth are left out when it is
-   converted, and changing the cloth re-converts the picture: set to the logo's pine, the whole design vanished (0 objects). That
-   is also why the demo keeps the default cream cloth and a pine thread, and does not show a "recolour" step.
+6. The cloth colour is only how the design is shown (`CLOTH_SKIPS` is off in `lib/digitizer/convert.js`): picture colours like it
+   are stitched, and changing it does not convert the picture again. (Before that, setting the cloth to the logo's own pine made the
+   whole design vanish, which is why the demo keeps the default cream cloth: it still does, for its look.)
 7. ffmpeg holds each frame until the next arrives, converts to a constant 30 fps (`fps=30` goes first: the concat demuxer
    leaves a timebase that `xfade` refuses to mix), and cross-fades the last 0.7 s into the first frame so the loop has no jump.
    The frames are full-range JPEGs (BT.601): they are converted to limited-range BT.709 and tagged, because left as they were
    Chrome's hardware VP9 decoder refused the WebM ("video decode error" on the first frame) on some GPUs.
 8. The poster is the frame after the stitching finishes, taken with the pointer hidden.
 
-The script depends on the digitizer's labels and class names (`.dz-stage`, `.dz-canvas`, `.dz-seg--step`, `Hoop size`,
-`Playback speed`, `Play the stitching`, `Download DST`, the Delete button at the foot of the Objects panel, ...). If a step times
-out after a UI change, those are the first thing to look at; the drag-box step stops with an error if it did not pick up the
-lettering. Look at the result with the contact sheet command the script prints before you commit the files.
+9. The page is set up before it loads (`initPage`): the first-visit tour is switched off (`kazi.digitizer.tour`), the Objects list
+   is open (`kazi.digitizer.settings`: its rows fill as the shapes are made and go when they are deleted, and the Delete button is in
+   it), and the Next dev badge (`nextjs-portal`) is hidden, so a clip made against `npm run dev` does not show it.
+10. **The drag-box is measured on this layout.** Its two corners (`onCanvas(...)` in `record()`) are fractions of the window with the
+    Objects list open and the Medium hoop. Dragging left to right picks only the shapes the box holds whole (right to left, any it
+    touches), so it starts on bare cloth below and to the left of the lettering, goes up and over it, and stays clear of the "A"
+    above. If the panels move, stop after the Design step (a screenshot with a percentage grid over it is the quickest way to read
+    the new numbers) and re-measure.
+
+The script depends on the digitizer's labels and class names (`.dz-page` and `.dz-canvas-wrap` (the drop target and the canvas),
+`.dz-canvas`, `.dz-seg--step`, `.dz-rail-badge` (the number of shapes), `.dz-obar` (the Delete button under the Objects list),
+`.dz-card-ft` (Download DST), `Hoop size`, `Playback speed`, `Play the stitching`, ...). If a step times out after a UI change,
+those are the first thing to look at; the drag-box step stops with an error if it did not pick up the lettering. Look at the result with the contact sheet command the script prints before you commit the files.

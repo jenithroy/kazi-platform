@@ -53,11 +53,14 @@ async function loadLogo(browser) {
 /* ── runs in the page before the app: the editor fills the window, plus a pointer, click ripples and a dragged-file chip ── */
 function initPage() {
   try { localStorage.setItem("kazi-cookie-consent", "rejected"); } catch { /* ignore */ }
+  // no first-visit tour over the page, and the Objects list open: its rows fill as the shapes are made and go when they are deleted
+  try { localStorage.setItem("kazi.digitizer.tour", "1"); localStorage.setItem("kazi.digitizer.settings", JSON.stringify({ showGrid: true, showJumps: false, objectsOpen: true })); } catch { /* ignore */ }
   // z-index 1000: above the site's nav / banner / WhatsApp button (all under 100), but BELOW the editor's own pop-ups
   // (1400+, portalled to <body>): a higher value hides the colour chart that the recording opens.
   const css = `
     .dz-page{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:1000!important;border:0!important;border-radius:0!important}
     html,body{overflow:hidden!important}
+    nextjs-portal{display:none!important}
     #fx-cursor{position:fixed;left:0;top:0;z-index:2147483647;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));will-change:transform}
     #fx-chip{display:none;position:fixed;left:0;top:0;z-index:2147483646;pointer-events:none;align-items:center;gap:9px;padding:7px 14px 7px 8px;background:#fff;border:1px solid rgba(27,58,43,.22);border-radius:10px;box-shadow:0 14px 28px -12px rgba(0,0,0,.45);font:700 15px 'ITC Garamond Condensed',serif;color:#1b3a2b;white-space:nowrap;will-change:transform}
     #fx-chip img{width:30px;height:30px;border-radius:6px;display:block}
@@ -128,8 +131,8 @@ async function record() {
       if (!busy) return; await sleep(100);
     }
   };
-  const shapes = () => page.waitForFunction(() => Number((document.querySelector(".dz-left .kb-note")?.textContent || "0").trim()) > 0, null, { timeout: 60000 });
-  const stitchesReady = () => page.waitForFunction(() => /\d[\d,]*\s*stitches/i.test(document.querySelector(".dz-bar-info")?.textContent || ""), null, { timeout: 60000 });
+  const shapes = () => page.waitForFunction(() => parseInt(document.querySelector(".dz-rail-badge")?.textContent || "0", 10) > 0, null, { timeout: 60000 });
+  const stitchesReady = () => page.waitForFunction(() => [...document.querySelectorAll(".dz-card-ft button")].some((b) => /Download DST/.test(b.textContent) && !b.disabled), null, { timeout: 60000 });
   const step = (name) => page.locator(".dz-seg--step button", { hasText: name });
 
   await page.goto(BASE + "/digitizer/", { waitUntil: "networkidle", timeout: 90000 });
@@ -154,15 +157,16 @@ async function record() {
     const d = new DataTransfer(); d.items.add(new File([a], "kazi-logo.png", { type: "image/png" })); return d;
   }, logo.b64);
   await page.evaluate(([n, s]) => window.__fx.chip(n, s), ["kazi-logo.png", logo.thumb]);
-  const stage = await page.locator(".dz-stage").boundingBox();
+  const stage = await page.locator(".dz-canvas-wrap").boundingBox();
+  const room = await page.evaluate(() => { const s = getComputedStyle(document.querySelector(".dz-page")); return [parseFloat(s.getPropertyValue("--dz-inset-l")) || 0, parseFloat(s.getPropertyValue("--dz-inset-r")) || 0]; });
   const inStage = (x, y) => x > stage.x && x < stage.x + stage.width && y > stage.y && y < stage.y + stage.height;
-  await glide({ x: stage.x + stage.width * 0.5, y: stage.y + stage.height * 0.6 }, 1300, {
+  await glide({ x: stage.x + room[0] + (stage.width - room[0] - room[1]) * 0.5, y: stage.y + stage.height * 0.6 }, 1300, {
     curve: 30,
-    onStep: async (x, y) => { if (inStage(x, y)) await page.dispatchEvent(".dz-stage", "dragover", { dataTransfer: dt }); },
+    onStep: async (x, y) => { if (inStage(x, y)) await page.dispatchEvent(".dz-page", "dragover", { dataTransfer: dt }); },
   });
   await sleep(450);
   log("dropped");
-  await page.dispatchEvent(".dz-stage", "drop", { dataTransfer: dt });
+  await page.dispatchEvent(".dz-page", "drop", { dataTransfer: dt });
   await page.evaluate(() => window.__fx.chip(""));
   await shapes(); await idle();
   await sleep(1200);
@@ -172,18 +176,20 @@ async function record() {
   await clickOn(step("Design"), { ms: 800, after: 700 });
 
   // c. tidy up: a drag-box round the logo's tiny "manufacturing" lettering (too small to stitch well), then Delete.
-  // The box is given as fractions of the canvas, measured on this 1200 x 675 window (the lettering sits at the bottom).
+  // The box is given as fractions of the canvas, which is the whole 1200 x 675 window, measured with the Objects list open and the
+  // Medium hoop (the lettering sits just below the middle). Dragging left to right picks only the shapes the box holds whole, so it
+  // is drawn from bare cloth, below and to the left of the lettering, up and over it, clear of the "A" above.
   log("box the small lettering");
   const cv = await page.locator(".dz-canvas").boundingBox();
   const onCanvas = (fx, fy) => ({ x: cv.x + cv.width * fx, y: cv.y + cv.height * fy });
-  await glide(onCanvas(0.4275, 0.7181), 900); // below and left of the lettering, on bare cloth
+  await glide(onCanvas(0.436, 0.742), 900); // below and left of the lettering, on bare cloth
   await sleep(150); await page.mouse.down(); await sleep(120);
-  await glide(onCanvas(0.7855, 0.8076), 900, { curve: 0 }); // drag the box over it
+  await glide(onCanvas(0.675, 0.656), 900, { curve: 0 }); // drag the box up and over it
   await sleep(120); await page.mouse.up(); await sleep(1000);
-  const picked = Number(await page.evaluate(() => /(\d+)\s+selected/.exec(document.querySelector(".dz-right")?.innerText || "")?.[1] ?? 0));
+  const picked = Number(await page.evaluate(() => /(\d+)\s+objects/i.exec(document.querySelector(".dz-right h3")?.textContent || "")?.[1] ?? 0));
   if (picked < 8) throw new Error(`the drag-box should have picked up the lettering's shapes (about 10), it picked ${picked}: has the layout moved?`);
   log(`delete the ${picked} shapes`);
-  await clickOn(page.locator(".dz-left button", { hasText: "Delete" }).last(), { ms: 800, after: 1200 });
+  await clickOn(page.locator(".dz-obar button", { hasText: "Delete" }), { ms: 800, after: 1200 });
 
   // d. the stitches
   log("-> Stitches");
