@@ -907,6 +907,9 @@ export class Stage {
    * that are new.
    */
   stitchLayer(st, upto) {
+    // A layer of hundreds of thousands of stitches is drawn a slice at a time, a frame apart, so the page stays alive while it fills in (one
+    // stroke of a million threads is a pause of a second or more on a computer without a graphics card).
+    const SLICE = 120000;
     const { w, h, dpr } = this.size;
     const { k, ox, oy } = this.view;
     let L = this.layer;
@@ -920,16 +923,17 @@ export class Stage {
     }
     const moved = L.k !== k || L.ox !== ox || L.oy !== oy;
     if (L.upto < 0 || (moved && (this.props.simPos != null || L.upto !== upto))) {
-      this.paintStitches(L, st, 0, upto, true);
+      this.paintStitches(L, st, 0, Math.min(upto, SLICE), true);
     } else if (moved) {
       // Follow the view with the old picture now; draw the sharp one when it has stopped.
       L.stale = true;
       clearTimeout(this.layerTimer);
-      this.layerTimer = setTimeout(() => { if (this.layer === L) { this.paintStitches(L, st, 0, this.layerUpto(st), true); this.invalidate(); } }, 140);
+      this.layerTimer = setTimeout(() => { if (this.layer === L) { this.paintStitches(L, st, 0, Math.min(this.layerUpto(st), SLICE), true); this.invalidate(); } }, 140);
     } else if (L.upto !== upto) {
-      if (upto > L.upto) this.paintStitches(L, st, L.upto, upto, false);
-      else this.paintStitches(L, st, 0, upto, true);
+      if (upto > L.upto) this.paintStitches(L, st, L.upto, Math.min(upto, L.upto + SLICE), false);
+      else this.paintStitches(L, st, 0, Math.min(upto, SLICE), true);
     }
+    if (L.upto >= 0 && L.upto < upto && !L.stale) this.invalidate(); // the rest of the stitches follow in the next frames
     return L;
   }
 
@@ -955,10 +959,14 @@ export class Stage {
     const paths = new Map();
     const jumps = new Path2D();
     let any = false;
+    // The layer is the size of the canvas: a stitch wholly beyond one of its sides (plus a thread's width) cannot show, so it is not even
+    // put in the path. Zoomed in on a big design that is nearly all of them.
+    const margin = 2 + THREAD_MM;
+    const vx0 = -L.ox / L.k - margin, vx1 = (L.w - L.ox) / L.k + margin, vy0 = -L.oy / L.k - margin, vy1 = (L.h - L.oy) / L.k + margin;
     for (let i = from; i < to; i++) {
       const x = flat[i * 3] / 10, y = flat[i * 3 + 1] / 10, c = flat[i * 3 + 2];
       if (c === CMD.STITCH) {
-        if (S.px !== null) {
+        if (S.px !== null && !((S.px < vx0 && x < vx0) || (S.px > vx1 && x > vx1) || (S.py < vy0 && y < vy0) || (S.py > vy1 && y > vy1))) {
           let p = paths.get(S.thread);
           if (!p) { p = new Path2D(); paths.set(S.thread, p); }
           p.moveTo(S.px, S.py); p.lineTo(x, y);
