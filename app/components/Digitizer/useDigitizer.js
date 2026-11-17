@@ -22,8 +22,8 @@ import { flatten } from "../../lib/digitizer/flat";
 import { checkStitches, checkMessages } from "../../lib/embroidery/stitch/checks";
 import { FABRICS } from "../../lib/embroidery/stitch/presets";
 import { threadName, nearestThread, hexToRgb } from "../../lib/embroidery/thread/chart";
+import { hasAutosave, peekAutosave, saveAutosave, loadAutosave, clearAutosave } from "../../lib/digitizer/store";
 
-const AUTOSAVE_KEY = "kazi.digitizer.autosave";
 const SETTINGS_KEY = "kazi.digitizer.settings";
 /** How many of the pictures opened in one visit are kept for undo (a big picture is tens of megabytes). */
 const KEEP_PICTURES = 4;
@@ -1173,27 +1173,36 @@ export function useDigitizer() {
   }, [flush, notify, cancelConversion, markSaved, dropPictures]);
   const openDesignFile = useCallback((file) => ask("open that file", () => openDesignFileNow(file)), [ask, openDesignFileNow]);
 
-  // Keep the last design on this computer so a closed tab does not lose the work.
-  const [restorable, setRestorable] = useState(() => { try { return !!localStorage.getItem(AUTOSAVE_KEY); } catch { return false; } });
+  // Keep the last design on this computer so a closed tab does not lose the work (lib/digitizer/store.js: IndexedDB, which takes a big design
+  // where localStorage, at about 5 MB, did not). A big design is megabytes of text, so it is made when the browser is idle and a little less often.
+  const [restorable, setRestorable] = useState(hasAutosave);
+  useEffect(() => { let off = false; peekAutosave().then((has) => { if (!off && has) setRestorable(true); }); return () => { off = true; }; }, []);
   const autosaveWarned = useRef(false);
   useEffect(() => {
     if (dragging || !design.objects.length) return undefined;
-    const t = setTimeout(() => {
-      try { localStorage.setItem(AUTOSAVE_KEY, serializeDesign(design)); setRestorable(true); } catch {
-        // Storage is full or blocked. An older copy left there would come back as "your last design", so it goes, and the person is told.
-        try { localStorage.removeItem(AUTOSAVE_KEY); } catch { /* blocked as well */ }
-        setRestorable(false);
-        if (!autosaveWarned.current) {
-          autosaveWarned.current = true;
-          notify("This browser could not keep a copy of your design (its storage is full or blocked), so the design cannot be brought back if the tab closes. Press Save design to keep your work.", "error");
-        }
+    let cancelled = false, idle = 0;
+    const save = async () => {
+      if (cancelled) return;
+      const ok = await saveAutosave(serializeDesign(design));
+      if (ok) { if (!cancelled) setRestorable(true); return; }
+      // Nowhere would take it (storage full or blocked). An older copy left there would come back as "your last design", so it goes, and the person is told.
+      await clearAutosave();
+      setRestorable(false);
+      if (!autosaveWarned.current) {
+        autosaveWarned.current = true;
+        notify("This design could not be kept in the browser (its storage is full or blocked), so it cannot be brought back if the tab closes. Press Save design to keep your work.", "error");
       }
-    }, 1500);
-    return () => clearTimeout(t);
+    };
+    const t = setTimeout(() => {
+      if (typeof requestIdleCallback === "function") idle = requestIdleCallback(save, { timeout: 4000 }); else save();
+    }, design.objects.length > 400 ? 4000 : 1500);
+    return () => { cancelled = true; clearTimeout(t); if (idle && typeof cancelIdleCallback === "function") cancelIdleCallback(idle); };
   }, [design, dragging, notify]);
-  const restoreNow = useCallback(() => {
+  const restoreNow = useCallback(async () => {
     try {
-      const d = parseDesign(localStorage.getItem(AUTOSAVE_KEY));
+      const text = await loadAutosave();
+      if (!text) throw new Error("There is no saved design.");
+      const d = parseDesign(text);
       flush();
       cancelConversion();
       hist.current.reset(d);
